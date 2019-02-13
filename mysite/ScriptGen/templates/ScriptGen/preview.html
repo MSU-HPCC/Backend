@@ -1,0 +1,26 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}"
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+
+</style>
+<form method="POST">
+    {% csrf_token %}
+    <div class="fieldWrapper">
+    {% for field in form %}
+
+        {{ field.errors }}
+        {{ field.label_tag }} <br/>
+        {{ field }}
+
+    {% endfor %}
+    </div>
+    <input type="submit" value="Submit">
+</form>
+<div class="fieldWrapper">
+{% for line in preview %}
+
+        {{line }} <br>
+
+    {% endfor %}
+</div>

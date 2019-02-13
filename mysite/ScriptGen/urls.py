@@ -5,5 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('get_name/', views.get_name, name='get_name'),
-    path('create_form/', views.ScriptGen_create_view, name='create_form')
+    path('create_form/', views.ScriptGen_create_view, name='create_form'),
+    path('read_file/', views.read_file, name='read_file')
 ]

@@ -60,23 +60,35 @@ def get_name(request):
             file = open(filename,"rb")
             response = HttpResponse(file.read())
             file.close()
-            # craete file
-            print("Before we send file")
+            # get list of lines to return to template
+            file = open(filename,"r")
+            FilePreview = []
+            for line in file:
+                FilePreview.append(line)
+            file.close()
+
             #wrapper = FileWrapper(open(filename, "r"))
-            print("after we make wrapper")
+
            # response = HttpResponse(wrapper, content_type='text/plain')
             #response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
             response['Content-Disposition'] = 'attachment; filename= Bash.sh'
-            print("pathname stuff")
-            response['Content-Length'] = os.path.getsize(filename)
-            print("setting content length")
-            print(response)
-            return response
 
-            return HttpResponseRedirect('.')
+            response['Content-Length'] = os.path.getsize(filename)
+
+            #return response
+
+            return render(request,'ScriptGen/preview.html', {'preview': FilePreview, 'form': form})
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = NameForm()
 
     return render(request, 'ScriptGen/name.html', {'form': form})
+
+
+
+def read_file(request):
+    f = open('C:/Users/Zachary Roush.MIHIN-1720/PycharmProjects/DjangoApp/mysite/Bash.sh', 'r')
+    file_content = f.read()
+    f.close()
+    return HttpResponse(file_content, content_type="text/plain")
