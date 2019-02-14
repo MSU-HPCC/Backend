@@ -1,11 +1,48 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}"
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+<style>
+input[type=submit] {
+  width: 26%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=text], select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=number], select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+</style>
+
 <form method="POST">
     {% csrf_token %}
-    {% for field in form %}
     <div class="fieldWrapper">
+    {% for field in form %}
+
         {{ field.errors }}
-        {{ field.label_tag }} <br/>
+
         {{ field }}
-    </div>
-    {% endfor %}
+        {{ field.label_tag }}
+    {% endfor %}</div>
     <input type="submit" value="Submit">
 </form>

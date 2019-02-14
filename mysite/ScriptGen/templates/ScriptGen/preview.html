@@ -2,25 +2,75 @@
 <link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}"
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <style>
+input[type=submit] {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+div {
+  width: 320px;
+  padding: 10px;
+  border: 5px solid gray;
+  margin: 0;
+}
+input[type=text], select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=number], select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#wrap{
+    width: 710px;
+    border: 10px solid transparent;
+
+}
+.FilePreview {
+    float: right;
+}
+.fieldWrapper{
+    float: left;
+}
 
 </style>
-<form method="POST">
-    {% csrf_token %}
-    <div class="fieldWrapper">
-    {% for field in form %}
+<div id ="wrap">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="fieldWrapper">
+        {% for field in form %}
 
-        {{ field.errors }}
-        {{ field.label_tag }} <br/>
-        {{ field }}
+            {{ field.errors }}
 
-    {% endfor %}
-    </div>
-    <input type="submit" value="Submit">
-</form>
-<div class="fieldWrapper">
+
+            {{ field }}
+            {{ field.label_tag }}
+        {% endfor %}
+        <input type="submit" value="Submit">
+        </div>
+
+    </form>
+<div class="FilePreview" >
 {% for line in preview %}
 
         {{line }} <br>
 
     {% endfor %}
+</div>
 </div>

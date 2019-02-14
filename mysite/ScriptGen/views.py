@@ -76,8 +76,8 @@ def get_name(request):
             response['Content-Length'] = os.path.getsize(filename)
 
             #return response
-
-            return render(request,'ScriptGen/preview.html', {'preview': FilePreview, 'form': form})
+            return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form})
+            return response
 
     # if a GET (or any other method) we'll create a blank form
     else:
