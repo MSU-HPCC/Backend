@@ -37,7 +37,7 @@ def get_name(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            filename = "C:/Users/Zachary Roush.MIHIN-1720/PycharmProjects/DjangoApp/mysite/Bash.sh"
+            filename = os.getcwd()+ "\Bash.sh"
             file = open(filename,"w")
             CPUs = form.cleaned_data['CPUs']
             Wall_time = form.cleaned_data['Wall_time']
