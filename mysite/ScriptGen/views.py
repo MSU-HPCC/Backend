@@ -42,17 +42,31 @@ def get_name(request):
             CPUs = form.cleaned_data['CPUs']
             Wall_time = form.cleaned_data['Wall_time']
             job_name = form.cleaned_data['job_name']
-            script_path = form.cleaned_data['script_path']
+            script_path = form.cleaned_data['CodeDirectory']
             nodes = form.cleaned_data['nodes']
-            memory = form.cleaned_data['memory']
+            #memory = form.cleaned_data['memory']
             MemoryPerCPu = form.cleaned_data['MemoryPerCPU']
-            file.write("CPUs = "+str(CPUs)+"\n")
-            file.write("Wall Time = "+str(Wall_time)+"\n")
-            file.write("Job Name = "+str(job_name)+"\n")
-            file.write("script path = "+str(script_path)+"\n")
-            file.write("nodes = "+str(nodes)+"\n")
-            file.write("memory = "+str(memory)+"\n")
-            file.write("memory = " + str(MemoryPerCPu) + "\n")
+            Tasks = form.cleaned_data['Tasks']
+            Executable = form.cleaned_data['ExecutableName']
+            file.write("#!/bin/bash \n\n")
+            file.write('##SBATCH Lines for Resource Request ##\n\n')
+
+            file.write("#SBATCH --time=" + str(Wall_time) + "\n")
+            file.write("#SBATCH --nodes=" + str(nodes) + "\n")
+            file.write("#SBATCH --tasks=" + str(Tasks) + "\n")
+            file.write("#SBATCH --mem-per-cpu=" + str(MemoryPerCPu) + "\n")
+            file.write("#SBATCH --job-name " + str(job_name) + "\n")
+            file.write("##Command Lines to Run ## \n\n")
+            file.write("cd "+str(script_path)+"\n")
+            file.write("srun -n 5 "+str(Executable)+"\n")
+
+            #file.write("CPUs = "+str(CPUs)+"\n")
+
+            #file.write("Job Name = "+str(job_name)+"\n")
+            #file.write("script path = "+str(script_path)+"\n")
+
+            #file.write("memory = "+str(memory)+"\n")
+            #file.write("memory = " + str(MemoryPerCPu) + "\n")
             #########
 
             ########

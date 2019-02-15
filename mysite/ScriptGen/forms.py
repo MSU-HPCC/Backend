@@ -6,11 +6,13 @@ class NameForm(forms.ModelForm):
         fields= [
             'Wall_time',
             'job_name',
-            'script_path',
+            'CodeDirectory',
             'nodes',
-            'memory',
+
             'CPUs',
-            'MemoryPerCPU'
+            'MemoryPerCPU',
+            'Tasks',
+            'ExecutableName'
         ]
     '''
     Wall_time = forms.CharField(label='Wall time', max_length=100)
