@@ -6,8 +6,8 @@
 #SBATCH --nodes=2
 #SBATCH --tasks=2
 #SBATCH --mem-per-cpu=1 Gb
-#SBATCH --job-name zach
+#SBATCH --job-name ML Task
 ##Command Lines to Run ## 
 
 cd /path/
-srun -n 5 Classifier.pyc
+srun -n 5 Classifier.py

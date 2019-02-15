@@ -21,12 +21,27 @@ def ScriptGen_create_view(request):
         'form':form
     }
     return render(request,'ScriptGen/form_create.html',context)'''
-    filename = "C:/Users/Zachary Roush.MIHIN-1720/PycharmProjects/DjangoApp/mysite/Bash.sh"
+    filename = os.getcwd()+ "\ScriptGen\Bash.sh"
+    file = open(filename, "rb")
+    response = HttpResponse(file.read())
+    response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.sh'
+
+    response['Content-Length'] = os.path.getsize(filename)
+
+    # return response
+
+
+    return response
+
+    '''
     wrapper = FileWrapper(open((filename),"r"))
     response = HttpResponse(wrapper, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
     response['Content-Length'] = os.path.getsize(filename)
-    return response
+    return response'''
+
+
+
 def get_name(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -37,7 +52,7 @@ def get_name(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            filename = os.getcwd()+ "\Bash.sh"
+            filename = os.getcwd()+ "\ScriptGen\Bash.sh"
             file = open(filename,"w")
             CPUs = form.cleaned_data['CPUs']
             Wall_time = form.cleaned_data['Wall_time']
@@ -58,7 +73,7 @@ def get_name(request):
             file.write("#SBATCH --job-name " + str(job_name) + "\n")
             file.write("##Command Lines to Run ## \n\n")
             file.write("cd "+str(script_path)+"\n")
-            file.write("srun -n 5 "+str(Executable)+"\n")
+            file.write("srun -n "+str(Tasks)+" "+str(Executable)+"\n")
 
             #file.write("CPUs = "+str(CPUs)+"\n")
 
@@ -85,12 +100,13 @@ def get_name(request):
 
            # response = HttpResponse(wrapper, content_type='text/plain')
             #response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
-            response['Content-Disposition'] = 'attachment; filename= Bash.sh'
+            response['Content-Disposition'] = 'attachment; filename= '+str(filename)
 
             response['Content-Length'] = os.path.getsize(filename)
 
             #return response
-            return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form})
+
+            return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form, 'filePath': filename})
             return response
 
     # if a GET (or any other method) we'll create a blank form
