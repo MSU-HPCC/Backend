@@ -1,6 +1,6 @@
 <!-- login.html -->
 
-{% extends "base.html" %}
+{% extends "../base.html" %}
 {% load staticfiles %}
 
 {% block content %}
@@ -26,7 +26,7 @@
 <div class='login'>
 
     <form class="form" method="post" action="." >{% csrf_token %}
-        <div class="vr">&nbsp;</div>
+
         {% if form.errors %}
         <p class='form-error'>Your username and password don't match. Please try again.</p>
 
@@ -39,7 +39,7 @@
             <a class='signup' onclick="window.location.href='/register/' ">Sign up</a>
             <a class='findpw' onclick="window.location.href='/register/' ">Forgot password?</a>
         </div>
-        <input type="hidden" name="next" value="/ScriptGen/get_name/" />
+        <input type="hidden" name="next" value="/home" />
     </form>
 
 </div>

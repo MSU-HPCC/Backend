@@ -1,16 +1,16 @@
-<!doctype html>
-<html>
-  <head>
+
+{% load staticfiles %}
+{% block head %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <title>HPCC JOB MONITOR</title>
-    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png'%}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-light_blue.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css '%}">
     <style>
     #view-source {
       position: fixed;
@@ -22,8 +22,8 @@
       z-index: 900;
     }
     </style>
-  </head>
-  <body>
+{% endblock %}
+{% block content %}
     <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
       <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
         <div class="mdl-layout__header-row">
@@ -50,7 +50,7 @@
       </header>
       <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
         <header class="demo-drawer-header">
-          <img src="images/michigan-state-1.png" class="demo-avatar">
+          <img src="{% static 'images/michigan-state-1.png'%}" class="demo-avatar">
           <div class="demo-avatar-dropdown">
             <span>hpcc_tester@msu.edu</span>
             <div class="mdl-layout-spacer"></div>
@@ -168,6 +168,6 @@
           </g>
         </defs>
       </svg>
+    </div>
        <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  </body>
-</html>
+{% endblock %}
