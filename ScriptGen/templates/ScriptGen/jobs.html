@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{urlUser}}'s Jobs</title>
+</head>
+<body>
+    {% csrf_token %}
+    <table>
+        <thead>{{ urlUser }}'s Jobs</thead>
+        <tbody>
+            {% for job in jobs %}
+               <tr>{{ job }}</tr><br/>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</body>
+</html>

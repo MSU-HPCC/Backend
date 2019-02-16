@@ -1,3 +1,9 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}"
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="{% static 'js/jquery-3.3.1.js' %}" type="text/javascript"/>
+<script src="{% static 'js/populate-script-gen-preview.js' %}" type="text/javascript"/>
+
 <form method="POST">
     {% csrf_token %}
     {% for field in form %}
@@ -9,3 +15,4 @@
     {% endfor %}
     <input type="submit" value="Submit">
 </form>
+<textarea name="name" rows="8" cols="80">This is placeholder text</textarea>
