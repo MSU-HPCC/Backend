@@ -4,18 +4,41 @@ header{
     text-align: center;
     border: 2px ridge gray;
 }
-div {
-  width: 320px;
-  padding: 10px;
-  border: 2px ridge gray;
-  margin: 0,auto,0,auto;
-}
-body{
 
-  padding: 20px;
+div {
+
+
+  width: 50%px;
+  padding: 10px;
+  border: 5px solid gray;
+  margin: 0;
+
   border: 2px ridge gray;
-  margin: auto,auto,auto,auto;
+
 }
+label {
+   width: 200px;
+   display: inline-block;
+   text-align: left;
+}
+div.content{
+
+    margin: auto;
+    border: none;
+    display: inline-block;
+}
+div.fieldWrapper{
+    width: 50%;
+    margin: auto;
+    display: inline-block;
+}
+div.download{
+    font-size: 5em;
+    width: auto;
+    text-align: center;
+    border: none;
+}
+
 footer{
     background-color: green;
     color: white;
