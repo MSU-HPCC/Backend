@@ -1,0 +1,47 @@
+<!-- login.html -->
+
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+
+    <!--
+    <form method="post" action=".">{% csrf_token %}
+        <table border="0">
+            <tr><th><label for="id_username">Username:</label></th><td>{{ form.username }}</td></tr>
+            <tr><th><label for="id_password">Password:</label></th><td>{{ form.password }}</td></tr>
+        </table>
+        <input type="submit" value="Login" />
+        <input type="hidden" name="next" value="/home" />
+    </form>
+    <a href="/register">Register</a>
+
+-->
+<div class='page'>
+<div class="logo">
+    <img src=" {% static 'css/111.jpg'%}" width="300px" height='300px' >
+</div>
+
+<div class='login'>
+
+    <form class="form" method="post" action="." >{% csrf_token %}
+        <div class="vr">&nbsp;</div>
+        {% if form.errors %}
+        <p class='form-error'>Your username and password don't match. Please try again.</p>
+
+        {% endif %}
+        <input type="text" placeholder="Username" name="username">
+        <input type="password" placeholder="Password" name="password">
+
+        <button type="submit" value="Login" id="login-button">LOGIN</button>
+        <div class='helperlink'>
+            <a class='signup' onclick="window.location.href='/register/' ">Sign up</a>
+            <a class='findpw' onclick="window.location.href='/register/' ">Forgot password?</a>
+        </div>
+        <input type="hidden" name="next" value="/ScriptGen/get_name/" />
+    </form>
+
+</div>
+</div>
+{% endblock %}
