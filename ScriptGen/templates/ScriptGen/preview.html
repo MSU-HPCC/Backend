@@ -6,14 +6,22 @@
 <style>
 
 </style>
+<header>
+    <h1>MSU HPCC</h1>
+
+    <p>Created for Capstone Spring 2019</p>
+</header>
+
+<div class = content>
 <form method="POST">
     {% csrf_token %}
     <div class="fieldWrapper">
     {% for field in form %}
 
         {{ field.errors }}
-        {{ field.label_tag }} <br/>
+        {{ field.label_tag }}
         {{ field }}
+        <br/>
 
     {% endfor %}
     </div>
@@ -26,3 +34,14 @@
 
     {% endfor %}
 </div>
+</div>
+
+<div class =download>
+<a href="/ScriptGen/create_form/"> Download Bash File </a>
+</div>
+</div>
+<footer>
+    <p>
+        Team members: Zach | Christian | Caleb | Matt | Zihan
+    </p>
+</footer>
