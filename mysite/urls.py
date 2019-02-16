@@ -29,11 +29,11 @@ urlpatterns = [
     path('ScriptGen/', include('ScriptGen.urls')),
 
     url(r'^admin/', admin.site.urls, name='admin'),
-    url(r'^$', auth_views.login, name='auth'),
+    url(r'^$', auth_views.LoginView, name='auth'),
     url(r'^home/$', views.index, name='home'),
     url(r'^register/$', register, name='register'),
     url(r'^register/success/$', register_success, name='register_success'),
-    url(r'^accounts/login/$', auth_views.LoginView, name='login'),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
     url(r'^logout/$', logout_page, name='logout'),
 
 
