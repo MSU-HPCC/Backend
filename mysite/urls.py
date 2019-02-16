@@ -24,13 +24,13 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', home, name='name'),
     path('polls/', include('polls.urls')),
     path('ScriptGen/', include('ScriptGen.urls')),
 
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^$', auth_views.login, name='auth'),
-    url(r'^home/$', home, name='home'),
+    url(r'^home/$', views.index, name='home'),
     url(r'^register/$', register, name='register'),
     url(r'^register/success/$', register_success, name='register_success'),
     url(r'^accounts/login/$', auth_views.login, name='login'),
