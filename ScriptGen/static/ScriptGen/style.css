@@ -1,19 +1,35 @@
+
+body{
+    width: auto ;
+    margin: auto;
+    display: block;
+    text-align center;
+}
 header{
+    font-family: Gotham;
+
     background-color: green;
     color: white;
     text-align: center;
     border: 2px ridge gray;
 }
-
+header h1{
+    font-family: 'Gotham SSm A', 'Gotham SSm B';
+    font-size: 4em;
+}
+header p{
+    font-family: 'Gotham SSm A', 'Gotham SSm B';
+    font-size: 1.5em;
+}
 div {
 
 
-  width: 50%px;
-  padding: 10px;
-  border: 5px solid gray;
+  width: 100%;
+
+
   margin: auto;
 
-  border: 2px ridge gray;
+
 
 }
 label {
@@ -22,15 +38,27 @@ label {
    text-align: left;
 }
 div.content{
-
+    text-align: center;
+    width 30em;
     margin: auto;
     border: none;
     display: inline-block;
+
 }
 div.fieldWrapper{
-    width: 50%;
-    margin: auto;
+    /*
+    text-align: center;
+    */
+    border: 2px ridge gray;
+    padding: 10px;
+    width: 30em;
+    margin: 10px;
     display: inline-block;
+
+}
+form POST{
+    display: inline-block;
+    font-size: 3em;
 }
 div.download{
     font-size: 5em;
