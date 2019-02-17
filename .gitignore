@@ -1,7 +1,26 @@
-venv
-*.pyc
-staticfiles
-.env
+# ignore byte compiled
+*/__pycache__*
+*/*.pyc
+
+#ignore environment specific database login credentials
+*dbcreds.py
+
+*.log
+Procfile*
+app.json
+requirements.txt
+runtime.txt
+*.DS_Store*
+
+
+#ignore database
 db.sqlite3
-/.sass-cache
-/.idea
+
+# ignore environment directories
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
