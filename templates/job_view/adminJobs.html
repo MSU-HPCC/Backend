@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ urlUser }}'s Jobs</title>
+    <script src="../../../static/js/jquery-3.3.1.js"></script>
+
+</head>
+
+<body>
+    {% csrf_token %}
+    <div class="">
+        <input id="user-field" type="text" placeholder="Enter userID"></input>
+        <input id="search-button" type="submit" name="search-by-user" value="Search"></input>
+    </div>
+    <div class="job-table">
+      <table>
+          <thead>{{ urlUser }}'s Jobs</thead>
+          <tbody>
+              {% for job in jobs %}
+                 <tr>{{ job }}</tr><br/>
+              {% endfor %}
+          </tbody>
+
+      </table>
+    </div>
+    <script type="text/javascript">
+      jQuery('#search-button').click( function() {
+        var user = jQuery('#user-field').val()
+        window.location.href = "/jobs/" + user
+        return false
+      })
+
+      jQuery('#user-field').on("keypress", function(e) {
+        if (e.which == 13) {
+          var user = jQuery('#user-field').val()
+          window.location.href = "/jobs/" + user
+          return false
+        }
+      })
+    </script>
+</body>
+</html>

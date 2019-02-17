@@ -122,26 +122,3 @@ def read_file(request):
     file_content = f.read()
     f.close()
     return HttpResponse(file_content, content_type="text/plain")
-
-def jobs(request, user):
-    import mysql.connector
-    cnx = mysql.connector.connect(user='root', password='theBreeze1!', host='127.0.0.1',
-                                 database='hpcc')
-
-    cursor = cnx.cursor()
-    query = "SELECT id_user, job_db_inx, job_name, cpus_req  FROM hpcc_job_table WHERE id_user='"+ user + "';"
-    cursor.execute(query)
-    result = "<html><body>"
-    #jobs =['one', 'five', 'ten']
-    jobs = []
-    for (userid, jobidx, jobname, cpusreq) in cursor:
-        jobObj = {'userid': userid,
-                  'jobidx': jobidx,
-                  'jobname': jobname,
-                  'cpusreq': cpusreq,
-                 }
-        jobs.append((userid, jobidx, jobname, cpusreq))
-
-    result += "</body></html>"
-    cnx.close()
-    return render(request, 'ScriptGen/jobs.html', {'jobs': jobs, 'urlUser': user})

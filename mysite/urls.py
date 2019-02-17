@@ -27,7 +27,7 @@ urlpatterns = [
     path('', home, name='name'),
     path('polls/', include('polls.urls')),
     path('ScriptGen/', include('ScriptGen.urls')),
-
+    path('jobs/', include('job_view.urls')),
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^$', auth_views.LoginView, name='auth'),
     url(r'^home/$', views.index, name='home'),
