@@ -1,7 +1,7 @@
 # Gitignore file contains a list of path patterns which should be excluded from
 # version Control
 # ignore byte compiled
-*/__pycache__/*
+*__pycache__*
 *.pyc
 
 #ignore environment specific database login credentials
