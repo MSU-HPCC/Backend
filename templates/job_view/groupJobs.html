@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "../base_templates/head.html" %}
+{% include "../base_templates/header.html" %}
+
+<body>
+    {% csrf_token %}
+    <div class="job-table">
+      <table>
+          <thead>{{ urlUser }}'s Jobs</thead><br/>
+          <tbody>
+              {% for job in jobs %}
+                 <tr>{{ job }}</tr><br/>
+              {% endfor %}
+          </tbody>
+
+      </table>
+    </div>
+    {% include "../base_templates/footer.html" %}
+    <script type="text/javascript">
+      jQuery('#search-button').click( function() {
+        var user = jQuery('#user-field').val()
+        window.location.href = "/job-view/" + user + "/jobs/"
+        return false
+      })
+    </script>
+</body>
+</html>

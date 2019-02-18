@@ -52,9 +52,11 @@ def adminJobs(request, user):
         cnx.close()
         return render(request, 'job_view/adminJobs.html', {'jobs': jobs, 'urlUser':user,})
     else:
-        return HttpResponse("Acess Denied for " + str(request.user.id))
+        return render(request, '../templates/error_pages/403.html')
+
 
 def groupJobs(request):
-    x = Admin_Stats_SQL.group_access("user01")
+    u = "user01"
+    x = Admin_Stats_SQL.group_access(u)
     y = x.group_jobs()
-    return HttpResponse(str(y))
+    return render(request, 'job_view/groupJobs.html', {'jobs': y, 'urlUser': u})
