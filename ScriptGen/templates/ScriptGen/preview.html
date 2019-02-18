@@ -1,16 +1,6 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}"
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="/js/jquery-3.3.1.js">
-
-<style>
-
-</style>
-<header>
-    <h1>MSU HPCC</h1>
-
-    <p>Created for Capstone Spring 2019</p>
-</header>
+{% include "../base_templates/head.html" %}
+{% include "../base_templates/header.html" %}
 
 <div class = content>
 <form method="POST">

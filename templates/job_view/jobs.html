@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{user}}'s Jobs</title>
-    <script src="../../../static/js/jquery-3.3.1.js"></script>
-
-</head>
+{% include "../base_templates/head.html" %}
+{% include "../base_templates/header.html" %}
 
 <body>
     {% csrf_token %}
@@ -20,6 +16,7 @@
 
       </table>
     </div>
+    {% include "../base_templates/footer.html" %}
     <script type="text/javascript">
       jQuery('#search-button').click( function() {
         var user = jQuery('#user-field').val()
