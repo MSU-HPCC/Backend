@@ -6,23 +6,23 @@
 <body>
     {% csrf_token %}
     <div class="job-table">
-      <table>
-          <thead>{{ user }}'s Jobs</thead><br/>
-          <tbody>
-              {% for job in jobs %}
-                 <tr>{{ job }}</tr><br/>
-              {% endfor %}
-          </tbody>
+        <h2>{{ user }}'s Jobs</h2>
+            <table>
+                <tr>
+                    {% for col in cols %}
+                    <td><strong>{{ col }}</strong></td>
+                    {% endfor %}
+                 </tr>
+                {% for job in jobs %}
+                <tr>
+                    {% for field in job %}
+                        <td>{{ field }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
 
-      </table>
+            </table>
     </div>
     {% include "../base_templates/footer.html" %}
-    <script type="text/javascript">
-      jQuery('#search-button').click( function() {
-        var user = jQuery('#user-field').val()
-        window.location.href = "/job-view/" + user + "/jobs/"
-        return false
-      })
-    </script>
 </body>
 </html>

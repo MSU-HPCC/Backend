@@ -26,7 +26,8 @@ def jobs(request):
 
     result += "</body></html>"
     cnx.close()
-    return render(request, 'job_view/jobs.html', {'jobs': jobs, 'user': request.user,})
+    cols = ['id_user', 'job_db_inx', 'job_name', 'cpus_req']
+    return render(request, 'job_view/jobs.html', {'jobs': jobs, 'user': request.user, 'cols': cols, })
 
 
 def adminJobs(request, user):
@@ -35,7 +36,7 @@ def adminJobs(request, user):
                                  database=dbcreds.db)
     if (request.user.id == 1):
         cursor = cnx.cursor()
-        query = "SELECT id_user, job_db_inx, job_name, cpus_req  FROM hpcc_job_table WHERE id_user='"+ user + "';"
+        query = "SELECT id_user, job_db_inx, job_name, cpus_req  FROM hpcc_job_table WHERE id_user='" + user + "';"
         cursor.execute(query)
         result = "<html><body>"
         #jobs =['one', 'five', 'ten']
@@ -46,11 +47,12 @@ def adminJobs(request, user):
                       'jobname': jobname,
                       'cpusreq': cpusreq,
                      }
-            jobs.append((userid, jobidx, jobname, cpusreq))
+            jobs.append([userid, jobidx, jobname, cpusreq])
 
         result += "</body></html>"
         cnx.close()
-        return render(request, 'job_view/adminJobs.html', {'jobs': jobs, 'urlUser':user,})
+        cols = ['id_user', 'job_db_inx', 'job_name', 'cpus_req']
+        return render(request, 'job_view/adminJobs.html', {'jobs': jobs, 'urlUser': user, 'cols': cols, })
     else:
         return render(request, '../templates/error_pages/403.html')
 

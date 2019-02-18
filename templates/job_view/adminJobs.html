@@ -10,15 +10,24 @@
         <input id="search-button" type="submit" name="search-by-user" value="Search"></input>
     </div>
     <div class="job-table">
-      <table>
-          <thead>{{ urlUser }}'s Jobs</thead>
-          <tbody>
-              {% for job in jobs %}
-                 <tr>{{ job }}</tr><br/>
-              {% endfor %}
-          </tbody>
+      <div class="job-table">
+        <h2>{{ user }}'s Jobs</h2>
+            <table>
+                <tr>
+                    {% for col in cols %}
+                    <td><strong>{{ col }}</strong></td>
+                    {% endfor %}
+                 </tr>
+                {% for job in jobs %}
+                <tr>
+                    {% for field in job %}
+                        <td>{{ field }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
 
-      </table>
+            </table>
+    </div>
     </div>
     <script type="text/javascript">
       jQuery('#search-button').click( function() {
