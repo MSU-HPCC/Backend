@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^register/success/$', register_success, name='register_success'),
     url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
     url(r'^logout/$', logout_page, name='logout'),
+    path('stats/', include('stats.urls'))
 
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
