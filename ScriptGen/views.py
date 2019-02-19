@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
 import os
+import io
 from wsgiref.util import FileWrapper
 def index(request):
     return HttpResponse("We are at the script generation page")
@@ -53,7 +54,7 @@ def get_name(request):
             # ...
             # redirect to a new URL:
             filename = os.getcwd()+ "\ScriptGen\Bash.sh"
-            file = open(filename,"w")
+            file = io.open(filename,"w",newline='\n')
             CPUs = form.cleaned_data['CPUs']
             Wall_time = form.cleaned_data['Wall_time']
             job_name = form.cleaned_data['job_name']
