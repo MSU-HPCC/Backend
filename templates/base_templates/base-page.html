@@ -1,0 +1,77 @@
+<!-- defined blocks which can be extended in child templates:
+    title               defines web page title (on tab)
+    additional-css      non-default css required for child template
+    additional-js       non-default js required for child template
+    header              header banner content
+      header-title      text to go inside header h1 tag
+    sidebar             sidebar content
+      nav-links         nav inside the sidebar.  Add links here
+    content             PLACE PAGE SPECIFIC CONTENT IN THIS BLOCK!!!!!
+    footer              footer banner content
+    inline-js           Additional javascript which must run at end of page
+-->
+
+{% load staticfiles %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}MSU HPCC{% endblock %}</title>
+    <!-- CSS WHICH SHOULD BE PRESENT ON ALL PAGES -->
+    <link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="{% static 'css/mattstyles.css' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png'%}">
+    {% block additional-css %} {% endblock %}
+    <!-- JS WHICH SHOULD BE PRESENT ON ALL PAGES -->
+    <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+    {% block additional-js %} {% endblock %}
+</head>
+
+<body>
+  {% csrf_token %}
+    <div class="header">
+        {% block header %}
+        <header>
+            <h1>{% block header-title %}MSU HPCC{% endblock %}</h1>
+
+            <p>Created for Capstone Spring 2019</p>
+        </header>
+        {% endblock %}
+    </div>
+    <div id="sidebar">
+        {% block sidebar %}
+        <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+
+          <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+            {% block nav-links %}
+              <a class="mdl-navigation__link" href="/jobs">Single</a>
+              <a class="mdl-navigation__link" href="/jobs/group">Group</a>
+              <a class="mdl-navigation__link" href="/stats">Statistics</a>
+              <a class="mdl-navigation__link" href="/ScriptGen/get_name/">Script Generation</a>
+
+              <div class="mdl-layout-spacer"></div>
+              <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
+            {% endblock %}
+          </nav>
+        </div>
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div class="footer">
+      {% block footer %}
+        <footer>
+            <p>
+                Team members: Zach | Christian | Caleb | Matt | Zhihan
+            </p>
+        </footer>
+      {% endblock %}
+    </div>
+
+    {% block inline-js %}{% endblock %}
+</body>
+</html>

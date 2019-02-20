@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-{% include "../base_templates/head.html" %}
-{% include "../base_templates/header.html" %}
-
-<body>
-    {% csrf_token %}
+{% extends "../base_templates/base-page.html" %}
+{% load static %}
+{% block title %} Admin Job View {% endblock %}
+{% block content %}
     <div class="">
         <input id="user-field" type="text" placeholder="Enter userID"></input>
         <input id="search-button" type="submit" name="search-by-user" value="Search"></input>
@@ -27,8 +24,10 @@
                 {% endfor %}
 
             </table>
+      </div>
     </div>
-    </div>
+{% endblock %}
+{% block inline-js %}
     <script type="text/javascript">
       jQuery('#search-button').click( function() {
         var user = jQuery('#user-field').val()
@@ -44,5 +43,4 @@
         }
       })
     </script>
-</body>
-</html>
+{% endblock %}

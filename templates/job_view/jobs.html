@@ -1,28 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-{% include "../base_templates/head.html" %}
-{% include "../base_templates/header.html" %}
+{% extends "../base_templates/base-page.html" %}
+{% block title %} Your Jobs {% endblock %}
+{% load static %}
+{% block content %}
 
-<body>
-    {% csrf_token %}
-    <div class="job-table">
-        <h2>{{ user }}'s Jobs</h2>
-            <table>
-                <tr>
-                    {% for col in cols %}
-                    <td><strong>{{ col }}</strong></td>
-                    {% endfor %}
-                 </tr>
-                {% for job in jobs %}
-                <tr>
-                    {% for field in job %}
-                        <td>{{ field }}</td>
-                    {% endfor %}
-                </tr>
+<div class="job-table">
+    <h2>{{ user }}'s Jobs</h2>
+        <table>
+            <tr>
+                {% for col in cols %}
+                <td><strong>{{ col }}</strong></td>
                 {% endfor %}
+             </tr>
+            {% for job in jobs %}
+            <tr>
+                {% for field in job %}
+                    <td>{{ field }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
 
-            </table>
-    </div>
-    {% include "../base_templates/footer.html" %}
-</body>
-</html>
+        </table>
+</div>
+{% endblock %}

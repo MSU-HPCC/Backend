@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-{% include "../base_templates/head.html" %}
-{% include "../base_templates/header.html" %}
-
-  <body>
-    <h3>Number of Jobs per user</h3>
-    {{ graph|safe}}
-    {% include "../base_templates/footer.html" %}
-  </body>
-</html>
+{% extends "../base_templates/base-page.html" %}
+{% block title %} Statistics {% endblock %}
+{% block content %}
+<h3>Number of Jobs per user</h3>
+{{ graph|safe}}
+{% endblock %}

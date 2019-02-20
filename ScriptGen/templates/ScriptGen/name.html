@@ -1,6 +1,7 @@
+{% extends "../base_templates/base-page.html" %}
+{% block title %} Script Generator {% endblock %}
 {% load static %}
-{% include "../base_templates/head.html" %}
-{% include "../base_templates/header.html" %}
+{% block content %}
 <br>
 <form method="POST">
     {% csrf_token %}
@@ -16,8 +17,4 @@
 </form>
 <textarea name="name" rows="8" cols="80">Job Comments</textarea>
 <br>
-<footer>
-    <p>
-        Team members: Zach | Christian | Caleb | Matt | Zihan
-    </p>
-</footer>
+{% endblock %}
