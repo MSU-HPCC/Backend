@@ -41,4 +41,3 @@ def index(request):
     cnx.close()
     g = mpld3.fig_to_html(fig)
     return render(request, 'stats/graphic.html', {'graph':g})
-    #return HttpResponse(g)
