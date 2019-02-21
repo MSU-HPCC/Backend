@@ -1,0 +1,7 @@
+django
+mysql-connector-python
+matplotlib
+mpld3
+jinja2
+dj-database-url
+cython
