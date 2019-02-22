@@ -61,5 +61,6 @@ def groupJobs(request):
     u = "user01"
     x = Admin_Stats_SQL.group_access(u)
     y = x.group_jobs()
+
     cols = ['job_db_inx', 'mod_time', 'job_name', 'id_job', 'id_user', 'id_group', 'kill_requid', 'mem_req', 'nodelist', 'nodes_alloc', 'node_inx', 'state', 'timelimit', 'time_submit', 'time_eligible', 'time_start', 'time_end', 'time_suspended', 'work_dir']
     return render(request, 'job_view/groupJobs.html', {'jobs': y, 'urlUser': u, 'cols': cols, })
