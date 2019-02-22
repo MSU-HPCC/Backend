@@ -18,14 +18,18 @@
 <html lang="en">
 <head>
     <title>{% block title %}MSU HPCC{% endblock %}</title>
-    <!-- CSS WHICH SHOULD BE PRESENT ON ALL PAGES -->
+    <!-- CSS WHICH SHOULD BE PRESENT ON ALL PAGES
     <link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="{% static 'css/mattstyles.css' %}">
+    -->
     <link rel="shortcut icon" href="{% static 'images/favicon.png'%}">
+    <link rel="stylesheet" href="{% static 'foundation/css/foundation.css' %}">
+    <link rel="stylesheet" href="{% static 'foundation/css/app.css' %}">
     {% block additional-css %} {% endblock %}
     <!-- JS WHICH SHOULD BE PRESENT ON ALL PAGES -->
     <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+
     {% block additional-js %} {% endblock %}
 </head>
 
@@ -73,5 +77,9 @@
     </div>
 
     {% block inline-js %}{% endblock %}
+    <script src="{% static 'foundation/js/vendor/jquery.js' %}"></script>
+    <script src="{% static 'foundation/js/vendor/what-input.js' %}"></script>
+    <script src="{% static 'foundation/js/vendor/foundation.js' %}"></script>
+    <script src="{% static 'foundation/js/app.js' %}"></script>
 </body>
 </html>

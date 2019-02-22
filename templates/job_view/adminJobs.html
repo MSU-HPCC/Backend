@@ -3,29 +3,48 @@
 {% block title %} Admin Job View {% endblock %}
 {% block content %}
     <div class="">
-        <input id="user-field" type="text" placeholder="Enter userID"></input>
-        <input id="search-button" type="submit" name="search-by-user" value="Search"></input>
-    </div>
-    <div class="job-table">
+        <div class="grid-x">
+            <input id="user-field" class="cell small-8 large-8" type="text" placeholder="Enter userID"></input>
+            <div class="cell small-2 large-2"></div>
+            <a id="search-button" class="button cell small-2 large-2" href="#">Search</a>
+        </div>
+        <div class="grid-x">
+            <ul class="dropdown menu" data-dropdown-menu>
+              <li class="cell small-3 medium-3 large-3">
+                <a href="#">Filter Columns</a>
+                <ul class="menu">
+                  {% for col,idx in cols %}
+                    <div class="grid-x">
+                        <label class="cell large-11 medium-11 small-11" for="checkbox1">{{ col }}</label>
+                        <input class="cell large-1 medium-1 small-1" data-col="{{col}}" type="checkbox" checked="true">
+                    </div>
+                  {% endfor %}
+                </ul>
+              </li>
+              <li class="cell small-3 medium-3 large-3"><a id="filter-button" class="button" href="#">Filter</a></li>
+              <li class="cell small-3 medium-3 large-3"><a href="#">Item 3</a></li>
+              <li class="cell small-3 medium-3 large-3"><a href="#">Item 4</a></li>
+            </ul>
+        </div>
+
       <div class="job-table">
         <h2>{{ user }}'s Jobs</h2>
             <table>
                 <tr>
-                    {% for col in cols %}
-                    <td><strong>{{ col }}</strong></td>
+                    {% for col,idx in cols %}
+                    <td class="col-header"><strong>{{ col }}</strong></td>
                     {% endfor %}
                  </tr>
                 {% for job in jobs %}
-                <tr>
+                <tr class="job-row">
                     {% for field in job %}
-                        <td>{{ field }}</td>
+                        <td class="field-data">{{ field }}</td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
 
             </table>
       </div>
-    </div>
 {% endblock %}
 {% block inline-js %}
     <script type="text/javascript">
@@ -41,6 +60,43 @@
           window.location.href = "/jobs/" + user
           return false
         }
+      })
+
+      jQuery('.col-header').click( function() {
+        console.log("Need to redirect to page with other sort....")
+        return false
+      })
+
+      jQuery('#filter-button').click( function() {
+          selected_cols = []
+          col_checkboxes = jQuery('[data-col]')
+          for (i=0; i < col_checkboxes.length; i++) {
+            if (col_checkboxes[i].checked) {
+                selected_cols.push(i)
+            }
+
+          }
+          console.log(selected_cols)
+
+          headings = jQuery('.col-header')
+          for (i=0; i < headings.length;i++) {
+            for (j=0; j < selected_cols.length; j++) {
+                if (headings[i].innerText == col_checkboxes[selected_cols[j]].dataset.col) {
+                  console.log(headings[i].innerText)
+                }
+            }
+
+          }
+      })
+
+
+      jQuery('#col-checkbox-0').change(function() {
+        if (this.checked) {
+            console.log('checked')
+        } else {
+            console.log('unchecked')
+        }
+
       })
     </script>
 {% endblock %}
