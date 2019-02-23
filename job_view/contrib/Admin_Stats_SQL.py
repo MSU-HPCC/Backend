@@ -94,13 +94,8 @@ class group_access(user_access):
             return self.my_jobs()
         else:
             if user_list == []: #Default to all users
-<<<<<<< HEAD
-
                 self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submit < 21*86400;")
-=======
                 print("****************")
-                self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table;")
->>>>>>> 8010e6fdb4fd93b031051dbe2944ed8b4ca4f919
                 row = self.cursor.fetchone()
                 print(row)
                 while row != None:
