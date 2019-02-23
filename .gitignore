@@ -30,3 +30,5 @@ env.bak/
 venv.bak/
 
 *.idea
+
+*hpcccreds.py
