@@ -2,9 +2,9 @@ from django.shortcuts import render
 from . import dbcreds
 from django.http import HttpResponse
 from .contrib import Admin_Stats_SQL
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
-
+@login_required
 def jobs(request):
     import mysql.connector
     cnx = mysql.connector.connect(user=dbcreds.user, password=dbcreds.pwd, host=dbcreds.host,
@@ -64,11 +64,12 @@ def adminJobs(request, user):
     else:
         return render(request, '../templates/error_pages/403.html')
 
-
+@login_required
 def groupJobs(request):
     u = "user05"
     x = Admin_Stats_SQL.group_access(u)
     y = x.group_jobs()
+
     cols = ['job_db_inx', 'mod_time', 'job_name', 'id_job', 'id_user', 'id_group', 'kill_requid', 'mem_req', 'nodelist', 'nodes_alloc', 'node_inx', 'state', 'timelimit', 'time_submit', 'time_eligible', 'time_start', 'time_end', 'time_suspended', 'work_dir']
     itr = 0
     for col in cols:
