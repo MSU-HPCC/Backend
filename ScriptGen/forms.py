@@ -6,7 +6,7 @@ class NameForm(forms.ModelForm):
         fields= [
             'Wall_time',
             'job_name',
-            'CodeDirectory',
+            #'CodeDirectory',
             'nodes',
 
             'CPUs',

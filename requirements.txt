@@ -5,3 +5,5 @@ mpld3
 jinja2
 dj-database-url
 cython
+pycrypto
+paramiko
