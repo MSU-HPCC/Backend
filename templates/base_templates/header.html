@@ -1,6 +1,38 @@
+{% load staticfiles %}
 <header>
-    <h1>MSU HPCC</h1>
+    <div class="container">
+
+    <div class="row" >
+        <div class="col-sm-4 ">
+                     <img src="{% static 'images/head.png' %}"  height="130" width="130" style="margin-top: 10px"></img>
+        </div>
+
+        <div class="col-sm-5">
+            <h1>MSU HPCC</h1>
 
     <p>Created for Capstone Spring 2019</p>
-    {% include "../base_templates/sidebar.html" %}
+        </div>
+        <div class="col-sm-1 col-sm-offset-2 pull-right">
+<div class="pull-right" style="margin-left: 60px;margin-top: 80px ">
+ <div class="mdl-layout__header-row">
+
+          <div class="mdl-layout-spacer"></div>
+
+          <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+            <li class="mdl-menu__item">About</li>
+            <li class="mdl-menu__item">Contact</li>
+            <li class="mdl-menu__item">Legal information</li>
+          </ul>
+        </div>
+</div>
+        </div>
+    </div>
+</div>
+
+
+
 </header>
+

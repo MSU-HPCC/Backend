@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 from django.http import HttpResponse
 import os
@@ -41,7 +41,7 @@ def ScriptGen_create_view(request):
     return response'''
 
 
-
+@login_required
 def get_name(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':

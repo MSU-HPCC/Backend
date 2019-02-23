@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 <html lang="en">
+
 {% include "../base_templates/head.html" %}
 {% include "../base_templates/header.html" %}
 
@@ -23,9 +24,20 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
 <ul class="nav sidebar-nav">
 <li class="sidebar-brand">
+<div class="demo-avatar-dropdown" style="color: white">
 <a href="#">
   <span>{{user}}@msu.edu</span>
 </a>
+            <div class="mdl-layout-spacer"></div>
+            <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+              <i class="material-icons" role="presentation">arrow_drop_down</i>
+              <span class="visuallyhidden">Accounts</span>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+              <li class="mdl-menu__item"><a href="#">setting</a></li>
+                <li class="mdl-menu__item"><a href="/logout">logout</a></li>
+            </ul>
+        </div>
 </li>
 <li>
 <a href="/home"><i class="fa fa-fw fa-home"></i> Home</a>
@@ -43,7 +55,14 @@
 <li>
 <a href="/ScriptGen/get_name/"><i class="fa fa-fw fa-bank"></i>Script Generation</a>
 </li>
+    <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li> <li><a></a></li>
 
+<li>
+    <li> <h4>Contact us</h4></li>
+    <li><a>Phone: (517) 353-9309</a></li>
+    <li><a>Email: wangzh61@msu.edu</a></li>
+    <li><a>Adress: Michigan State University</a></li>
+</li>
 </ul>
 </nav>
 
@@ -82,6 +101,7 @@
 </div>
 </div>
 </div>
+ {% include "../base_templates/footer.html" %}
 </div>
 
 </div>
@@ -120,7 +140,7 @@
 	</script>
 
 
-    {% include "../base_templates/footer.html" %}
+
 </body>
 </html>
 
