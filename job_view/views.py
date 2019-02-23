@@ -27,6 +27,10 @@ def jobs(request):
     result += "</body></html>"
     cnx.close()
     cols = ['id_user', 'job_db_inx', 'job_name', 'cpus_req']
+    itr = 0
+    for col in cols:
+        cols[itr] = (col, itr)
+        itr += 1
     return render(request, 'job_view/jobs.html', {'jobs': jobs, 'user': request.user, 'cols': cols, })
 
 
