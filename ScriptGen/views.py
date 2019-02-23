@@ -4,19 +4,16 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import os
 import io
-import easygui
+
 from . import hpcccreds
 
 import paramiko
-import sys
-import os
-import time
-from wsgiref.util import FileWrapper
 
-from tkinter import filedialog
-from tkinter import *
-import tkinter as tk
-from tkinter import filedialog
+import os
+
+
+
+
 from django.core.files.storage import FileSystemStorage
 def index(request):
     return HttpResponse("We are at the script generation page")

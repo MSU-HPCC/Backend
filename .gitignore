@@ -10,7 +10,6 @@
 *.log
 Procfile*
 app.json
-requirements.txt
 runtime.txt
 *.DS_Store*
 
