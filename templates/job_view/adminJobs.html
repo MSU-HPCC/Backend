@@ -3,37 +3,37 @@
 {% block title %} Admin Job View {% endblock %}
 {% block content %}
   <div class="grid-x">
-      <input id="user-field" class="cell small-8 large-8" type="text" placeholder="Search Query"></input>
-      <div class="cell small-2 large-2">
+      <div class="cell small-2 large-2" style="margin: 0">
           <select id="search-selection">
             {% for col,idx in cols %}
               <option value="{{idx}}">{{col}}</option>
             {% endfor %}
           </select>
       </div>
+      <input id="user-field" class="cell small-8 large-8" type="text" placeholder="Search Query"></input>
       <a id="search-button" class="button cell small-2 large-2" href="#">Search</a>
   </div>
 
-  <ul class="dropdown menu grid-x" data-dropdown-menu>
+  <ul class="dropdown menu grid-x" data-dropdown-menu  style="margin-top: 10px;">
     <li class="cell small-3 medium-3 large-3">
       <a href="#">Filter Columns</a>
       <ul class="menu">
         {% for col,idx in cols %}
           <div class="grid-x">
-              <label class="cell large-11 medium-11 small-11" for="checkbox1">{{ col }}</label>
-              <input class="cell large-1 medium-1 small-1" data-col-checkbox="{{col}}" type="checkbox" checked="true">
+            <label class="cell large-11 medium-11 small-11" for="{{col}}-checkbox">{{ col }}</label>
+            <input id ="{{col}}-checkbox" class="cell large-1 medium-1 small-1" data-col-checkbox="{{col}}" type="checkbox" checked="true">
           </div>
         {% endfor %}
       </ul>
     </li>
-    <li class="cell small-3 medium-3 large-3"><a id="filter-button" class="button" href="#">Filter</a></li>
+    <li class="cell small-3 medium-3 large-3" style="margin: 0 40px;"><a id="filter-button" class="button" href="#">Filter</a></li>
     <li class="cell small-3 medium-3 large-3"><a id="reset-button" class="button" href="#">Reset All</a></li>
     <li class="cell small-3 medium-3 large-3" hidden="true"><a href="#">Item 4</a></li>
   </ul>
 
 <h2>Jobs</h2>
-  <div class="table-wrapper-scroll-y">
-        <table class="job-table">
+<div class="table-wrapper-scroll-y job-table-container">
+  <table id="job-table" class="job-table" style="margin-bottom:100px;">
             <tr>
                 {% for col,idx in cols %}
                 <td class="col-header" data-col-header="{{col}}"><strong>{{ col }}</strong></td>

@@ -113,6 +113,3 @@ def JobFailure(request):
     cursor.close()
     g = mpld3.fig_to_html(fig)
     return render(request, 'stats/graphic.html', {'graph': g})
-
-
-
