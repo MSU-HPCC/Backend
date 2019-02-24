@@ -31,3 +31,7 @@ venv.bak/
 *.idea
 
 *hpcccreds.py
+*.qsub
+
+# ignore uploads directory
+uploads/*

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import os
 # Create your views here.
 from django.http import HttpResponse
 import matplotlib.pyplot as plt, mpld3
@@ -117,10 +117,15 @@ def JobFailure(request):
     cursor.close()
     g = mpld3.fig_to_html(fig)
     '''
+
     return render(request, 'stats/FailedJobs.html')
 
 def MajorUsers(request):
-    return render(request, 'stats/MajorUserJobs.html')
+    path = STATIC_ROOT = os.path.join(os.getcwd(), 'static\\images\\user-jobs-submitted.png')
+    #pngPath = image_data = open(path, "rb").read()
+
+    return render(request, 'stats/MajorUserJobs.html',{'graph': path})
+
 
 
 

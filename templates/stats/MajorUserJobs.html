@@ -1,8 +1,56 @@
+
+
+
+
+
+
+
+
+
+
+
+
 {% extends "../base_templates/base-page.html" %}
 {% block title %} Statistics {% endblock %}
 {% block content %}
 {% load static %}
-{% load staticfiles %}
 <h3>HPCC Statistics</h3>
- <img src= "{% static 'images/user-jobs-submitted.png' %}" />
+
+<div style="width: 100%;">
+    <div class="tab button" index="0" style="display: inline-block;width: 15%"><a href="/stats/jobStats">Job Submissions 2018</a></div>
+    <div class="tab button" index="1" style="display: inline-block;width: 15%"><a href="/stats/FailStats">Failed Jobs Breakdown</a></div>
+    <div class="tab button" index="2" style="display: inline-block;width: 15%"><a href="/stats/MajorUsers">Top Job Submitters</a></div>
+    <div class="tab" index="3" style="display: inline-block;width: 15%" hidden="true"><a>link4</a></div>
+    <div class="tab" index="4" style="display: inline-block;width: 15%" hidden="true"><a>link5</a></div>
+</div>
+<div class="first">
+<img src= "{% static 'images/user-jobs-submitted.png' %}" />
+
+</div>
+
+{% endblock %}
+{% block inline-js %}
+    <script>
+        $('.other').hide();
+        $('.tab').click(function(){
+            var index = parseInt($(this).attr('index'), 10);
+           if(index == 0) {
+               $('.first').show();
+               $('.other').hide();
+           } else {
+               $('.first').hide();
+               var img = '';
+               switch (index) {
+                   //case 1:img="http://pic17.nipic.com/20111021/8633866_210108284151_2.jpg";break;
+                   case 1:img="/static/images/1.jpg";break;
+                   case 2:img="http://pic.58pic.com/58pic/14/97/48/37U58PICMs4_1024.jpg";break;
+                   case 3:img="http://img4.imgtn.bdimg.com/it/u=876244199,61497926&fm=214&gp=0.jpg";break;
+                   case 4:img="http://www.pptbz.com/pptpic/UploadFiles_6909/201203/2012031220134655.jpg";break;
+               }
+                console.log(img);
+               $('.other').attr('src',img);
+               $('.other').show();
+           }
+        });
+    </script>
 {% endblock %}
