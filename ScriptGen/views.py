@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 from django.http import HttpResponse
 import os
@@ -50,6 +50,7 @@ def ScriptGen_create_view(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
     response['Content-Length'] = os.path.getsize(filename)
     return response'''
+
 
 def downloadFile(request):
     context = {}
@@ -201,6 +202,3 @@ def SubmitJob(bashpath, script, filename):
     sftp.close()
     client.close()
     ssh.close()
-
-
-

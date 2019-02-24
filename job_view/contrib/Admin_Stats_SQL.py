@@ -49,7 +49,7 @@ class user_access():
 
         user_id = self.offset + self.cursor.fetchone()[0]
 
-        self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE id_user = %(id)s AND (UNIX_TIMESTAMP()-time_submit) < 7*86400;",{'id':user_id})
+        self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE id_user = %(id)s AND (UNIX_TIMESTAMP()-time_submit) < 21*86400;",{'id':user_id})
         row = self.cursor.fetchone()
         temp_table = []
         while row != None:
@@ -68,11 +68,11 @@ class user_access():
 
         id_user = self.offset + self.cursor.fetchone()[0]
 
-        self.cursor.execute("SELECT count(job_name) FROM hpcc.hpcc_job_table WHERE id_user = %(id)s and UNIX_TIMESTAMP()-time_end < (7*86400)",{'id':id_user})
+        self.cursor.execute("SELECT count(job_name) FROM hpcc.hpcc_job_table WHERE id_user = %(id)s and UNIX_TIMESTAMP()-time_end < (21*86400)",{'id':id_user})
         total = self.cursor.fetchone()[0]
-        self.cursor.execute("SELECT count(job_name) FROM hpcc.hpcc_job_table WHERE id_user = %(id)s and (UNIX_TIMESTAMP()-time_end)<(7*86400) and exit_code = 0;",{'id':id_user})
+        self.cursor.execute("SELECT count(job_name) FROM hpcc.hpcc_job_table WHERE id_user = %(id)s and (UNIX_TIMESTAMP()-time_end)<(21*86400) and exit_code = 0;",{'id':id_user})
         tot_comp = self.cursor.fetchone()[0]
-        self.cursor.execute("SELECT count(job_name) FROM hpcc.hpcc_job_table WHERE id_user = %(id)s and (UNIX_TIMESTAMP()-time_end)<(7*86400) and exit_code != 0",{'id':id_user})
+        self.cursor.execute("SELECT count(job_name) FROM hpcc.hpcc_job_table WHERE id_user = %(id)s and (UNIX_TIMESTAMP()-time_end)<(21*86400) and exit_code != 0",{'id':id_user})
         tot_error = self.cursor.fetchone()[0]
         self.cursor.execute("SELECT count(job_name) FROM hpcc.hpcc_job_table WHERE id_user = %(id)s and time_end = 0;",{'id':id_user})
         tot_run = self.cursor.fetchone()[0]
@@ -90,12 +90,14 @@ class group_access(user_access):
         temp_list = []
         self.job_table = []
         if self.group_id == None: #Check User is in a Group
+            print("----------")
             return self.my_jobs()
         else:
             if user_list == []: #Default to all users
-
-                self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submit < 7*86400;")
+                self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submit < 21*86400;")
+                print("****************")
                 row = self.cursor.fetchone()
+                print(row)
                 while row != None:
                     if row[4]-self.offset in self.group_table:
                         temp_list.append(row)
@@ -104,12 +106,15 @@ class group_access(user_access):
                     row = self.cursor.fetchone()
                 self.job_table = temp_list
             else:
+                print(user_list)
                 for i in user_list: #Search Specified User List
                     self.cursor.execute("SELECT id_assoc FROM hpcc.hpcc_assoc_table where user = %s;",i)
                     temp = self.cursor.fetchone()
+                    print(temp)
                     temp_list.append(self.__user_jobs(temp+self.offset))
                 for i in temp_list: #Filter for users in group
                     if i[4] == self.group_table:
+                        print(i)
                         self.job_table.append(i)
                     else:
                         print("User ID: ", i[21], " is not part of your Research Group.")
@@ -149,7 +154,7 @@ class admin_access(group_access):
     def view_jobs(self, user_list = []):
         self.job_table = []
         if user_list == []: #Default to all users
-            self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submit < 7*86400;")
+            self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submi2 < 21*86400;")
             row = self.cursor.fetchone()
             while row != None:
                 self.job_table.append(row)
