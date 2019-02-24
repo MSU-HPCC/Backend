@@ -76,7 +76,8 @@ def get_name(request):
             name = fs.save(uploaded_file.name, uploaded_file)
             filename = uploaded_file.name
             bashFile = uploaded_file.name.split(".")[0] + '.qsub'
-            bashpath = os.getcwd() + r"\ScriptGen\\" + bashFile
+            #bashpath = os.getcwd() + r'\ScriptGen" + bashFile
+            bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.qsub")
             script = fs.path(name)
             # submit a job
             SubmitJob(bashpath, script, filename)
