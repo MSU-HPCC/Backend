@@ -30,27 +30,5 @@
 
 {% endblock %}
 {% block inline-js %}
-    <script>
-        $('.other').hide();
-        $('.tab').click(function(){
-            var index = parseInt($(this).attr('index'), 10);
-           if(index == 0) {
-               $('.first').show();
-               $('.other').hide();
-           } else {
-               $('.first').hide();
-               var img = '';
-               switch (index) {
-                   //case 1:img="http://pic17.nipic.com/20111021/8633866_210108284151_2.jpg";break;
-                   case 1:img="/static/images/1.jpg";break;
-                   case 2:img="http://pic.58pic.com/58pic/14/97/48/37U58PICMs4_1024.jpg";break;
-                   case 3:img="http://img4.imgtn.bdimg.com/it/u=876244199,61497926&fm=214&gp=0.jpg";break;
-                   case 4:img="http://www.pptbz.com/pptpic/UploadFiles_6909/201203/2012031220134655.jpg";break;
-               }
-                console.log(img);
-               $('.other').attr('src',img);
-               $('.other').show();
-           }
-        });
-    </script>
+
 {% endblock %}
