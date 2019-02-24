@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 class ScriptGenInfo(models.Model):
     Wall_time = models.CharField( max_length=100)
     job_name = models.CharField( max_length=100)
-    CodeDirectory = models.CharField( max_length=100)
+    #CodeDirectory = models.CharField( max_length=100)
 
     nodes = models.IntegerField( validators=[MinValueValidator(0)])
     #memory = models.CharField( max_length=100)

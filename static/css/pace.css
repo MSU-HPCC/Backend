@@ -7,9 +7,7 @@ body{
 }
 header{
     font-family: Gotham;
-
-    background: -webkit-radial-gradient( white, #18453b  );
-	background: radial-gradient( white,#18453b  );
+     background-color:  #18453b;
     color: white;
     text-align: center;
     border: 2px ridge gray;
@@ -69,8 +67,7 @@ div.download{
 }
 
 footer{
-   background: -webkit-radial-gradient( white, #18453b  );
-	background: radial-gradient( white,#18453b  );
+   background-color:  #18453b;
     color: white;
     text-align: center;
     border: 2px ridge gray;

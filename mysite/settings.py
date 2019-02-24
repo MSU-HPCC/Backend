@@ -109,10 +109,12 @@ STATICFILES_DIRS = (
     ('css', os.path.join(STATIC_ROOT, 'css')),
     ('js', os.path.join(STATIC_ROOT, 'js')),
     ('images', os.path.join(STATIC_ROOT, 'images')),
+    ('foundation', os.path.join(STATIC_ROOT, 'foundation')),
 )
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
-
+MEDIA_ROOT = os.path.join(BASE_DIR,'uploads')
+MEDIA_URL = '/uploads/'
 # Application definition

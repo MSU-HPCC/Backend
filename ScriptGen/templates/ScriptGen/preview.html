@@ -1,8 +1,8 @@
 {% extends "../base_templates/base-page.html" %}
 {% block title %} Script Generator {% endblock %}
 {% load static %}
-{% block content %}
 
+{% block content %}
 <div class = content>
 <form method="POST">
     {% csrf_token %}
@@ -29,6 +29,12 @@
 </div>
 
 <div class =download>
-<a href="/ScriptGen/create_form/"> Download Bash File </a>
+<a class="button" href="/ScriptGen/create_form/"> Download Bash File </a>
 </div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="document">
+    <button class="button" type="submit">Submit Job</button>
+</form>
 {% endblock %}
