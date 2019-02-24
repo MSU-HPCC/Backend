@@ -70,15 +70,16 @@ def get_name(request):
         if request.FILES:
             #script_path = form.cleaned_data['CodeDirectory']
             uploaded_file = request.FILES['document']
-            print(uploaded_file.name)
+
             fs = FileSystemStorage()
             name = fs.save(uploaded_file.name, uploaded_file)
             filename = uploaded_file.name
             bashFile = uploaded_file.name.split(".")[0] + '.qsub'
             bashpath = os.getcwd() + r"\ScriptGen\\" + bashFile
             script = fs.path(name)
-
+            # submit a job
             SubmitJob(bashpath, script, filename)
+
 
 
         # create a form instance and populate it with data from the request:
@@ -98,7 +99,8 @@ def get_name(request):
             MemoryPerCPu = form.cleaned_data['MemoryPerCPU']
             Tasks = form.cleaned_data['Tasks']
             Executable = form.cleaned_data['ExecutableName']
-            filename = os.getcwd() + r"\ScriptGen\\"+ Executable.split(".")[0]+".qsub"
+            #filename = os.getcwd() + r"\ScriptGen\\"+ Executable.split(".")[0]+".qsub"
+            filename = os.getcwd() + r"\ScriptGen\Bash.qsub"
             file = io.open(filename, "w", newline='\n')
 
 
@@ -115,6 +117,8 @@ def get_name(request):
             file.write("##Command Lines to Run ## \n\n")
             #file.write("cd "+str(script_path)+"\n")
             #file.write("srun -n "+str(Tasks)+" "+str(Executable)+"\n")
+
+            #add compilation and execution logic
             if Executable.endswith(".py"):
 
                 file.write("python ./"+str(Executable)+"\n")
@@ -157,7 +161,7 @@ def get_name(request):
 
 
 
-
+#code to actually submit a job to hpcc
 def SubmitJob(bashpath, script, filename):
 
     nbytes = 4096
@@ -173,7 +177,7 @@ def SubmitJob(bashpath, script, filename):
     client.connect(username=username, password=password)
     sftp = paramiko.SFTPClient.from_transport(client)
     ######## getting working script
-
+    stdin, stdout, stderr = ssh.exec_command("mkdir -p Submissions")
     qsubName = filename.split('.')[0]+'.qsub'
 
     #################################
@@ -186,14 +190,14 @@ def SubmitJob(bashpath, script, filename):
     localpath = script
     filepath = 'Submissions/'+ filename
     sftp.put(script, filepath)
-    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; cd Submissions; pwd; qsub '+qsubName +'; sq ')
+    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; mkdir -p Submissions; cd Submissions; pwd; qsub '+qsubName +'; sq ')
     outlines = stdout.readlines()
 
     result = ''.join(outlines)
 
 
 
-    print(result)
+
     sftp.close()
     client.close()
     ssh.close()
