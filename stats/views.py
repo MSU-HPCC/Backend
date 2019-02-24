@@ -81,4 +81,38 @@ def JobSubStats(request):
     return render(request, 'stats/graphic.html', {'graph': g})
 
 
+def JobFailure(request):
+    cnx = mysql.connector.connect(user=dbcreds.user, password=dbcreds.pwd, host=dbcreds.host, database=dbcreds.db)
+    cursor = cnx.cursor()
+    query = 'select id_user,exit_code from hpcc_big.msuhpcc_job_table where id_group=2000 ;'
+    cursor.execute(query)
+    errorDict = {}
+    for line in cursor:
+        user = int(line[0])
+        code = int(line[1])
+        # if we have an error
+        if code != 0:
+            # increment users errors if theyre already in the dictionary
+            if user in errorDict:
+                errorDict[user] += 1
+            # if they arent in the dictionary the user=1
+            else:
+                errorDict[user] = 1
+
+    i = 0
+
+    total = sum(errorDict.values())
+    labels = [user for user in errorDict]
+    sizes = [errorDict[user] for user in errorDict if errorDict[user] > total / 100]
+    fig, ax = plt.subplots()
+    ax.pie(sizes,autopct='%1.0f%%', startangle=90)
+    ax.axis('equal')
+    plt.title("Failed Jobs by user id in group 2000")
+    plt.legend(labels)
+    cnx.close()
+    cursor.close()
+    g = mpld3.fig_to_html(fig)
+    return render(request, 'stats/graphic.html', {'graph': g})
+
+
 
