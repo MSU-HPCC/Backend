@@ -31,10 +31,9 @@
   <li class="cell small-3 medium-3 large-3"><a id="reset-button" class="button" href="#">Reset All</a></li>
   <li class="cell small-3 medium-3 large-3" hidden="true"><a href="#">Item 4</a></li>
 </ul>
-
-<div class="job-table-container">
-    <h2>{{ urlUser }}'s Group Jobs</h2>
-  <table class="job-table">
+<h2>{{ urlUser }}'s Group Jobs</h2>
+<div class="table-wrapper-scroll-y">
+  <table id="job-table">
     <tr>
         {% for col,idx in cols %}
             <td class="col-header" data-col-header="{{col}}"><strong>{{ col }}</strong></td>
