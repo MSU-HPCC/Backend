@@ -41,10 +41,11 @@ def index(request):
 
 
 def JobSubStats(request):
+    '''
     cnx = mysql.connector.connect(user=dbcreds.user, password=dbcreds.pwd, host=dbcreds.host, database=dbcreds.db)
     cursor = cnx.cursor()
 
-    query = 'select time_submit from hpcc_big.msuhpcc_job_table limit 10000;'
+    query = 'select time_submit from hpcc_big.msuhpcc_job_table;'
     cursor.execute(query)
     date_dict = {}
 
@@ -78,10 +79,13 @@ def JobSubStats(request):
     plt.title("Jobs Submitted In 2018")
     plt.gcf().autofmt_xdate()
     g = mpld3.fig_to_html(fig)
-    return render(request, 'stats/graphic.html', {'graph': g})
+    '''
+    #return render(request, 'stats/graphic.html', {'graph': g})
+    return render(request, 'stats/SubmissionGraphic.html')
 
 
 def JobFailure(request):
+    '''
     cnx = mysql.connector.connect(user=dbcreds.user, password=dbcreds.pwd, host=dbcreds.host, database=dbcreds.db)
     cursor = cnx.cursor()
     query = 'select id_user,exit_code from hpcc_big.msuhpcc_job_table where id_group=2000 ;'
@@ -112,7 +116,11 @@ def JobFailure(request):
     cnx.close()
     cursor.close()
     g = mpld3.fig_to_html(fig)
-    return render(request, 'stats/graphic.html', {'graph': g})
+    '''
+    return render(request, 'stats/FailedJobs.html')
+
+def MajorUsers(request):
+    return render(request, 'stats/MajorUserJobs.html')
 
 
 
