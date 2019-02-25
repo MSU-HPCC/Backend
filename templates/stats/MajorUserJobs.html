@@ -1,8 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
 {% extends "../base_templates/base-page.html" %}
 {% block title %} Statistics {% endblock %}
 {% block content %}
 {% load static %}
 <h3>HPCC Statistics</h3>
+
 <div style="width: 100%;">
     <div class="tab button" index="0" style="display: inline-block;width: 15%"><a href="/stats/jobStats">Job Submissions 2018</a></div>
     <div class="tab button" index="1" style="display: inline-block;width: 15%"><a href="/stats/FailStats">Failed Jobs Breakdown</a></div>
@@ -11,10 +24,10 @@
     <div class="tab" index="4" style="display: inline-block;width: 15%" hidden="true"><a>link5</a></div>
 </div>
 <div class="first">
-{{graph|safe}}
+<img src= "{% static 'images/user-jobs-submitted.png' %}" />
 
 </div>
-<img class="other"  src="" style="width: 496px;height: 369px;margin-top: 60px;">
+
 {% endblock %}
 {% block inline-js %}
 
