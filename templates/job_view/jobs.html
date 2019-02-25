@@ -66,7 +66,6 @@
         rows = jQuery('.job-row')
         numRows = rows.length
         numFields = rows[0].children.length
-        //console.log(numFields)
         for (i=0;i < numRows;i++) {
           if (rows[i].children[col_index].innerText != searchStr) {
             jQuery(rows[i]).hide()
@@ -79,7 +78,6 @@
 
       // initiate search
       jQuery('#search-button').click( function() {
-        var searchStr = jQuery('#user-field').val()
         var searchStr = jQuery('#user-field').val()
         var searchParam = jQuery('#search-selection').val()
         tableSearch(searchStr, searchParam)
@@ -99,7 +97,7 @@
 
       // reset table
       jQuery('#reset-button').click( function() {
-        jQuery('.job-table tr').find('*').show()
+        jQuery('.job-table tr').show()
         jQuery('[data-col-checkbox]').prop('checked', true)
       })
 
