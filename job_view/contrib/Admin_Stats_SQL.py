@@ -49,7 +49,7 @@ class user_access():
 
         user_id = self.offset + self.cursor.fetchone()[0]
 
-        self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE id_user = %(id)s AND (UNIX_TIMESTAMP()-time_submit) < 21*86400;",{'id':user_id})
+        self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code FROM hpcc.hpcc_job_table WHERE id_user = %(id)s AND (UNIX_TIMESTAMP()-time_submit) < 21*86400;",{'id':user_id})
         row = self.cursor.fetchone()
         temp_table = []
         while row != None:
@@ -94,7 +94,7 @@ class group_access(user_access):
             return self.my_jobs()
         else:
             if user_list == []: #Default to all users
-                self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submit < 21*86400;")
+                self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submit < 21*86400;")
                 print("****************")
                 row = self.cursor.fetchone()
                 print(row)
@@ -154,7 +154,7 @@ class admin_access(group_access):
     def view_jobs(self, user_list = []):
         self.job_table = []
         if user_list == []: #Default to all users
-            self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, kill_requid, mem_req, nodelist, nodes_alloc, node_inx, state, timelimit, time_submit, time_eligible, time_start, time_end, time_suspended, work_dir FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submi2 < 21*86400;")
+            self.cursor.execute("SELECT job_db_inx, mod_time, job_name, id_job, id_user, id_group, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code FROM hpcc.hpcc_job_table WHERE UNIX_TIMESTAMP()-time_submi2 < 21*86400;")
             row = self.cursor.fetchone()
             while row != None:
                 self.job_table.append(row)

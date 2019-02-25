@@ -11,22 +11,17 @@ def jobs(request):
                                  database=dbcreds.db)
 
     cursor = cnx.cursor()
-    query = "SELECT id_user, job_db_inx, job_name, cpus_req  FROM hpcc_job_table WHERE id_user='"+ str(request.user) + "';"
+    query = "SELECT id_user, job_name, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code, cpus_req FROM hpcc_job_table WHERE id_user='"+ str(request.user) + "';"
     cursor.execute(query)
     result = "<html><body>"
     #jobs =['one', 'five', 'ten']
     jobs = []
-    for (userid, jobidx, jobname, cpusreq) in cursor:
-        jobObj = {'userid': userid,
-                  'jobidx': jobidx,
-                  'jobname': jobname,
-                  'cpusreq': cpusreq,
-                 }
-        jobs.append((userid, jobidx, jobname, cpusreq))
+    for (id_user, job_name, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code, cpus_req) in cursor:
+        jobs.append((id_user, job_name, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code, cpus_req))
 
     result += "</body></html>"
     cnx.close()
-    cols = ['id_user', 'job_db_inx', 'job_name', 'cpus_req']
+    cols = ['id_user', 'job_name', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code', 'cpus_req']
     itr = 0
     for col in cols:
         cols[itr] = (col, itr)
@@ -40,22 +35,17 @@ def adminJobs(request, user):
                                  database=dbcreds.db)
     if (request.user.id == 1):
         cursor = cnx.cursor()
-        query = "SELECT id_user, job_db_inx, job_name, cpus_req  FROM hpcc_job_table WHERE id_user='" + user + "';"
+        query = "SELECT id_user, job_name, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code, cpus_req FROM hpcc_job_table WHERE id_user='" + user + "';"
         cursor.execute(query)
         result = "<html><body>"
         jobs = []
         idx = 0
-        for (userid, jobidx, jobname, cpusreq) in cursor:
-            jobObj = {'userid': userid,
-                      'jobidx': jobidx,
-                      'jobname': jobname,
-                      'cpusreq': cpusreq,
-                     }
-            jobs.append([userid, jobidx, jobname, cpusreq])
+        for (id_user, job_name, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code, cpus_req) in cursor:
+            jobs.append([id_user, job_name, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code, cpus_req])
 
         result += "</body></html>"
         cnx.close()
-        cols = ['id_user', 'job_db_inx', 'job_name', 'cpus_req']
+        cols = ['id_user', 'job_name', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code', 'cpus_req']
         itr = 0
         for col in cols:
             cols[itr] = (col, itr)
@@ -70,7 +60,7 @@ def groupJobs(request):
     x = Admin_Stats_SQL.group_access(u)
     y = x.group_jobs()
 
-    cols = ['job_db_inx', 'mod_time', 'job_name', 'id_job', 'id_user', 'id_group', 'kill_requid', 'mem_req', 'nodelist', 'nodes_alloc', 'node_inx', 'state', 'timelimit', 'time_submit', 'time_eligible', 'time_start', 'time_end', 'time_suspended', 'work_dir']
+    cols = ['job_db_inx', 'mod_time', 'job_name', 'id_job', 'id_user', 'id_group', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code']
     itr = 0
     for col in cols:
         cols[itr] = (col,itr)
