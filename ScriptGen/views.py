@@ -123,13 +123,13 @@ def get_name(request):
             #add compilation and execution logic
             if Executable.endswith(".py"):
 
-                file.write("python ./"+str(Executable)+"\n")
+                file.write("srun -n "+str(Tasks)+" " +"python ./"+str(Executable)+"\n")
             if Executable.endswith(".c"):
                 file.write("gcc "+Executable+" -o "+Executable[0:len(Executable)-2] +"\n")
-                file.write("./"+str(Executable[0:len(Executable)-2]))
+                file.write("srun -n "+str(Tasks)+" "+"./"+str(Executable[0:len(Executable)-2]))
             if Executable.endswith(".cpp"):
                 file.write("g++ "+Executable+" -o "+Executable[0:len(Executable)-4] +"\n")
-                file.write("./"+str(Executable[0:len(Executable)-4]))
+                file.write("srun -n "+str(Tasks)+" "+"./"+str(Executable[0:len(Executable)-4]))
 
 
 
