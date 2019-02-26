@@ -21,8 +21,8 @@
     <ul class="menu">
       {% for col,idx in cols %}
         <div class="grid-x">
-          <label class="cell large-11 medium-11 small-11" for="{{col}}-checkbox">{{ col }}</label>
-          <input id ="{{col}}-checkbox" class="cell large-1 medium-1 small-1" data-col-checkbox="{{col}}" type="checkbox" checked="true">
+            <label class="cell large-11 medium-11 small-11" for="checkbox1">{{ col }}</label>
+            <input class="cell large-1 medium-1 small-1" data-col-checkbox="{{col}}" type="checkbox" checked="true">
         </div>
       {% endfor %}
     </ul>
@@ -32,9 +32,9 @@
   <li class="cell small-3 medium-3 large-3" hidden="true"><a href="#">Item 4</a></li>
 </ul>
 
-<h2>{{ urlUser }}'s Group Jobs</h2>
-<div class="table-wrapper-scroll-y job-table-container">
-  <table id="job-table" class="job-table" style="margin-bottom:100px;">
+<div class="job-table-container">
+    <h2>{{ urlUser }}'s Group Jobs</h2>
+  <table class="job-table" style="margin-bottom:100px;">
     <tr>
         {% for col,idx in cols %}
             <td class="col-header" data-col-header="{{col}}"><strong>{{ col }}</strong></td>
@@ -98,7 +98,7 @@
 
       // reset table
       jQuery('#reset-button').click( function() {
-        jQuery('.job-table tr').show()
+        jQuery('.job-table tr').find('*').show()
         jQuery('[data-col-checkbox]').prop('checked', true)
       })
 

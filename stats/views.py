@@ -125,7 +125,3 @@ def MajorUsers(request):
     #pngPath = image_data = open(path, "rb").read()
 
     return render(request, 'stats/MajorUserJobs.html',{'graph': path})
-
-
-
-
