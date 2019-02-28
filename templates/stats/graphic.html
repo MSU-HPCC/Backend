@@ -11,11 +11,12 @@
     <div class="tab" index="4" style="display: inline-block;width: 15%" hidden="true"><a>link5</a></div>
 </div>
 <div class="first">
-{{graph|safe}}
+<img id="graphic" src="" alt="Statistics Graph">
 
 </div>
-<img class="other"  src="" style="width: 496px;height: 369px;margin-top: 60px;">
 {% endblock %}
 {% block inline-js %}
-
+<script type="text/javascript">
+  jQuery('#graphic').prop('src', '{{graph | safe}}')
+</script>
 {% endblock %}
