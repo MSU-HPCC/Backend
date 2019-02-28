@@ -122,11 +122,15 @@ def JobFailure(request):
     cursor.close()
     g = mpld3.fig_to_html(fig)
     '''
-
-    return render(request, 'stats/FailedJobs.html')
+    data_folder = Path("/static/images/")
+    path = data_folder / "failed-jobs.png"
+    return render(request, 'stats/graphic.html', {'graph': path})
+    #return render(request, 'stats/FailedJobs.html')
 
 def MajorUsers(request):
-    path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
+    #path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
     #pngPath = image_data = open(path, "rb").read()
-
-    return render(request, 'stats/graphic.html',{'graph': path})
+    data_folder = Path("/static/images/")
+    path = data_folder / "user-jobs-submitted.png"
+    return render(request, 'stats/graphic.html', {'graph': path})
+    #return render(request, 'stats/graphic.html',{'graph': path})

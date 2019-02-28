@@ -11,12 +11,9 @@
     <div class="tab" index="4" style="display: inline-block;width: 15%" hidden="true"><a>link5</a></div>
 </div>
 <div class="first">
-<img id="graphic" src="" alt="Statistics Graph">
+<img id="graphic" src="{{graph | safe}}" alt="Statistics Graph">
 
 </div>
 {% endblock %}
 {% block inline-js %}
-<script type="text/javascript">
-  jQuery('#graphic').prop('src', '{{graph | safe}}')
-</script>
 {% endblock %}
