@@ -93,8 +93,8 @@
                 <span class="visuallyhidden">Accounts</span>
               </button>
               <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-                <li class="mdl-menu__item"><a href="#">setting</a></li>
-                <li class="mdl-menu__item"><a href="/logout">logout</a></li>
+                <li class="mdl-menu__item"><a href="#" class="menu-font">setting</a></li>
+                <li class="mdl-menu__item"><a href="/logout" class="menu-font">logout</a></li>
               </ul>
             </div>
 
@@ -156,7 +156,10 @@
       var trigger = $('.hamburger'),
       overlay = $('.overlay'),
       isClosed = false;
-
+      $('.overlay').click(function() {
+          $('#wrapper').toggleClass('toggled');
+          hamburger_cross();
+      })
       trigger.click(function () {
         hamburger_cross();
       });
