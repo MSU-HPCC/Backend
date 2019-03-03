@@ -11,8 +11,7 @@ import paramiko
 
 import os
 
-
-
+from django.views.decorators.csrf import csrf_exempt
 
 from django.core.files.storage import FileSystemStorage
 def index(request):
@@ -23,6 +22,7 @@ from django.shortcuts import render
 
 from .forms import NameForm
 from .models import ScriptGenInfo
+from django.http import JsonResponse
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -61,11 +61,37 @@ def downloadFile(request):
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
     return render(request, 'ScriptGen/download.html', context)
-
+@csrf_exempt
 def get_name(request):
+
+
+
+
     SubmittedJob = False
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
+        form = NameForm(request.POST)
+        #if request.POST.get('action') == "Update Bash Script":
+        '''
+        if request.is_ajax():
+            print("here")
+            text = request.POST.get('text', 1)
+            print(text)
+            FilePreview = text.split("\n")
+            dictionary = request.GET
+            dict2 = request.POST
+            user = request.GET.get('username', 1)
+            filename = os.getcwd() + "\ScriptGen\Bash.qsub"
+            file = open(filename, "w")
+            file.write(text)
+            file.close()
+            print("end")
+            response = Update(request,text)
+            return response
+            return render(request, 'ScriptGen/download.html')
+
+        '''
+
         form = NameForm(request.POST)
         # file upload
         if request.FILES:
@@ -203,3 +229,19 @@ def SubmitJob(bashpath, script, filename):
     sftp.close()
     client.close()
     ssh.close()
+@csrf_exempt
+def Update(request):
+    text = request.GET.get('text',1)
+    FilePreview = text.split("\n")
+    #FilePreview=[]
+    dictionary = request.GET
+    dict2 = request.POST
+    #user = request.GET.get('username',1)
+    filename = os.getcwd() + "\ScriptGen\Bash.qsub"
+    #file = open(filename, "w")
+    file = io.open(filename, "w", newline='\n')
+    file.write(text)
+    file.close()
+    form = NameForm()
+    #return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form, 'filePath': filename})
+    return render(request,'ScriptGen/download.html')
