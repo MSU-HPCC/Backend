@@ -75,3 +75,7 @@ footer{
     text-align: center;
     border: 2px ridge gray;
 }
+
+textarea {
+    height:100px;
+}

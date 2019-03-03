@@ -32,10 +32,10 @@ def ScriptGen_create_view(request):
         'form':form
     }
     return render(request,'ScriptGen/form_create.html',context)'''
-    filename = os.getcwd()+ "\ScriptGen\Bash.qsub"
+    filename = os.getcwd()+ "\ScriptGen\Bash.sb"
     file = open(filename, "rb")
     response = HttpResponse(file.read())
-    response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.qsub'
+    response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.sb'
 
     response['Content-Length'] = os.path.getsize(filename)
 
@@ -101,9 +101,9 @@ def get_name(request):
             fs = FileSystemStorage()
             name = fs.save(uploaded_file.name, uploaded_file)
             filename = uploaded_file.name
-            bashFile = uploaded_file.name.split(".")[0] + '.qsub'
+            bashFile = uploaded_file.name.split(".")[0] + '.sb'
             #bashpath = os.getcwd() + r'\ScriptGen" + bashFile
-            bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.qsub")
+            bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.sb")
             script = fs.path(name)
             # submit a job
             SubmitJob(bashpath, script, filename)
@@ -128,7 +128,7 @@ def get_name(request):
             Tasks = form.cleaned_data['Tasks']
             Executable = form.cleaned_data['ExecutableName']
             #filename = os.getcwd() + r"\ScriptGen\\"+ Executable.split(".")[0]+".qsub"
-            filename = os.getcwd() + r"\ScriptGen\Bash.qsub"
+            filename = os.getcwd() + r"\ScriptGen\Bash.sb"
             file = io.open(filename, "w", newline='\n')
 
 
@@ -206,7 +206,7 @@ def SubmitJob(bashpath, script, filename):
     sftp = paramiko.SFTPClient.from_transport(client)
     ######## getting working script
     stdin, stdout, stderr = ssh.exec_command("mkdir -p Submissions")
-    qsubName = filename.split('.')[0]+'.qsub'
+    qsubName = filename.split('.')[0]+'.sb'
 
     #################################
     #localpath = os.getcwd() + '\ScriptGen\Bash.qsub'
@@ -218,7 +218,7 @@ def SubmitJob(bashpath, script, filename):
     localpath = script
     filepath = 'Submissions/'+ filename
     sftp.put(script, filepath)
-    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; mkdir -p Submissions; cd Submissions; pwd; qsub '+qsubName +'; sq ')
+    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; mkdir -p Submissions; cd Submissions; pwd; sbatch '+qsubName +'; sq ')
     outlines = stdout.readlines()
 
     result = ''.join(outlines)
@@ -237,7 +237,7 @@ def Update(request):
     dictionary = request.GET
     dict2 = request.POST
     #user = request.GET.get('username',1)
-    filename = os.getcwd() + "\ScriptGen\Bash.qsub"
+    filename = os.getcwd() + "\ScriptGen\Bash.sb"
     #file = open(filename, "w")
     file = io.open(filename, "w", newline='\n')
     file.write(text)
