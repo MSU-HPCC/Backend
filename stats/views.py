@@ -11,10 +11,7 @@ from datetime import datetime
 from . import  dbcreds
 
 import numpy as np
-import plotly.graph_objs as go
-from plotly.offline import plot
-import plotly.offline as opy
-import plotly.graph_objs as go
+
 from django.views.generic import TemplateView
 def index(request):
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
@@ -135,7 +132,7 @@ def MajorUsers(request):
 
 
 
-
+'''
 def plot1d():
     x_data = np.arange(0, 120, 0.1)
     trace1 = go.Scatter(
@@ -190,3 +187,4 @@ class Graph(TemplateView):
         context['plot'] = div
 
         return context
+'''
