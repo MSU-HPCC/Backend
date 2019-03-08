@@ -3,19 +3,19 @@ import os
 # Create your views here.
 from django.http import HttpResponse
 import matplotlib.pyplot as plt, mpld3
-import mysql.connector
+
 
 import matplotlib.dates as mdates
-from . import dbcreds
+
 from datetime import datetime
-from . import  dbcreds
+
 
 import numpy as np
 
 from django.views.generic import TemplateView
 def index(request):
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-
+    '''
     cnx = mysql.connector.connect(user=dbcreds.user,password= dbcreds.pwd,host=dbcreds.host,database=dbcreds.db)
     cursor = cnx.cursor()
     query = 'select id_user from hpcc_big.msuhpcc_job_table limit 100000;'
@@ -41,6 +41,8 @@ def index(request):
 
 
     return render(request, 'stats/graphic.html', {'graph':g})
+    '''
+    return HttpResponse("This is the index page")
 
 
 
