@@ -1,0 +1,12 @@
+{% extends "../base_templates/base-page.html" %}
+{% block title %} Script Generator {% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="centered">
+    {{message}}
+</div>
+<form action="http://127.0.0.1:8000/ScriptGen/get_name/">
+    <input type="submit" value="Submit another job" />
+</form>
+{% endblock %}

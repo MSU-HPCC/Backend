@@ -106,7 +106,12 @@ def get_name(request):
             bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.sb")
             script = fs.path(name)
             # submit a job
-            SubmitJob(bashpath, script, filename)
+            Success = SubmitJob(bashpath, script, filename)
+            if Success==True:
+
+                return render(request, 'ScriptGen/success.html',{'message':"Job Successfully Scheduled!"})
+            else:
+                return render(request, 'ScriptGen/success.html', {'message': "Job Unsuccessfully Scheduled"})
 
 
 
@@ -222,6 +227,13 @@ def SubmitJob(bashpath, script, filename):
     outlines = stdout.readlines()
 
     result = ''.join(outlines)
+    print(result)
+    resultLen= len(result.split())
+    if resultLen > 1:
+
+        SuccessStr =result.split()[1]
+    else:
+        SuccessStr="False"
 
 
 
@@ -229,6 +241,10 @@ def SubmitJob(bashpath, script, filename):
     sftp.close()
     client.close()
     ssh.close()
+    if SuccessStr== "Submitted":
+        return True
+    else:
+        return False
 @csrf_exempt
 def Update(request):
     text = request.GET.get('text',1)
