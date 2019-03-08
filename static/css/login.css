@@ -1,0 +1,102 @@
+.box {
+    position: absolute;
+    background-position: 100% 100%;
+    background-image: url("../images/background.jpg");
+    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+}
+.box-login-bg{
+    width: 400px;
+    height: 500px;
+    background: #666;
+    opacity: 0.4;
+    position: absolute;
+    top: calc(50% - 250px);
+    left: calc(50% - 200px);
+    z-index: 1;
+ }
+.box-login {
+    width: 400px;
+    height: 500px;
+    position: absolute;
+    top: calc(50% - 250px);
+    left: calc(50% - 200px);
+    z-index: 2;
+}
+.box-login > .image{
+    margin-left: 150px;
+    margin-top: 30px;
+}
+.box-login > .image > img {
+    width: 100px;
+    height: 100px;
+    margin: 0;
+    opacity: 0.8;
+}
+.box-login > .image > span {
+    font-size: 26px;
+}
+.box-login > .content {
+    display: block;
+    margin: 0;
+    margin-top: 40px;
+    z-index: 2;
+
+}
+.box-login > .content > form {
+    padding: 0;
+}
+.box-error_msg {
+    padding-left: 25px;
+    display: block;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+.box-form_content{
+}
+
+.box-form_content_div {
+    display: inline-block;
+    margin-bottom: 30px;
+}
+.box-form_content > .box-form_content_div > img {
+    width: 30px;
+    height: 30px;
+    margin-left: 40px;
+}
+.box-form_content > .box-form_content_div > input {
+    margin: 0;
+    width: 250px;
+    background: #fff;
+    color: #000;
+}
+.box-form_btn{
+    margin-left: 40px;
+}
+.box-form_btn > button {
+    width: 290px;
+}
+.box-form_text {
+    width: 100%;
+    margin-top: 20px;
+}
+.box-form_text > a{
+    color: #fff!important;
+    display: inline-block;
+    width: 49%;
+    font-size: 18px;
+    padding-left: 20px;
+    text-decoration: underline;
+}
+.box-content_text{
+    /*color: #486960;*/
+    font-size: 28px;
+    font-weight: 400;
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 40px;
+}
+.box-form_content > .box-form_content_div > input::-moz-placeholder { color: #000!important;; }
+.box-form_content > .box-form_content_div > input::-webkit-input-placeholder { color:#000 !important; }
+.box-form_content > .box-form_content_div > input:-ms-input-placeholder { color:#000!important;; }
