@@ -90,7 +90,7 @@ def JobSubStats(request):
     '''
     data_folder = Path("/static/images/")
     path = data_folder / "submission-stats.png"
-    #path = "/static/images/submission-stats.png"
+    path = "/static/images/submission-stats.png"
     return render(request, 'stats/graphic.html', {'graph': path})
     #return render(request, 'stats/SubmissionGraphic.html')
 
@@ -136,6 +136,8 @@ def JobFailure(request):
 def MajorUsers(request):
     #path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
     #pngPath = image_data = open(path, "rb").read()
+    data_folder = Path("/static/images/")
+    path = data_folder / "user-jobs-submitted.png"
 
     return render(request, 'stats/MajorUserJobs.html',{'graph': path})
 
