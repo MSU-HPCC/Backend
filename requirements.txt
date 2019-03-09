@@ -1,6 +1,6 @@
-django
+django==2.0.2
 mysql-connector-python
-matplotlib
+matplotlib==2.1.0
 mpld3
 jinja2
 dj-database-url
