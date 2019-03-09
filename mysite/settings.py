@@ -20,7 +20,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig',
     'login',
     'ScriptGen.apps.ScriptgenConfig',
     'django.contrib.admin',
