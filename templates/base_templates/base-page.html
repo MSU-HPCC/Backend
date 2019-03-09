@@ -157,6 +157,11 @@
       overlay = $('.overlay'),
       isClosed = false;
 
+      $('.overlay').click(function(){
+        $('#wrapper').toggleClass('toggled');
+        hamburger_cross();
+      });
+
       trigger.click(function () {
         hamburger_cross();
       });
