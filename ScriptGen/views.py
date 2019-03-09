@@ -11,8 +11,7 @@ import paramiko
 
 import os
 
-
-
+from django.views.decorators.csrf import csrf_exempt
 
 from django.core.files.storage import FileSystemStorage
 def index(request):
@@ -23,6 +22,7 @@ from django.shortcuts import render
 
 from .forms import NameForm
 from .models import ScriptGenInfo
+from django.http import JsonResponse
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -32,10 +32,10 @@ def ScriptGen_create_view(request):
         'form':form
     }
     return render(request,'ScriptGen/form_create.html',context)'''
-    filename = os.getcwd()+ "\ScriptGen\Bash.qsub"
+    filename = os.getcwd()+ "\ScriptGen\Bash.sb"
     file = open(filename, "rb")
     response = HttpResponse(file.read())
-    response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.qsub'
+    response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.sb'
 
     response['Content-Length'] = os.path.getsize(filename)
 
@@ -61,11 +61,37 @@ def downloadFile(request):
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
     return render(request, 'ScriptGen/download.html', context)
-
+@csrf_exempt
 def get_name(request):
+
+
+
+
     SubmittedJob = False
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
+        form = NameForm(request.POST)
+        #if request.POST.get('action') == "Update Bash Script":
+        '''
+        if request.is_ajax():
+            print("here")
+            text = request.POST.get('text', 1)
+            print(text)
+            FilePreview = text.split("\n")
+            dictionary = request.GET
+            dict2 = request.POST
+            user = request.GET.get('username', 1)
+            filename = os.getcwd() + "\ScriptGen\Bash.qsub"
+            file = open(filename, "w")
+            file.write(text)
+            file.close()
+            print("end")
+            response = Update(request,text)
+            return response
+            return render(request, 'ScriptGen/download.html')
+
+        '''
+
         form = NameForm(request.POST)
         # file upload
         if request.FILES:
@@ -75,12 +101,17 @@ def get_name(request):
             fs = FileSystemStorage()
             name = fs.save(uploaded_file.name, uploaded_file)
             filename = uploaded_file.name
-            bashFile = uploaded_file.name.split(".")[0] + '.qsub'
+            bashFile = uploaded_file.name.split(".")[0] + '.sb'
             #bashpath = os.getcwd() + r'\ScriptGen" + bashFile
-            bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.qsub")
+            bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.sb")
             script = fs.path(name)
             # submit a job
-            SubmitJob(bashpath, script, filename)
+            Success = SubmitJob(bashpath, script, filename)
+            if Success==True:
+
+                return render(request, 'ScriptGen/success.html',{'message':"Job Successfully Scheduled!"})
+            else:
+                return render(request, 'ScriptGen/success.html', {'message': "Job Unsuccessfully Scheduled"})
 
 
 
@@ -102,7 +133,7 @@ def get_name(request):
             Tasks = form.cleaned_data['Tasks']
             Executable = form.cleaned_data['ExecutableName']
             #filename = os.getcwd() + r"\ScriptGen\\"+ Executable.split(".")[0]+".qsub"
-            filename = os.getcwd() + r"\ScriptGen\Bash.qsub"
+            filename = os.getcwd() + r"\ScriptGen\Bash.sb"
             file = io.open(filename, "w", newline='\n')
 
 
@@ -123,13 +154,13 @@ def get_name(request):
             #add compilation and execution logic
             if Executable.endswith(".py"):
 
-                file.write("python ./"+str(Executable)+"\n")
+                file.write("srun -n "+str(Tasks)+" " +"python ./"+str(Executable)+"\n")
             if Executable.endswith(".c"):
                 file.write("gcc "+Executable+" -o "+Executable[0:len(Executable)-2] +"\n")
-                file.write("./"+str(Executable[0:len(Executable)-2]))
+                file.write("srun -n "+str(Tasks)+" "+"./"+str(Executable[0:len(Executable)-2]))
             if Executable.endswith(".cpp"):
                 file.write("g++ "+Executable+" -o "+Executable[0:len(Executable)-4] +"\n")
-                file.write("./"+str(Executable[0:len(Executable)-4]))
+                file.write("srun -n "+str(Tasks)+" "+"./"+str(Executable[0:len(Executable)-4]))
 
 
 
@@ -180,7 +211,7 @@ def SubmitJob(bashpath, script, filename):
     sftp = paramiko.SFTPClient.from_transport(client)
     ######## getting working script
     stdin, stdout, stderr = ssh.exec_command("mkdir -p Submissions")
-    qsubName = filename.split('.')[0]+'.qsub'
+    qsubName = filename.split('.')[0]+'.sb'
 
     #################################
     #localpath = os.getcwd() + '\ScriptGen\Bash.qsub'
@@ -192,10 +223,17 @@ def SubmitJob(bashpath, script, filename):
     localpath = script
     filepath = 'Submissions/'+ filename
     sftp.put(script, filepath)
-    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; mkdir -p Submissions; cd Submissions; pwd; qsub '+qsubName +'; sq ')
+    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; mkdir -p Submissions; cd Submissions; pwd; sbatch '+qsubName +'; sq ')
     outlines = stdout.readlines()
 
     result = ''.join(outlines)
+    print(result)
+    resultLen= len(result.split())
+    if resultLen > 1:
+
+        SuccessStr =result.split()[1]
+    else:
+        SuccessStr="False"
 
 
 
@@ -203,3 +241,23 @@ def SubmitJob(bashpath, script, filename):
     sftp.close()
     client.close()
     ssh.close()
+    if SuccessStr== "Submitted":
+        return True
+    else:
+        return False
+@csrf_exempt
+def Update(request):
+    text = request.GET.get('text',1)
+    FilePreview = text.split("\n")
+    #FilePreview=[]
+    dictionary = request.GET
+    dict2 = request.POST
+    #user = request.GET.get('username',1)
+    filename = os.getcwd() + "\ScriptGen\Bash.sb"
+    #file = open(filename, "w")
+    file = io.open(filename, "w", newline='\n')
+    file.write(text)
+    file.close()
+    form = NameForm()
+    #return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form, 'filePath': filename})
+    return render(request,'ScriptGen/download.html')

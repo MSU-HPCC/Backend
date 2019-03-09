@@ -22,12 +22,11 @@
         </form>
         </div>
         <div style="margin-top:0;">
-            <div  class="fieldWrapper" style="margin-bottom: 150px; background-color: white;">
-                {% for line in preview %}
 
-                {{line }} <br>
+           <div  class="fieldWrapper" style="margin-bottom: 150px; background-color: white;">
+                <textarea id="textarea" style="height: 250px;">{%for line in preview%}{{line}}{%endfor%}</textarea>
 
-            {% endfor %}
+
             </div>
             <div style="width:60%;">
                 <div>
@@ -42,6 +41,9 @@
                         <div>
                             <input class="button" type="submit" value="Submit Job">
                         </div>
+                        <div>
+                            <input id ="update" class="button" type="submit" name="action" value="Update Bash Script">
+                        </div>
                     </form>
                 </div>
             </div>
@@ -54,6 +56,25 @@
     <script>
     $("#download").click(function(){
         window.location.href = '/ScriptGen/create_form/';
+    });
+    </script>
+    <script>
+      $("#update").click( function(event) {
+      var text = $("textarea").val();
+       event.preventDefault();
+      $.ajax({
+        type: 'GET',
+        url: '/ScriptGen/Update/',
+        data: {
+            'text':text,
+            'user':'jeff',
+
+        },
+        dataType: "json",
+
+
+        });
+
     });
     </script>
 {% endblock %}
