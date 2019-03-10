@@ -1,40 +1,61 @@
 {% extends "../base_templates/base-page.html" %}
 {% block title %} Script Generator {% endblock %}
 {% load static %}
-
 {% block content %}
-<div class = content>
-<form method="POST">
-    {% csrf_token %}
-    <div class="fieldWrapper">
-    {% for field in form %}
+<div style="position: absolute;">
+    <div style="display: flex">
+        <div>
+            <form method="POST">
+            {% csrf_token %}
+            <div class="fieldWrapper">
+            {% for field in form %}
 
-        {{ field.errors }}
-        {{ field.label_tag }}
-        {{ field }}
-        <br/>
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {{ field }}
+                <br/>
 
-    {% endfor %}
+            {% endfor %}
+            </div>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+        </div>
+        <div style="margin-top:0;">
+            <div  class="fieldWrapper" style="margin-bottom: 150px;">
+                {% for line in preview %}
+
+                {{line }} <br>
+
+            {% endfor %}
+            </div>
+            <div >
+                <div>
+                    <input id="download" type="submit" value="Download Bash File">
+{#                    <button style="  background: #fff; width: 200px;height: 40px;" > Download Bash File </button>#}
+                </div>
+                <div style="padding-top: 22px;">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div style="display: inline-block;width: 50%;">
+                            <input type="file" name="document">
+                        </div>
+                        <div  style="display: inline-block;width: 49%;">
+                            <input type="submit" value="Upload file">
+{#                            <button type="submit"  style="  background: #fff; width: 100px;height: 40px;">Upload file</button>#}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <br>
-    <input type="submit" value="Submit">
-</form>
-<div class="fieldWrapper">
-{% for line in preview %}
 
-        {{line }} <br>
-
-    {% endfor %}
 </div>
-</div>
-
-<div class =download>
-<a href="/ScriptGen/create_form/"> Download Bash File </a>
-</div>
-
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="document">
-    <button type="submit">Upload file</button>
-</form>
+{% endblock %}
+{% block inline-js %}
+    <script>
+    $("#download").click(function(){
+        window.location.href = '/ScriptGen/create_form/';
+    });
+    </script>
 {% endblock %}

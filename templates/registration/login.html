@@ -18,29 +18,47 @@
     <a href="/register">Register</a>
 
 -->
-<div class='page'>
-<div class="logo">
-    <img src=" {% static 'css/111.jpg'%}" width="300px" height='300px' >
-</div>
-
-<div class='login'>
-
-    <form class="form" method="post" action="." >{% csrf_token %}
+<div class='box' >
+{#    <img src=" {% static 'css/111.jpg'%}" width="300px" height='300px' >#}
+<div class="box-login-bg"></div>
+<div class='box-login'>
+    <div class="image">
+        <img src=" {% static 'css/111.jpg'%}" >
+    </div>
+    <div class="content">
+        <form class="form" method="post" action="." >{% csrf_token %}
 
         {% if form.errors %}
-        <p class='form-error'>Your username and password don't match. Please try again.</p>
-
+            <span class="box-error_msg">Your username and password don't match. Please try again.</span>
         {% endif %}
-        <input type="text" placeholder="Username" name="username">
-        <input type="password" placeholder="Password" name="password">
+        <div class="box-form_content">
+            <div class="box-form_content_div">
+                <img src="{% static 'images/user.png' %}" alt="">
+            </div>
+            <div class="box-form_content_div">
+                <input type="text" placeholder="Username" name="username">
+            </div>
+        </div>
+        <div class="box-form_content">
+            <div class="box-form_content_div">
+                <img src="{% static 'images/password.png' %}" alt="">
+            </div>
+            <div class="box-form_content_div">
+                <input type="password" placeholder="Password" name="password">
+            </div>
 
-        <button type="submit" value="Login" id="login-button">LOGIN</button>
-        <div class='helperlink'>
-            <a class='signup' onclick="window.location.href='/register/' ">Sign up</a>
-            <a class='findpw' onclick="window.location.href='/register/' ">Forgot password?</a>
+        </div>
+        <div class="box-form_btn">
+            <button type="submit" value="Login" id="login-button">LOGIN</button>
+        </div>
+
+        <div class='box-form_text'>
+            <a onclick="window.location.href='/register/' ">Sign up</a>
+            <a onclick="window.location.href='/register/' ">Forgot password?</a>
         </div>
         <input type="hidden" name="next" value="/jobs" />
     </form>
+    </div>
 
 </div>
 </div>

@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 <br>
-<form method="POST">
+<form method="POST" style="margin-bottom: 50px;">
     {% csrf_token %}
     {% for field in form %}
     <div class="fieldWrapper">
