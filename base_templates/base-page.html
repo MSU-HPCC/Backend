@@ -20,6 +20,7 @@
   <title>{% block title %}MSU HPCC{% endblock %}</title>
   <!-- CSS WHICH SHOULD BE PRESENT ON ALL PAGES
   <link rel="stylesheet" type="text/css" href="{% static 'ScriptGen/style.css' %}">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="{% static 'css/mattstyles.css' %}">
 
 -->
@@ -41,6 +42,7 @@
     </style>
 {% block additional-css %} {% endblock %}
 <!-- JS WHICH SHOULD BE PRESENT ON ALL PAGES -->
+<script src="{% static 'js/jquery-3.3.1.js' %}"></script>
 <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 {% block additional-js %} {% endblock %}
 </head>
