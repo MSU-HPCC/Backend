@@ -214,15 +214,25 @@ def SubmitJob(bashpath, script, filename):
     a=pyslurm.job()
     print("files = "+str(os.listdir(os.getcwd())))
     # get the jobid so we know what folder to put the files in
-    jobid= a.submit_batch_job({'script': BashScriptName})
+
+
+    try:
+        jobid = a.submit_batch_job({'script': BashScriptName})
+        print("we are trying")
+
+    except Exception:
+        os.chdir("..")
+
+        return False
+
     print("jobid = "+str(jobid))
     # make the directory with full permisions
     # it will be named after the jobid
     os.mkdir(str(jobid), mode=0o777)
     # move the bash script, actual script, and slurm.out to new folder jobid
     # if jobid=13, the folder is named 13
-    shutil .move(BashScriptName, str(jobid))
-    shutil.move(filename, str(jobid))
+    #shutil .move(BashScriptName, str(jobid))
+    #shutil.move(filename, str(jobid))
     slurmname= "slurm-"+str(jobid)+".out"
     print(slurmname)
     print(os.getcwd())
@@ -230,6 +240,11 @@ def SubmitJob(bashpath, script, filename):
     if os.path.isfile(slurmname):
         print("slurm file exists")
         shutil.move(slurmname, str(jobid))
+    shutil.move(BashScriptName, str(jobid))
+    time.sleep(0.3)
+    shutil.copy(filename, str(jobid))
+
+    #shutil.move(filename, str(jobid))
     # go back to original directory not to fuck with anything
     os.chdir("..")
     return True
@@ -237,13 +252,14 @@ def SubmitJob(bashpath, script, filename):
 
 @csrf_exempt
 def Update(request):
+    print("we are updating")
     text = request.GET.get('text',1)
     FilePreview = text.split("\n")
     #FilePreview=[]
     dictionary = request.GET
     dict2 = request.POST
     #user = request.GET.get('username',1)
-    filename = os.getcwd() + "\ScriptGen\Bash.sb"
+    filename = os.getcwd() + "/ScriptGen/Bash.sb"
     #file = open(filename, "w")
     file = io.open(filename, "w", newline='\n')
     file.write(text)
