@@ -10,7 +10,7 @@ from . import hpcccreds
 import paramiko
 
 import os
-
+import time
 from django.views.decorators.csrf import csrf_exempt
 
 from django.core.files.storage import FileSystemStorage
@@ -23,6 +23,10 @@ from django.shortcuts import render
 from .forms import NameForm
 from .models import ScriptGenInfo
 from django.http import JsonResponse
+import pyslurm
+import shutil
+import ntpath
+
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -103,7 +107,7 @@ def get_name(request):
             filename = uploaded_file.name
             bashFile = uploaded_file.name.split(".")[0] + '.sb'
             #bashpath = os.getcwd() + r'\ScriptGen" + bashFile
-            bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.sb")
+            bashpath =os.path.join(os.getcwd()+"/ScriptGen", "Bash.sb")
             script = fs.path(name)
             # submit a job
             Success = SubmitJob(bashpath, script, filename)
@@ -133,7 +137,7 @@ def get_name(request):
             Tasks = form.cleaned_data['Tasks']
             Executable = form.cleaned_data['ExecutableName']
             #filename = os.getcwd() + r"\ScriptGen\\"+ Executable.split(".")[0]+".qsub"
-            filename = os.getcwd() + r"\ScriptGen\Bash.sb"
+            filename = os.getcwd() + r"/ScriptGen/Bash.sb"
             file = io.open(filename, "w", newline='\n')
 
 
@@ -192,59 +196,45 @@ def get_name(request):
     return render(request, 'ScriptGen/name.html', {'form': form})
 
 
-
-
-#code to actually submit a job to hpcc
 def SubmitJob(bashpath, script, filename):
-
-    nbytes = 4096
-    hostname = hpcccreds.hostname
-    port = hpcccreds.port
-    username = hpcccreds.username
-    password = hpcccreds.password
-
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname, port, username, password)
-    client = paramiko.Transport((hostname, port))
-    client.connect(username=username, password=password)
-    sftp = paramiko.SFTPClient.from_transport(client)
-    ######## getting working script
-    stdin, stdout, stderr = ssh.exec_command("mkdir -p Submissions")
-    qsubName = filename.split('.')[0]+'.sb'
-
-    #################################
-    #localpath = os.getcwd() + '\ScriptGen\Bash.qsub'
-    localpath= bashpath
-    filepath = 'Submissions/'+qsubName
-
-    sftp.put(bashpath, filepath)
-    localpath= r'C:\Users\zach\Documents\hpcc practice\Classifier.py'
-    localpath = script
-    filepath = 'Submissions/'+ filename
-    sftp.put(script, filepath)
-    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; mkdir -p Submissions; cd Submissions; pwd; sbatch '+qsubName +'; sq ')
-    outlines = stdout.readlines()
-
-    result = ''.join(outlines)
-    print(result)
-    resultLen= len(result.split())
-    if resultLen > 1:
-
-        SuccessStr =result.split()[1]
-    else:
-        SuccessStr="False"
+    print("bash = "+bashpath)
+    print("script = "+script)
+    print("filename = "+filename)
+    #go into jobsub folder to execute batch script
+    os.chdir("JobSub")
+    # copy bashfile and script into JobSub directory
+    shutil.copy(script, os.getcwd())
+    shutil.copy(bashpath, os.getcwd())
+    # grab the Bash Scriptname and Script name form the full paths
+    BashScriptName = ntpath.basename(bashpath)
+    ScriptName = ntpath.basename(script)
+    # rename the script to what is listed in the bash file
+    os.rename(ScriptName,filename)
+    # submit a job
+    a=pyslurm.job()
+    print("files = "+str(os.listdir(os.getcwd())))
+    # get the jobid so we know what folder to put the files in
+    jobid= a.submit_batch_job({'script': BashScriptName})
+    print("jobid = "+str(jobid))
+    # make the directory with full permisions
+    # it will be named after the jobid
+    os.mkdir(str(jobid), mode=0o777)
+    # move the bash script, actual script, and slurm.out to new folder jobid
+    # if jobid=13, the folder is named 13
+    shutil .move(BashScriptName, str(jobid))
+    shutil.move(filename, str(jobid))
+    slurmname= "slurm-"+str(jobid)+".out"
+    print(slurmname)
+    print(os.getcwd())
+    time.sleep(1.0)
+    if os.path.isfile(slurmname):
+        print("slurm file exists")
+        shutil.move(slurmname, str(jobid))
+    # go back to original directory not to fuck with anything
+    os.chdir("..")
+    return True
 
 
-
-
-    sftp.close()
-    client.close()
-    ssh.close()
-    if SuccessStr== "Submitted":
-        return True
-    else:
-        return False
 @csrf_exempt
 def Update(request):
     text = request.GET.get('text',1)

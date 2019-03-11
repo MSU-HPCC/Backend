@@ -1,6 +1,6 @@
-django
+Django==2.0.2
 mysql-connector-python
-matplotlib
+matplotlib==2.1.0
 mpld3
 jinja2
 dj-database-url
@@ -12,3 +12,4 @@ dash-html-components==0.13.5
 dash-core-components==0.43.1
 dash-table==3.5.0
 dash-daq==0.1.0
+dj-database-url

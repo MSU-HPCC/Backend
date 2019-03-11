@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from . import dbcreds
+#from . import dbcreds
 from django.http import HttpResponse
-from .contrib import Admin_Stats_SQL
+#from .contrib import Admin_Stats_SQL
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required
