@@ -37,7 +37,7 @@ def ScriptGen_create_view(request):
         'form':form
     }
     return render(request,'ScriptGen/form_create.html',context)'''
-    filename = os.getcwd()+ "\ScriptGen\Bash.sb"
+    filename = os.getcwd()+ "/ScriptGen/Bash.sb"
     file = open(filename, "rb")
     response = HttpResponse(file.read())
     response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.sb'
@@ -304,6 +304,32 @@ def CleanUp(request):
 
 
 def Results(request):
+    # put slurm files where they belong
+    for file in os.listdir("JobSub"):
+        if file.endswith(".out"):
+            jobID= file.split(".")[0]
+            jobID= jobID.split("-")[1]
+            print("slurm file "+str(jobID))
+            path= "JobSub/"+str(jobID)
+            file= "JobSub/"+file
+            shutil.move(file,path)
+            print(file)
+    DirList=ListOnlyDirs("JobSub")
+    JobFolder=os.getcwd()+"/JobSub/"
+    print(DirList)
+    return render(request, 'ScriptGen/results.html', {'dirs': DirList,'MainDir':JobFolder})
+
+
+
+
+
+
+
     return HttpResponse("these are the slurm.out files")
-
-
+# list the subdirectories
+def ListOnlyDirs(path):
+    dirlist=[]
+    for filename in os.listdir(path):
+        if os.path.isdir(os.path.join(path, filename)):
+            dirlist.append(filename)
+    return dirlist

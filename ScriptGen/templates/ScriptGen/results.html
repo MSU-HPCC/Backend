@@ -1,0 +1,14 @@
+{% extends "../base_templates/base-page.html" %}
+{% block title %} Job Queue {% endblock %}
+{% load static %}
+{% block content %}
+<table>
+    <th> Job Ids</th><th>slurm file</th>
+    {% for dir in dirs %}
+    <tr>
+        <td>{{dir}}</td>
+        <td><a href='' download >slurm file</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
