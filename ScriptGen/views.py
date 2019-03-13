@@ -26,7 +26,8 @@ from django.http import JsonResponse
 import pyslurm
 import shutil
 import ntpath
-
+from pathlib import Path
+from datetime import datetime
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -191,7 +192,8 @@ def get_name(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = NameForm()
+        data = {'Wall_time':'HH:MM:SS','job_name':'job name','nodes':'1','CPUs':'1','MemoryPerCPU':'1GB','Tasks':'1','ExecutableName':'example.py'}
+        form = NameForm(initial=data)
 
     return render(request, 'ScriptGen/name.html', {'form': form})
 
@@ -236,7 +238,7 @@ def SubmitJob(bashpath, script, filename):
     slurmname= "slurm-"+str(jobid)+".out"
     print(slurmname)
     print(os.getcwd())
-    time.sleep(1.0)
+
     if os.path.isfile(slurmname):
         print("slurm file exists")
         shutil.move(slurmname, str(jobid))
@@ -267,3 +269,41 @@ def Update(request):
     form = NameForm()
     #return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form, 'filePath': filename})
     return render(request,'ScriptGen/download.html')
+
+
+def CleanUp(request):
+    for file in os.listdir("JobSub"):
+        if file.endswith(".out"):
+            jobID= file.split(".")[0]
+            jobID= jobID.split("-")[1]
+            print("slurm file "+str(jobID))
+            path= "JobSub/"+str(jobID)
+            file= "JobSub/"+file
+            shutil.move(file,path)
+
+    JobQueue=[]
+    jobs= pyslurm.job().get()
+
+    fields =["job_id","name","job_state","run_time_str","num_nodes","nodes","start_time","submit_time"]
+    JobQueue.append(fields)
+    times=["start_time","submit_time"]
+    for key, value in jobs.items():
+        JobInQ= []
+        for field in fields:
+            if field in times:
+                print(field)
+                JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+            else:
+                JobInQ.append(value[field])
+        JobQueue.append(JobInQ)
+
+
+
+    #return HttpResponse("Cleanup time")
+    return render(request,'ScriptGen/queue.html',{'queue': JobQueue})
+
+
+def Results(request):
+    return HttpResponse("these are the slurm.out files")
+
+

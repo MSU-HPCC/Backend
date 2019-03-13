@@ -9,7 +9,9 @@ urlpatterns = [
     path('create_form/', views.ScriptGen_create_view, name='create_form'),
     path('SubmitJob/', views.SubmitJob, name= "SubmitJob"),
     path('download/', views.downloadFile, name ="download"),
-    path('Update/', views.Update, name="Update")
+    path('Update/', views.Update, name="Update"),
+    path('CleanUp/',views.CleanUp,name="CleanUp"),
+    path('Results/',views.Results, name="Results")
 ]
 
 if settings.DEBUG:
