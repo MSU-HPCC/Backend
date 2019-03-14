@@ -56,6 +56,19 @@ def ScriptGen_create_view(request):
     response['Content-Length'] = os.path.getsize(filename)
     return response'''
 
+def SlurmFile(request):
+    jobid = request.GET.get('dir','')
+    filename = os.getcwd() + "/JobSub/"+str(jobid)+"/slurm-"+str(jobid)+".out"
+    file = open(filename, "rb")
+    response = HttpResponse(file.read())
+    response['Content-Disposition'] = 'attachment; filename= ' +"slurm-"+str(jobid)+".out"
+
+    response['Content-Length'] = os.path.getsize(filename)
+
+    # return response
+
+    return response
+    return HttpResponse("ok")
 
 def downloadFile(request):
     context = {}

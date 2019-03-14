@@ -11,7 +11,9 @@ urlpatterns = [
     path('download/', views.downloadFile, name ="download"),
     path('Update/', views.Update, name="Update"),
     path('CleanUp/',views.CleanUp,name="CleanUp"),
-    path('Results/',views.Results, name="Results")
+    path('Results/',views.Results, name="Results"),
+    path('SlurmFile/', views.SlurmFile,name="Results")
+
 ]
 
 if settings.DEBUG:
