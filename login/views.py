@@ -23,7 +23,7 @@ def register(request):
         variables = RequestContext(request, {
         'form': form
     })
- 
+
     return render(
         request,
         'registration/register.html',
@@ -36,7 +36,7 @@ def register_success(request):
         'registration/success.html',
         # RequestContext(request)
         )
- 
+
 def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
@@ -44,6 +44,6 @@ def logout_page(request):
 @login_required
 def home(request):
     return render_to_response(
-    'home.html',
+    'job_view/jobs.html',
     { 'user': request.user }
     )

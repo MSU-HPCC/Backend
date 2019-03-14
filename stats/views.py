@@ -1,5 +1,7 @@
 from django.shortcuts import render
 import os
+# using this solution to avoid windows vs unix slashes
+from pathlib import Path
 # Create your views here.
 from django.http import HttpResponse
 import matplotlib.pyplot as plt, mpld3
@@ -86,8 +88,11 @@ def JobSubStats(request):
     plt.gcf().autofmt_xdate()
     g = mpld3.fig_to_html(fig)
     '''
-    #return render(request, 'stats/graphic.html', {'graph': g})
-    return render(request, 'stats/SubmissionGraphic.html')
+    data_folder = Path("/static/images/")
+    path = data_folder / "submission-stats.png"
+    path = "/static/images/submission-stats.png"
+    return render(request, 'stats/graphic.html', {'graph': path})
+    #return render(request, 'stats/SubmissionGraphic.html')
 
 
 def JobFailure(request):
@@ -123,12 +128,16 @@ def JobFailure(request):
     cursor.close()
     g = mpld3.fig_to_html(fig)
     '''
-
-    return render(request, 'stats/FailedJobs.html')
+    data_folder = Path("/static/images/")
+    path = data_folder / "failed-jobs.png"
+    return render(request, 'stats/graphic.html', {'graph': path})
+    #return render(request, 'stats/FailedJobs.html')
 
 def MajorUsers(request):
-    path = STATIC_ROOT = os.path.join(os.getcwd(), 'static\\images\\user-jobs-submitted.png')
+    #path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
     #pngPath = image_data = open(path, "rb").read()
+    data_folder = Path("/static/images/")
+    path = data_folder / "user-jobs-submitted.png"
 
     return render(request, 'stats/MajorUserJobs.html',{'graph': path})
 

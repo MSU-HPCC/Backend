@@ -1,15 +1,68 @@
 <!-- register.html -->
 {% extends "../base.html" %}
-
+{% load staticfiles %}
 {% block content %}
-<div class='registration'>
-    <h1>Sign Up</h1>
-    <form method="post" action=".">{% csrf_token %}
-        <table border="0">
-            {{ form.as_table }}
-        </table>
-        <button type="submit" value="Register">Register</button>
-        <button type="button" onclick="window.location.href='/' ">Back</button>
-    </form>
+<div class='box' >
+{#    <img src=" {% static 'css/111.jpg'%}" width="300px" height='300px' >#}
+    <div class="box-login-bg" style="height: 600px;"></div>
+    <div class='box-login' style="height: 600px;">
+        <div class="image">
+            <span> Sign Up</span>
+        </div>
+        <div class="content">
+            <form class="form" method="post" action=".">{% csrf_token %}
+            <div class="box-form_content">
+                <div class="box-form_content_div">
+                    <img src="{% static 'images/user.png' %}" alt="">
+                </div>
+                <div class="box-form_content_div">
+                    <input type="text" placeholder="Username" required max_length="30" name="username">
+                </div>
+            </div><div class="box-form_content">
+                <div class="box-form_content_div">
+                    <img src="{% static 'images/email.png' %}" alt="">
+                </div>
+                <div class="box-form_content_div">
+                    <input type="text" placeholder="eamil Address" required max_length="30" name="email">
+                </div>
+            </div>
+            <div class="box-form_content">
+                <div class="box-form_content_div">
+                    <img src="{% static 'images/password.png' %}" alt="">
+                </div>
+                <div class="box-form_content_div">
+                    <input type="password" placeholder="Password" required max_length="30" name="password1">
+                </div>
+
+            </div>
+                <div class="box-form_content">
+                <div class="box-form_content_div">
+                    <img src="{% static 'images/password.png' %}" alt="">
+                </div>
+                <div class="box-form_content_div">
+                    <input type="password" placeholder="Password (again)" required max_length="30" name="password2">
+                </div>
+
+            </div>
+            <div class="box-form_btn" style="margin-top: 30px;">
+                <button type="submit" value="Register">Register</button>
+            </div>
+            <div class="box-form_btn" style="margin-top: 30px;">
+                <button type="button" onclick="window.location.href='/' ">Back</button>
+            </div>
+
+        </form>
+        </div>
+    </div>
 </div>
+{#<div class='registration'>#}
+{#    <h1>Sign Up</h1>#}
+{#    <form method="post" action=".">{% csrf_token %}#}
+{#        <table border="0">#}
+{#            {{ form.as_table }}#}
+{#        </table>#}
+{#        <button type="submit" value="Register">Register</button>#}
+{#        <button type="button" onclick="window.location.href='/' ">Back</button>#}
+{#    </form>#}
+{#</div>#}
 {% endblock %}

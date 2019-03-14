@@ -7,7 +7,6 @@
 {#    <title>{% block title %}{% endblock %}</title>#}
     <link rel="stylesheet" type="text/css" href=" {% static 'css/base.css'%}">
     <link rel="stylesheet" type="text/css" href=" {% static 'css/home.css'%}">
-    <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css" media="all">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head> 
 <body>
@@ -16,8 +15,11 @@
                         <img src=" {% static 'css/msu.png'%}" width="65px" height='65px' >
                     </div>
         </nav> -->
-    <div >
-        {% block content %}{% endblock %}
+    <div class="wrapper">
+        <div class="container">
+            <h1>{% block head %}{% endblock %}</h1>
+            {% block content %}{% endblock %}
+        </div>
     </div>
 </body>
 </html>
