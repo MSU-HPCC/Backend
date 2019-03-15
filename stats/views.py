@@ -11,7 +11,7 @@ import matplotlib.dates as mdates
 
 from datetime import datetime
 
-
+import pyslurm
 import numpy as np
 
 from django.views.generic import TemplateView
@@ -128,6 +128,12 @@ def JobFailure(request):
     cursor.close()
     g = mpld3.fig_to_html(fig)
     '''
+
+
+
+
+
+
     data_folder = Path("/static/images/")
     path = data_folder / "failed-jobs.png"
     return render(request, 'stats/graphic.html', {'graph': path})
