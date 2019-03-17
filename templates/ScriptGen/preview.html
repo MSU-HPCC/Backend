@@ -24,7 +24,7 @@
 
 
             </div>
-            <div style="width:60%;">
+            <div >
                 <div>
                     <input id="download" class="button" type="submit" value="Download Bash File">
                 </div>
@@ -32,12 +32,10 @@
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div>
-                            <input class="button" type="file" name="document">
-                        </div>
-                        <div>
+                            <input type="file" name="document" style="width: 50%;display: inline-block;margin: 0">
                             <input class="button" type="submit" value="Submit Job">
                         </div>
-                        <div>
+                        <div style="margin-top: 10px;">
                             <input id ="update" class="button" type="submit" name="action" value="Update Bash Script">
                         </div>
                     </form>
