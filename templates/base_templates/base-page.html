@@ -34,6 +34,7 @@
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-light_blue.min.css">
 <link rel="stylesheet" href="{% static 'css/styles.css'%}">
 <link rel="stylesheet" type="text/css" href="{% static 'css/pace.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
     <style>
        .menu-font:hover {
             color: #0a0a0a!important;
@@ -46,26 +47,31 @@
 </head>
 
 <body>
-  <div id="wrapper">
+  <div id="wrapper" class="base-box" >
     {% csrf_token %}
     <div class="header">
       {% block header %}
       <header>
         <div class="container">
           <div class="row" >
-            <div class="col-sm-4 ">
-              <img src="{% static 'images/head.png' %}"  height="130" width="130" style="margin-top: 10px"></img>
+              <div class="col-sm-2">
+
+              </div>
+            <div class="col-sm-6 base-box-header-title">
+                <div>
+                  <img class="base-box-header-img" src="{% static 'images/head.png' %}" />
+                </div>
+                <div>
+                  <h1>MSU HPCC</h1>
+                  <p>Created for Capstone Spring 2019</p>
+                </div>
             </div>
-            <div class="col-sm-5">
-              <h1>MSU HPCC</h1>
-              <p>Created for Capstone Spring 2019</p>
-            </div>
-            <div class="col-sm-1 col-sm-offset-2 pull-right">
+            <div class="col-sm-2 col-sm-offset-2">
               <div class="pull-right">
                 <div class="mdl-layout__header-row">
                   <div class="mdl-layout-spacer"></div>
                   <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
-                     <i class="material-icons" style="font-size: 34px;  top: 35%; left: 34%;line-height: 34px;width: 34px;">more_vert</i>
+                     <i class="material-icons icons" >more_vert</i>
                   </button>
                   <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
                     <a href="https://icer.msu.edu/about"  style="color: #000;text-decoration: none;"><li class="mdl-menu__item">About</li></a>
@@ -136,7 +142,7 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-lg-offset-3">
-            {% block content %}{% endblock %}
+{#            {% block content %}{% endblock %}#}
           </div>
         </div>
       </div>
