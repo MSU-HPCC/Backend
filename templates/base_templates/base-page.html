@@ -134,19 +134,20 @@
       {% endblock %}
     </div>
     <div id="page-content-wrapper">
-      <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
-        <span class="hamb-top"></span>
-        <span class="hamb-middle"></span>
-        <span class="hamb-bottom"></span>
+      <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas" style="margin-top: 10px">
+        <span class="hamb-top " style="background: #000;"></span>
+        <span class="hamb-middle " style="background: #000;"></span>
+        <span class="hamb-bottom " style="background: #000;" ></span>
       </button>
-      <div class="container">
+    </div>
+    <div class="container">
         <div class="row">
-          <div class="col-lg-8 col-lg-offset-3">
-{#            {% block content %}{% endblock %}#}
+          <div class="col-lg-8 col-lg-offset-2" style="background: #fff;height: 80vh">
+            {% block content %}{% endblock %}
           </div>
         </div>
-      </div>
-      <div class="footer" style="position: fixed;bottom: 0;height: 44px;">
+    </div>
+    <div class="footer" style="position: fixed;bottom: 0;height: 44px;width: 100vw">
         {% block footer %}
         <footer>
           <p>
@@ -155,7 +156,6 @@
         </footer>
         {% endblock %}
       </div>
-    </div>
   </div>
   <script src="{% static 'foundation/js/vendor/jquery.js' %}"></script>
   <script src="{% static 'foundation/js/vendor/what-input.js' %}"></script>

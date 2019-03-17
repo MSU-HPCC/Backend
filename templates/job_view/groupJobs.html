@@ -3,21 +3,22 @@
 
 {% block title %} {{urlUser}} Group View {% endblock %}
 {% block content %}
-<div class="grid-x">
-    <div class="cell small-2 large-2"  style="margin: 0" >
+<div class="grid-x" style="margin: 10px 0 0 0">
+
+    <div class="cell small-2 large-2" style="margin: 0">
         <select id="search-selection">
           {% for col,idx in cols %}
             <option value="{{idx}}">{{col}}</option>
           {% endfor %}
         </select>
     </div>
-    <input id="user-field"  style="margin: 0"  class="cell small-8 large-8" type="text" placeholder="Search Query"></input>
-    <a id="search-button"  style="margin: 0"  class="button cell small-2 large-2" href="#">Search</a>
+    <input id="user-field" class="cell small-8 large-8" style="margin: 0 20px 0 20px;width: 40vw" type="text" placeholder="Search Query" />
+    <a id="search-button" class="button cell small-2 large-2" style="margin: 0" href="#">Search</a>
 </div>
 
 <ul class="dropdown menu grid-x" data-dropdown-menu  style="margin-top: 10px;">
   <li class="cell small-3 medium-3 large-3">
-    <a href="#">Filter Columns</a>
+    <a href="#" style="color: #000;">Filter Columns</a>
     <ul class="menu">
       {% for col,idx in cols %}
         <div class="grid-x">
@@ -31,10 +32,9 @@
   <li class="cell small-3 medium-3 large-3"><a id="reset-button" class="button" href="#">Reset All</a></li>
   <li class="cell small-3 medium-3 large-3" hidden="true"><a href="#">Item 4</a></li>
 </ul>
-
-<h2>{{ urlUser }}'s Group Jobs</h2>
-<div class="table-wrapper-scroll-y job-table-container">
-  <table id="job-table" class="job-table" style="margin-bottom:100px;">
+<h4 style="color: #000">{{ user }}'s Jobs</h4>
+<div class="table-wrapper-scroll-y" style="height: 55vh;">
+  <table id="job-table" class="job-table" >
     <tr>
         {% for col,idx in cols %}
             <td class="col-header" data-col-header="{{col}}"><strong>{{ col }}</strong></td>
