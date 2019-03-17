@@ -3,7 +3,7 @@
 
 {% block title %} {{urlUser}} Group View {% endblock %}
 {% block content %}
-<div class="grid-x" style="margin: 10px 0 0 0">
+<div class="grid-x" style="margin: 10px 0 0 0;padding: 0 10px">
 
     <div class="cell small-2 large-2" style="margin: 0">
         <select id="search-selection">
@@ -33,7 +33,7 @@
   <li class="cell small-3 medium-3 large-3" hidden="true"><a href="#">Item 4</a></li>
 </ul>
 <h4 style="color: #000">{{ user }}'s Jobs</h4>
-<div class="table-wrapper-scroll-y" style="height: 55vh;">
+<div class="table-wrapper-scroll-y" style="height: 55vh;;padding: 0 10px">
   <table id="job-table" class="job-table" >
     <tr>
         {% for col,idx in cols %}
