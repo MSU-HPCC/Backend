@@ -183,7 +183,7 @@ def JobFailure(request):
                 ErrorDict[user]=1
 
     TotalErrors= sum(ErrorDict.values())
-    NewErrorDict={}
+    NewErrorDict={'other':0}
     for user in ErrorDict:
         jobs = ErrorDict[user]
         twoPercent = TotalErrors/ 100
