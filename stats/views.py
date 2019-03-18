@@ -123,7 +123,7 @@ def JobSubStats(request):
 
     #plt.xlabel("Dates")
     plt.ylabel("Jobs Submitted")
-    plt.title("Jobs Submitted In 2018")
+    plt.title("Jobs Submitted In 2019")
     plt.gcf().autofmt_xdate()
     g = mpld3.fig_to_html(fig)
 
