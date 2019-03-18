@@ -112,6 +112,7 @@ def JobSubStats(request):
     fig, ax = plt.subplots()
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(bymonthday=range(1,32), interval=1))
 
 
     ax.plot(xDates, y)
