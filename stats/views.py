@@ -211,10 +211,20 @@ def MajorUsers(request):
         else:
             userSubDict[user]=1
 
+    totalSub = len(userSubDict.values())
+    newUserDict={'other':0}
+    for user in userSubDict:
+        jobs= userSubDict[user]
+        twoPercent = totalSub/100
+        twoPercent*=2
+        if jobs > twoPercent:
+            newUserDict[user]=jobs
+        else:
+            newUserDict['other']+=1
 
-    labels = [user for user in userSubDict]
+    labels = [user for user in newUserDict]
 
-    sizes = [userSubDict[user] for user in userSubDict]
+    sizes = [newUserDict[user] for user in newUserDict]
     fig, ax = plt.subplots()
     ax.pie(sizes, autopct='%1.0f%%', startangle=90)
     ax.axis('equal')
