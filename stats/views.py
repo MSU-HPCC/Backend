@@ -104,16 +104,17 @@ def JobSubStats(request):
             else:
                 DateDict[date]=1
 
-    dates = [date for date in DateDict]
+    dates = [(date,DateDict[date]) for date in DateDict]
+    x= sorted(dates)
 
-    x = [datetime.strptime(d, '%Y-%m-%d').date() for d in dates]
-    y = [DateDict[date] for date in DateDict]
+    xDates= [pair[0] for pair in x ]
+    y = [pair[1] for pair in x ]
     fig, ax = plt.subplots()
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
 
-    ax.plot(x, y)
+
+    ax.plot(xDates, y)
 
     plt.xlabel("Dates")
     plt.ylabel("Jobs Submitted")
@@ -232,7 +233,7 @@ def AvgWait(request):
         waitTime = startTime-submitTime
         startTimes.append(startTime)
 
-        if waitTime < 0:
+        if waitTime <= 0:
             pass
         else:
             WaitTimes.append(waitTime)
