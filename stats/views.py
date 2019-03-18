@@ -219,6 +219,9 @@ def MajorUsers(request):
         twoPercent*=2
         if jobs > twoPercent:
             newUserDict[user]=jobs
+
+        elif user ==None:
+            newUserDict['Cameron']= userSubDict[None]
         else:
             newUserDict['other']+=jobs
 
