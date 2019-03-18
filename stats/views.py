@@ -181,9 +181,21 @@ def JobFailure(request):
                 ErrorDict[user]+=1
             else:
                 ErrorDict[user]=1
+
     TotalErrors= sum(ErrorDict.values())
-    labels= [ user for user in ErrorDict]
-    sizes=[ErrorDict[user] for user in ErrorDict]
+    NewErrorDict={}
+    for user in ErrorDict:
+        jobs = ErrorDict[user]
+        twoPercent = TotalErrors/ 100
+        twoPercent*=2
+        if jobs < twoPercent:
+            NewErrorDict[user]= jobs
+        else:
+            NewErrorDict['other']+=jobs
+
+
+    labels= [ user for user in NewErrorDict]
+    sizes=[NewErrorDict[user] for user in NewErrorDict]
     fig, ax = plt.subplots()
     ax.pie(sizes, autopct='%1.0f%%', startangle=90)
     ax.axis('equal')
