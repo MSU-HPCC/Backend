@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 from django.shortcuts import render
 import os
 # using this solution to avoid windows vs unix slashes
@@ -88,10 +90,44 @@ def JobSubStats(request):
     plt.gcf().autofmt_xdate()
     g = mpld3.fig_to_html(fig)
     '''
+
+
+    AllJobs= pyslurm.slurmdb_jobs().get()
+    DateDict={}
+    for jobid in AllJobs:
+        startTime = AllJobs[jobid]['start']
+        date = datetime.utcfromtimestamp(startTime).strftime('%Y-%m-%d')
+
+        if int(startTime) > 0:
+            if date in DateDict:
+                DateDict[date]+=1
+            else:
+                DateDict[date]=1
+
+    dates = [date for date in DateDict]
+
+    x = [datetime.strptime(d, '%Y-%m-%d').date() for d in dates]
+    y = [DateDict[date] for date in DateDict]
+    fig, ax = plt.subplots()
+
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+
+    ax.plot(x, y)
+
+    plt.xlabel("Dates")
+    plt.ylabel("Jobs Submitted")
+    plt.title("Jobs Submitted In 2018")
+    plt.gcf().autofmt_xdate()
+    g = mpld3.fig_to_html(fig)
+
+
+
+
     data_folder = Path("/static/images/")
     path = data_folder / "submission-stats.png"
     path = "/static/images/submission-stats.png"
-    return render(request, 'stats/graphic.html', {'graph': path})
+    return render(request, 'stats/graphic.html', {'graph': g})
     #return render(request, 'stats/SubmissionGraphic.html')
 
 
@@ -129,23 +165,113 @@ def JobFailure(request):
     g = mpld3.fig_to_html(fig)
     '''
 
+    AllJobs= pyslurm.slurmdb_jobs().get()
+    ErrorDict= {}
+    for jobid in AllJobs:
+        user = AllJobs[jobid]['user']
+        errorCode= AllJobs[jobid]['exit_code']
+        if int(errorCode) != 0:
+            if user in ErrorDict:
+                ErrorDict[user]+=1
+            else:
+                ErrorDict[user]=1
+    TotalErrors= sum(ErrorDict.values())
+    labels= [ user for user in ErrorDict]
+    sizes=[ErrorDict[user] for user in ErrorDict]
+    fig, ax = plt.subplots()
+    ax.pie(sizes, autopct='%1.0f%%', startangle=90)
+    ax.axis('equal')
+    plt.title("Failed Jobs by user id in group 2000")
+    plt.legend(labels)
 
-
-
+    g = mpld3.fig_to_html(fig)
 
 
     data_folder = Path("/static/images/")
     path = data_folder / "failed-jobs.png"
-    return render(request, 'stats/graphic.html', {'graph': path})
+    return render(request, 'stats/graphic.html', {'graph': g})
     #return render(request, 'stats/FailedJobs.html')
 
 def MajorUsers(request):
     #path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
     #pngPath = image_data = open(path, "rb").read()
+
+    AllJobs = pyslurm.slurmdb_jobs().get()
+    userSubDict={}
+    for jobid in AllJobs:
+        user= AllJobs[jobid]['user']
+        if user in userSubDict:
+            userSubDict[user]+=1
+        else:
+            userSubDict[user]=1
+
+
+    labels = [user for user in userSubDict]
+
+    sizes = [userSubDict[user] for user in userSubDict]
+    fig, ax = plt.subplots()
+    ax.pie(sizes, autopct='%1.0f%%', startangle=90)
+    ax.axis('equal')
+    plt.title("Failed Jobs by user id in group 2000")
+    plt.legend(labels)
+
+    g = mpld3.fig_to_html(fig)
     data_folder = Path("/static/images/")
     path = data_folder / "user-jobs-submitted.png"
 
-    return render(request, 'stats/MajorUserJobs.html',{'graph': path})
+    return render(request, 'stats/graphic.html',{'graph': g})
+
+def AvgWait(request):
+
+    AllJobs= pyslurm.job().get()
+    WaitTimes=[]
+    startTimes=[]
+    for jobid in AllJobs:
+        submitTime = AllJobs[jobid]['submit_time']
+        startTime= AllJobs[jobid]['start_time']
+        waitTime = startTime-submitTime
+        startTimes.append(startTime)
+
+        if waitTime < 0:
+            pass
+        else:
+            WaitTimes.append(waitTime)
+    if len(WaitTimes)!=0:
+        avgWait= sum(WaitTimes)/len(WaitTimes)
+    else:
+        avgWait=0
+    totalJobs = len(AllJobs)
+    ### get dict of all jobs submitted by date
+
+    SubDays={}
+
+
+    for start in startTimes:
+        startDate = datetime.utcfromtimestamp(start).strftime('%Y-%m-%d')
+        if startDate in SubDays:
+            SubDays[startDate]+=1
+        else:
+            SubDays[startDate]=1
+
+    now = datetime.now()
+    currentMonth=int(now.month)
+    print(currentMonth)
+    JobsThisMonth=0
+    for date in SubDays:
+        month = int(date.split('-')[1])
+        print(month)
+        if month==currentMonth:
+            JobsThisMonth+= SubDays[date]
+    print("jobs this month = "+str(JobsThisMonth))
+    print(SubDays)
+    weeks = int(now.isocalendar()[1])
+    avgJobsPerWeek= len(AllJobs)/weeks
+
+    info =[avgWait,totalJobs,JobsThisMonth,avgJobsPerWeek]
+    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Month','Average Jobs Submitted Per Week']
+    Table= zip(categories,info)
+    return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
+
 
 
 

@@ -2,11 +2,11 @@
 
 ##SBATCH Lines for Resource Request ##
 
-#SBATCH --time=00:01:00
+#SBATCH --time=01:15:00
 #SBATCH --nodes=1
 #SBATCH --tasks=1
-#SBATCH --mem-per-cpu=200mb
-#SBATCH -J Communism
+#SBATCH --mem-per-cpu=1M or 1G
+#SBATCH --job-name job name
 ##Command Lines to Run ## 
 
-srun -n 1 python ./example.py
+srun -n 1 python ./test.py

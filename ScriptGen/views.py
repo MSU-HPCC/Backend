@@ -205,7 +205,7 @@ def get_name(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        data = {'Wall_time':'HH:MM:SS','job_name':'job name','nodes':'1','CPUs':'1','MemoryPerCPU':'1GB','Tasks':'1','ExecutableName':'example.py'}
+        data = {'Wall_time':'HH:MM:SS','job_name':'job name','nodes':'1','CPUs':'1','MemoryPerCPU':'1M or 1G','Tasks':'1','ExecutableName':'example.py'}
         form = NameForm(initial=data)
 
     return render(request, 'ScriptGen/name.html', {'form': form})
