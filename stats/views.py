@@ -96,7 +96,7 @@ def JobSubStats(request):
     DateDict={}
     for jobid in AllJobs:
         startTime = AllJobs[jobid]['start']
-        date = datetime.utcfromtimestamp(startTime).strftime('%Y-%m-%d')
+        date = datetime.fromtimestamp(startTime).date()
 
         if int(startTime) > 0:
             if date in DateDict:
@@ -110,14 +110,18 @@ def JobSubStats(request):
     xDates= [pair[0] for pair in x ]
     y = [pair[1] for pair in x ]
     fig, ax = plt.subplots()
-
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
-    plt.gca().xaxis.set_major_locator(mdates.DayLocator(bymonthday=range(1,32), interval=1))
+    plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
+
+
+    ax.xaxis_date()
 
 
     ax.plot(xDates, y)
 
-    plt.xlabel("Dates")
+
+
+    #plt.xlabel("Dates")
     plt.ylabel("Jobs Submitted")
     plt.title("Jobs Submitted In 2018")
     plt.gcf().autofmt_xdate()
