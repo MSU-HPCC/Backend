@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import os
 import io
 
-from . import hpcccreds
+#from . import hpcccreds
 
 import paramiko
 
