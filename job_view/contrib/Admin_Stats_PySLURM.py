@@ -2,7 +2,7 @@ import pyslurm
 from datetime import datetime, timedelta
 #TIME UNIMPLEMENTED
 class user_access():
-    def __init__(self, user,time = 31):
+    def __init__(self, user, time=31):
         self.user = user
         self.user_id = None
         self.group_id = None
@@ -10,16 +10,19 @@ class user_access():
         self.group_table = set()
         self.group_job_table = {}
         self.all_jobs = None
-        self.user_list = set()
-
-        t_delta = timedelta(days = time)
-        start = datetime.now() -  t_delta 
+        self.full_table = {}
+        
+        end = datetime.now() + timedelta(days=31)
+        end = end.strftime("%m%d%y")
+        t_delta = timedelta(days=time)
+        start = datetime.now() - t_delta
         start = start.strftime("%m%d%y")
 
-        self.all_jobs = pyslurm.slurmdb_jobs().get(starttime=start.encode('utf-8'))
+        self.all_jobs = pyslurm.slurmdb_jobs().get(starttime=start.encode('utf-8'),endtime=end.encode('utf-8'))
 
         for i in self.all_jobs:
             if self.all_jobs[i]['user'] == self.user:
+                print(user," : ",self.all_jobs[i])
                 self.user_id = self.all_jobs[i]['gid']
                 self.group_id = self.all_jobs[i]['account']
                 break
@@ -27,11 +30,9 @@ class user_access():
         for j in self.all_jobs:
             if self.all_jobs[j]['account'] == self.group_id:
                 self.group_table.add(self.all_jobs[j]['user'])
-            if self.all_jobs[i]['user'] == self.user:
-                self.job_table.update({i:self.all_jobs[i]})
-            self.user_list.add(self.all_jobs[i]['user'])
-
-        
+            if self.all_jobs[j]['user'] == self.user:
+                self.job_table.update({j: self.all_jobs[j]})
+            self.full_table.update({self.all_jobs[j]['account']: {self.all_jobs[j]['user']: {j: self.all_jobs[j]}}})
 
         self.group_table = list(self.group_table)
 
@@ -43,7 +44,7 @@ class user_access():
         for k in self.all_jobs:
             if self.all_jobs[k]['user'] in self.group_table:
                 if self.all_jobs[k]['user'] != self.user:
-                    self.group_job_table[self.all_jobs[k]['user']].update({k:self.all_jobs[k]})
+                    self.group_job_table[self.all_jobs[k]['user']].update({k: self.all_jobs[k]})
 
 
 
@@ -79,14 +80,19 @@ class user_access():
             total = len(holder[user].keys())
             tot_comp = 0
             tot_error = 0
+            tot_run = 0
+            tot_pending = 0
             for i in holder[user]:
-                if holder[user][i]['exit_code'] == 0:
+                #(user, " : ", holder[user][i])
+                if holder[user][i]['end'] == 0:
+                    if holder[user][i]['start']==0:
+                        tot_pending += 1
+                    else:
+                        tot_run += 1
+                elif holder[user][i]['exit_code'] == 0:
                     tot_comp += 1
                 else:
                     tot_error += 1
-            current =  pyslurm.job().find_user(user_list[user]) #CURRENTLY UNIMPLEMENTED
-            tot_run = len(current.keys())
-            total += tot_run
 
             stats_list = [[(tot_comp/total),(tot_error/total),(tot_run/total)],total,tot_comp,tot_error,tot_run]
 
@@ -165,48 +171,6 @@ class group_access(user_access):
 
 
 class admin_access(group_access):
-    def __init__(self, user,time = 31):
-        self.user = user
-        self.user_id = None
-        self.group_id = None
-        self.job_table = {}
-        self.group_table = set()
-        self.group_job_table = {}
-        self.all_jobs = None
-        self.full_table = {}
-        
-        t_delta = timedelta(days = time)
-        start = datetime.now() - t_delta
-        start = start.strftime("%m%d%y")
-
-
-        self.all_jobs = pyslurm.slurmdb_jobs().get(starttime=start.encode('utf-8'))
-
-        for i in self.all_jobs:
-            if self.all_jobs[i]['user'] == self.user:
-                self.user_id = self.all_jobs[i]['gid']
-                self.group_id = self.all_jobs[i]['account']
-                break
-
-        for j in self.all_jobs:
-            if self.all_jobs[j]['account'] == self.group_id:
-                self.group_table.add(self.all_jobs[j]['user'])
-            if self.all_jobs[j]['user'] == self.user:
-                self.job_table.update({j:self.all_jobs[j]})
-            self.full_table.update({self.all_jobs[j]['account']:{self.all_jobs[j]['user']:{j:self.all_jobs[j]}}})
-
-        self.group_table = list(self.group_table)
-
-        for i in self.group_table:
-            self.group_job_table[i] = {}
-
-        self.group_job_table.update({self.user: self.job_table})
-
-        for k in self.all_jobs:
-            if self.all_jobs[k]['user'] in self.group_table:
-                if self.all_jobs[k]['user'] != self.user:
-                    self.group_job_table[self.all_jobs[k]['user']].update({k:self.all_jobs[k]})
-
     def view_jobs(self, user_list = [],group_list = [],time = 7):#UNCHANGED
         self.job_table = []
 
@@ -214,8 +178,12 @@ class admin_access(group_access):
             group_list = self.full_table.keys()
         if user_list == []:  # Default to all users
             for i in group_list:
-                user_list.append(self.full_table[i].keys())
-                user_list = list(set(user_list))
+                temp = self.full_table[i].keys()
+                for j in temp:
+                    if j not in user_list:
+                        user_list.append(j)
+                #user_list.append(self.full_table[i].keys())
+                #user_list = list(set(user_list))
 
         for i in group_list:
             for j in user_list:
@@ -233,8 +201,13 @@ class admin_access(group_access):
             group_list = self.full_table.keys()
         if user_list == []:  # Default to all users
             for i in group_list:
-                user_list.append(self.full_table[i].keys())
-                user_list = list(set(user_list))
+                temp = self.full_table[i].keys()
+                for j in temp:
+                    if j not in user_list:
+                        user_list.append(j)
+                #user_list.append(self.full_table[i].keys())
+                #user_list = list(set(user_list))
+
 
         if temp_stats == {}:
             return None
@@ -358,7 +331,7 @@ class admin_access(group_access):
 
 x1 = user_access("matt")
 x2 = group_access("christian")
-x3 = admin_access("matt")
+x3 = admin_access("luedtke2")
 #
 print("FINISHED")
 #
@@ -373,51 +346,52 @@ z3 = x3.my_stats(120)
 print("User mystats: ",z1)
 print("Group mystats: ",z2)
 print("Admin mystats: ",z3)
+
 #
-# z1 = x1.my_jobs(120)
-# z2 = x2.my_jobs(120)
-# z3 = x3.my_jobs(120)
+z1 = x1.my_jobs()
+z2 = x2.my_jobs()
+z3 = x3.my_jobs()
+
+print("User my_jobs: ",z1)
+print("Group my_jobs: ",z2)
+print("Amin my_jobs: ",z3)
 #
-# print("User my_jobs: ",z1)
-# print("Group my_jobs: ",z2)
-# print("Amin my_jobs: ",z3)
+y2 = x2.group_stats(["matt"],120)
+y3 = x3.admin_group_stats(None,["matt"],120)
 #
-# y2 = x2.group_stats(["256005"],120)
-# y3 = x3.group_stats(None,["256005"],120)
+print("Group group_stats: ",y2)
+print("Admin group_stats: ",y3)
 #
-# print("Group group_stats: ",y2)
-# print("Admin group_stats: ",y3)
+y2 = x2.group_jobs(["christian"],120)
+y3 = x3.admin_group_jobs(None,["christian"],120)
 #
-# y2 = x2.group_jobs(["256005"],120)
-# y3 = x3.group_jobs(None,["256005"],120)
+print("Group group_jobs: ",y2)
+print("Admin group_jobs: ",y3)
 #
-# print("Group group_jobs: ",y2)
-# print("Admin group_jobs: ",y3)
+y2 = x2.group_stats([],120)
+y3 = x3.admin_group_stats(None,[],120)
 #
-# y2 = x2.group_stats([],120)
-# y3 = x3.group_stats(None,[],120)
+print("Group group_stats: ",y2)
+print("Admin group_stats: ",y3)
 #
-# print("Group group_stats: ",y2)
-# print("Admin group_stats: ",y3)
+y2 = x2.group_jobs([],120)
+y3 = x3.admin_group_jobs(None,[],120)
 #
-# y2 = x2.group_jobs([],120)
-# y3 = x3.group_jobs(None,[],120)
+print("Group group_jobs: ",y2)
+print("Admin group_jobs: ",y3)
 #
-# print("Group group_jobs: ",y2)
-# print("Admin group_jobs: ",y3)
+y2 = x3.view_jobs(["matt"],[],120)
+y3 = x3.view_stats(["matt"],[],120)
 #
-# y2 = x3.view_jobs(["256005"],[],120)
-# y3 = x3.view_stats(["256005"],[],120)
+print("Admin view_jobs: ",y2)
+print("Admin view_stats: ",y3)
 #
-# print("Admin view_jobs: ",y2)
-# print("Admin view_stats: ",y3)
+y2 = x3.view_jobs([],[],120)
+y3 = x3.view_stats([],[],120)
 #
-# y2 = x3.view_jobs([],[],120)
-# y3 = x3.view_stats([],[],120)
+print("Admin view_jobs: ",y2)
+print("Admin view_stats: ",y3)
 #
-# print("Admin view_jobs: ",y2)
-# print("Admin view_stats: ",y3)
-#
-# print(x1.user)
-# print(x1.user_id)
-# print(x1.group_id)
+print(x1.user)
+print(x1.user_id)
+print(x1.group_id)
