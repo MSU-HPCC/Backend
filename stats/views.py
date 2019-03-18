@@ -187,7 +187,7 @@ def JobFailure(request):
     fig, ax = plt.subplots()
     ax.pie(sizes, autopct='%1.0f%%', startangle=90)
     ax.axis('equal')
-    plt.title("Failed Jobs by user id in group 2000")
+    plt.title("Failed Jobs by user")
     plt.legend(labels)
 
     g = mpld3.fig_to_html(fig)
@@ -218,7 +218,7 @@ def MajorUsers(request):
     fig, ax = plt.subplots()
     ax.pie(sizes, autopct='%1.0f%%', startangle=90)
     ax.axis('equal')
-    plt.title("Failed Jobs by user id in group 2000")
+    plt.title("Major Job Submitters by percentage")
     plt.legend(labels)
 
     g = mpld3.fig_to_html(fig)
