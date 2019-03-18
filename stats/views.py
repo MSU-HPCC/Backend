@@ -220,7 +220,7 @@ def MajorUsers(request):
         if jobs > twoPercent:
             newUserDict[user]=jobs
         else:
-            newUserDict['other']+=1
+            newUserDict['other']+=jobs
 
     labels = [user for user in newUserDict]
 
