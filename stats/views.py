@@ -181,7 +181,7 @@ def JobFailure(request):
                 ErrorDict[user]+=1
             else:
                 ErrorDict[user]=1
-
+    '''
     TotalErrors= sum(ErrorDict.values())
     NewErrorDict={'other':0}
     for user in ErrorDict:
@@ -192,10 +192,11 @@ def JobFailure(request):
             NewErrorDict[user]= jobs
         else:
             NewErrorDict['other']+=jobs
+    '''
 
 
-    labels= [ user for user in NewErrorDict]
-    sizes=[NewErrorDict[user] for user in NewErrorDict]
+    labels= [ user for user in ErrorDict]
+    sizes=[ErrorDict[user] for user in ErrorDict]
     fig, ax = plt.subplots()
     ax.pie(sizes, autopct='%1.0f%%', startangle=90)
     ax.axis('equal')
