@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %} Admin Job View {% endblock %}
 {% block content %}
-  <div class="grid-x" style="margin: 10px 0 0 0;padding: 0 10px">
+  <div class="grid-x" style="margin: 20px 0 0 0;padding: 0 10px">
       <div class="cell small-2 large-2" style="margin: 0">
           <select id="search-selection">
             {% for col,idx in cols %}
@@ -10,7 +10,7 @@
             {% endfor %}
           </select>
       </div>
-      <input id="user-field" style="margin: 0 20px 0 20px;width: 40vw" class="cell small-8 large-8" type="text" placeholder="Search Query" />
+      <input id="user-field" style="margin: 0 20px 0 20px;width: 50vw" class="cell small-8 large-8" type="text" placeholder="Search Query" />
       <a id="search-button" style="margin: 0" class="button cell small-2 large-2" href="#">Search</a>
   </div>
 
