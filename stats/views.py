@@ -211,7 +211,7 @@ def MajorUsers(request):
         else:
             userSubDict[user]=1
 
-    totalSub = len(userSubDict.values())
+    totalSub = sum(userSubDict.values())
     newUserDict={'other':0}
     for user in userSubDict:
         jobs= userSubDict[user]
