@@ -164,7 +164,7 @@ def get_name(request):
             file.write("#SBATCH --nodes=" + str(nodes) + "\n")
             file.write("#SBATCH --tasks=" + str(Tasks) + "\n")
             file.write("#SBATCH --mem-per-cpu=" + str(MemoryPerCPu) + "\n")
-            file.write("#SBATCH --job-name " + str(job_name) + "\n")
+            file.write("#SBATCH -J " + str(job_name) + "\n")
             file.write("##Command Lines to Run ## \n\n")
             #file.write("cd "+str(script_path)+"\n")
             #file.write("srun -n "+str(Tasks)+" "+str(Executable)+"\n")
