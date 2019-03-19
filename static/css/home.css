@@ -1,0 +1,65 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../images/facts_hero.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.header {
+    /*margin-top: 20px;*/
+    border: none;
+}
+header {
+    background: #18453b;
+    border: none;
+    height: 60px;
+}
+.row {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+#page-content-wrapper {
+    padding: 0;
+}
+.container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.base-box-header-img {
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 40px;
+    margin-right: 10px;
+}
+.base-box-header-title {
+    text-align: left;
+}
+.base-box-header-title h1 {
+    color: #fff;
+    font-size: 20px;
+    text-align: left;
+    margin: 2px 0 2px 0;
+}
+.base-box-header-title p {
+    font-size: 16px;
+    color: #fff;
+    margin: 0;
+    text-align: left;
+}
+.base-box-header-title div {
+    display: inline-block;
+    vertical-align: top;
+}
+.icons {
+    /*font-size: 34px;*/
+    /*width: 34px;*/
+    color: #fff;
+}
+.pull-right {
+    vertical-align: top;
+    margin: 0;
+    height: 80px;
+}
