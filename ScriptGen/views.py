@@ -153,6 +153,8 @@ def get_name(request):
             #filename = os.getcwd() + r"\ScriptGen\\"+ Executable.split(".")[0]+".qsub"
             filename = os.getcwd() + r"/ScriptGen/Bash.sb"
             file = io.open(filename, "w", newline='\n')
+            os.chmod(filename,0o664)
+
 
 
 
@@ -289,7 +291,7 @@ def CleanUp(request):
         if file.endswith(".out"):
             jobID= file.split(".")[0]
             jobID= jobID.split("-")[1]
-            print("slurm file "+str(jobID))
+
             path= "JobSub/"+str(jobID)
             file= "JobSub/"+file
             shutil.move(file,path)
