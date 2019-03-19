@@ -1,4 +1,4 @@
-django==2.0.2
+Django==2.0.2
 mysql-connector-python
 matplotlib==2.1.0
 mpld3
