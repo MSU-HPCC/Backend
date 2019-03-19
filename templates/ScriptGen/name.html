@@ -3,6 +3,7 @@
 {% load static %}
 {% block content %}
 <br>
+<div style="background: #fff;width: 100%;">
 <form method="POST" style="margin-bottom: 50px;">
     {% csrf_token %}
     {% for field in form %}
@@ -16,5 +17,6 @@
     <br>
     <input class="button" type="submit" value="Submit">
 </form>
+</div>
 <br>
 {% endblock %}
