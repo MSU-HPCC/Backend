@@ -256,12 +256,12 @@ def MajorUsers(request):
 
 def AvgWait(request):
 
-    AllJobs= pyslurm.job().get()
+    AllJobs= pyslurm.slurmdb_jobs().get()
     WaitTimes=[]
     startTimes=[]
     for jobid in AllJobs:
-        submitTime = AllJobs[jobid]['submit_time']
-        startTime= AllJobs[jobid]['start_time']
+        submitTime = AllJobs[jobid]['submit']
+        startTime= AllJobs[jobid]['start']
         waitTime = startTime-submitTime
         startTimes.append(startTime)
 
