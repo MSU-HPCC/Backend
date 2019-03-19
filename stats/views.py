@@ -265,7 +265,7 @@ def AvgWait(request):
         waitTime = startTime-submitTime
         startTimes.append(startTime)
 
-        if waitTime <= 0:
+        if waitTime < 0:
             pass
         else:
             WaitTimes.append(waitTime)
