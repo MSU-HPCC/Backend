@@ -124,7 +124,7 @@ def get_name(request):
             bashpath =os.path.join(os.getcwd()+"/ScriptGen", "Bash.sb")
             script = fs.path(name)
             # submit a job
-            user = request.user
+            user = request.user.id
             Success = SubmitJob(bashpath, script, filename,user)
             if Success==True:
 
