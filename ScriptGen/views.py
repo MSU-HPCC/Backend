@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import os
 import io
-
+import subprocess as sub
 from . import hpcccreds
 
 import paramiko
@@ -243,10 +243,13 @@ def SubmitJob(bashpath, script, filename,user):
     try:
         #jobid = a.submit_batch_job({'script': BashScriptName})
         command = "sbatch Bash.sb"
-        console_output= os.subprocess.check_output(command)
-        console_output= console_output.split()
-        print(console_output)
-        jobid= int(console_output[-1])
+
+        p = sub.Popen([command], stdout=sub.PIPE, stderr=sub.PIPE)
+        output, errors = p.communicate()
+        output=output.split()
+
+        jobid= int(output[-1])
+        print(jobid)
         time.sleep(0.3)
         print("done")
         #print("Job Name is "+str(jobName))
