@@ -125,7 +125,8 @@ def get_name(request):
             script = fs.path(name)
             # submit a job
             user = request.user.username
-            Success = SubmitJob(bashpath, script, filename,user)
+            job_name = form.cleaned_data['job_name']
+            Success = SubmitJob(bashpath, script, filename,user, job_name)
             if Success==True:
 
                 return render(request, 'ScriptGen/success.html',{'message':"Job Successfully Scheduled!"})
@@ -214,7 +215,7 @@ def get_name(request):
     return render(request, 'ScriptGen/name.html', {'form': form})
 
 
-def SubmitJob(bashpath, script, filename,user):
+def SubmitJob(bashpath, script, filename,user,job_name):
     print("script = "+script)
     print("bashpath = "+bashpath)
     print("filename = "+str(filename))
@@ -241,7 +242,7 @@ def SubmitJob(bashpath, script, filename,user):
     try:
         jobid = a.submit_batch_job({'script': BashScriptName})
         time.sleep(0.3)
-        jobName = pyslurm.slurmdb_jobs().get()[jobid]['jobname']
+
         print("Job Name is "+str(jobName))
 
 
@@ -253,7 +254,7 @@ def SubmitJob(bashpath, script, filename,user):
     print("jobid = "+str(jobid))
     # make the directory with full permisions
     # it will be named after the jobid
-    newDir = str(jobName)+"-"+str(jobid)
+    newDir = str(job_name)+"-"+str(jobid)
     print("Dir created: "+newDir)
     os.mkdir(str(newDir), mode=0o777)
     # move the bash script, actual script, and slurm.out to new folder jobid
