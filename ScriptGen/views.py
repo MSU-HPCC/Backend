@@ -215,7 +215,9 @@ def get_name(request):
 
 
 def SubmitJob(bashpath, script, filename,user):
-
+    print("script = "+script)
+    print("bashpath = "+bashpath)
+    print("filename = "+str(filename))
     currDir = os.getcwd()
     #go into jobsub folder to execute batch script
     os.chdir("/home/"+user)
@@ -225,6 +227,9 @@ def SubmitJob(bashpath, script, filename,user):
     # grab the Bash Scriptname and Script name form the full paths
     BashScriptName = ntpath.basename(bashpath)
     ScriptName = ntpath.basename(script)
+    print("Bash Script Name = "+BashScriptName)
+    print("Scriptname = "+ScriptName)
+    print("renaming SCriptname to : "+filename)
     # rename the script to what is listed in the bash file
     os.rename(ScriptName,filename)
     # submit a job
@@ -235,6 +240,7 @@ def SubmitJob(bashpath, script, filename,user):
 
     try:
         jobid = a.submit_batch_job({'script': BashScriptName})
+        time.sleep(0.3)
         jobName = pyslurm.slurmdb_jobs().get()[jobid]['jobname']
         print("Job Name is "+str(jobName))
 
@@ -259,10 +265,10 @@ def SubmitJob(bashpath, script, filename,user):
 
     if os.path.isfile(slurmname):
         print("slurm file exists")
-        shutil.move(slurmname, str(jobid))
-    shutil.move(BashScriptName, str(jobid))
+        shutil.move(slurmname, str(newDir))
+    shutil.move(BashScriptName, str(newDir))
     time.sleep(0.3)
-    shutil.copy(filename, str(jobid))
+    shutil.copy(filename, str(newDir))
 
     #shutil.move(filename, str(jobid))
     # go back to original directory not to fuck with anything
