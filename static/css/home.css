@@ -63,3 +63,6 @@ header {
     margin: 0;
     height: 80px;
 }
+.box-form_error{
+    text-align: center;
+}
