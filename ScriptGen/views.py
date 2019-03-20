@@ -127,7 +127,7 @@ def get_name(request):
             user = request.user.username
 
             #job_name = form.cleaned_data['job_name']
-            Success = SubmitJob(bashpath, script, filename,user, job_name)
+            Success = SubmitJob(bashpath, script, filename,user)
             if Success==True:
 
                 return render(request, 'ScriptGen/success.html',{'message':"Job Successfully Scheduled!"})
@@ -216,7 +216,7 @@ def get_name(request):
     return render(request, 'ScriptGen/name.html', {'form': form})
 
 
-def SubmitJob(bashpath, script, filename,user,job_name):
+def SubmitJob(bashpath, script, filename,user):
     print("script = "+script)
     print("bashpath = "+bashpath)
     print("filename = "+str(filename))
@@ -255,6 +255,7 @@ def SubmitJob(bashpath, script, filename,user,job_name):
     print("jobid = "+str(jobid))
     # make the directory with full permisions
     # it will be named after the jobid
+    job_name = pyslurm.slurmdb_jobs().get[jobid]['jobname']
     newDir = str(job_name)+"-"+str(jobid)
     print("Dir created: "+newDir)
     os.mkdir(str(newDir), mode=0o777)
