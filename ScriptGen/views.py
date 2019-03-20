@@ -255,7 +255,7 @@ def SubmitJob(bashpath, script, filename,user):
     print("jobid = "+str(jobid))
     # make the directory with full permisions
     # it will be named after the jobid
-    job_name = pyslurm.slurmdb_jobs().get()[jobid]['jobname']
+    job_name = pyslurm.job().get()[jobid]['name']
     newDir = str(job_name)+"-"+str(jobid)
     print("Dir created: "+newDir)
     os.mkdir(str(newDir), mode=0o777)
