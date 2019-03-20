@@ -217,6 +217,7 @@ def SubmitJob(bashpath, script, filename):
     print("bash = "+bashpath)
     print("script = "+script)
     print("filename = "+filename)
+    currDir = os.getcwd()
     #go into jobsub folder to execute batch script
     os.chdir("JobSub")
     # copy bashfile and script into JobSub directory
@@ -264,6 +265,15 @@ def SubmitJob(bashpath, script, filename):
     #shutil.move(filename, str(jobid))
     # go back to original directory not to fuck with anything
     os.chdir("..")
+
+
+
+
+
+    os.chdir("/home/roushzac")
+    os.mkdir("testing", mode=0o777)
+    os.chdir(currDir)
+
     return True
 
 
