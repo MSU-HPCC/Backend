@@ -22,7 +22,7 @@ class user_access():
 
         for i in self.all_jobs:
             if self.all_jobs[i]['user'] == self.user:
-                print(user," : ",self.all_jobs[i])
+
                 self.user_id = self.all_jobs[i]['gid']
                 self.group_id = self.all_jobs[i]['account']
                 break
@@ -329,9 +329,9 @@ class admin_access(group_access):
 
 #________________TESTS_____________________________
 
-x1 = user_access("matt")
-x2 = group_access("christian")
-x3 = admin_access("luedtke2")
+#x1 = user_access("matt")
+#x2 = group_access("christian")
+#x3 = admin_access("luedtke2")
 #
 print("FINISHED")
 #
@@ -339,59 +339,59 @@ print("FINISHED")
 # print(x2)
 # print(x3)
 #
-z1 = x1.my_stats()
-z2 = x2.my_stats()
-z3 = x3.my_stats(120)
+#z1 = x1.my_stats()
+#z2 = x2.my_stats()
+#z3 = x3.my_stats(120)
 #
-print("User mystats: ",z1)
-print("Group mystats: ",z2)
-print("Admin mystats: ",z3)
+#print("User mystats: ",z1)
+#print("Group mystats: ",z2)
+#print("Admin mystats: ",z3)
 
 #
-z1 = x1.my_jobs()
-z2 = x2.my_jobs()
-z3 = x3.my_jobs()
+#z1 = x1.my_jobs()
+#z2 = x2.my_jobs()
+#z3 = x3.my_jobs()
 
-print("User my_jobs: ",z1)
-print("Group my_jobs: ",z2)
-print("Amin my_jobs: ",z3)
+#print("User my_jobs: ",z1)
+#print("Group my_jobs: ",z2)
+#print("Amin my_jobs: ",z3)
 #
-y2 = x2.group_stats(["matt"],120)
-y3 = x3.admin_group_stats(None,["matt"],120)
+#y2 = x2.group_stats(["matt"],120)
+#y3 = x3.admin_group_stats(None,["matt"],120)
 #
-print("Group group_stats: ",y2)
-print("Admin group_stats: ",y3)
+#print("Group group_stats: ",y2)
+#print("Admin group_stats: ",y3)
 #
-y2 = x2.group_jobs(["christian"],120)
-y3 = x3.admin_group_jobs(None,["christian"],120)
+#y2 = x2.group_jobs(["christian"],120)
+#y3 = x3.admin_group_jobs(None,["christian"],120)
 #
-print("Group group_jobs: ",y2)
-print("Admin group_jobs: ",y3)
+#print("Group group_jobs: ",y2)
+#print("Admin group_jobs: ",y3)
 #
-y2 = x2.group_stats([],120)
-y3 = x3.admin_group_stats(None,[],120)
+#y2 = x2.group_stats([],120)
+#y3 = x3.admin_group_stats(None,[],120)
 #
-print("Group group_stats: ",y2)
-print("Admin group_stats: ",y3)
+#print("Group group_stats: ",y2)
+#print("Admin group_stats: ",y3)
 #
-y2 = x2.group_jobs([],120)
-y3 = x3.admin_group_jobs(None,[],120)
+#y2 = x2.group_jobs([],120)
+#y3 = x3.admin_group_jobs(None,[],120)
 #
-print("Group group_jobs: ",y2)
-print("Admin group_jobs: ",y3)
+#print("Group group_jobs: ",y2)
+#print("Admin group_jobs: ",y3)
 #
-y2 = x3.view_jobs(["matt"],[],120)
-y3 = x3.view_stats(["matt"],[],120)
+#y2 = x3.view_jobs(["matt"],[],120)
+#y3 = x3.view_stats(["matt"],[],120)
 #
-print("Admin view_jobs: ",y2)
-print("Admin view_stats: ",y3)
+#print("Admin view_jobs: ",y2)
+#print("Admin view_stats: ",y3)
 #
-y2 = x3.view_jobs([],[],120)
-y3 = x3.view_stats([],[],120)
+#y2 = x3.view_jobs([],[],120)
+#y3 = x3.view_stats([],[],120)
 #
-print("Admin view_jobs: ",y2)
-print("Admin view_stats: ",y3)
+#print("Admin view_jobs: ",y2)
+#print("Admin view_stats: ",y3)
 #
-print(x1.user)
-print(x1.user_id)
-print(x1.group_id)
+#print(x1.user)
+#print(x1.user_id)
+#print(x1.group_id)
