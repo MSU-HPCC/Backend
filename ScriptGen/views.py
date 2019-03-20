@@ -215,12 +215,10 @@ def get_name(request):
 
 
 def SubmitJob(bashpath, script, filename,user):
-    print("bash = "+bashpath)
-    print("script = "+script)
-    print("filename = "+filename)
+
     currDir = os.getcwd()
     #go into jobsub folder to execute batch script
-    os.chdir("JobSub")
+    os.chdir("/home"+user)
     # copy bashfile and script into JobSub directory
     shutil.copy(script, os.getcwd())
     shutil.copy(bashpath, os.getcwd())
@@ -237,24 +235,25 @@ def SubmitJob(bashpath, script, filename,user):
 
     try:
         jobid = a.submit_batch_job({'script': BashScriptName})
+        jobName = pyslurm.slurmdb_jobs().get()[jobid]['jobname']
         print("we are trying")
 
     except Exception:
-        os.chdir("..")
+        os.chdir(currDir)
 
         return False
 
     print("jobid = "+str(jobid))
     # make the directory with full permisions
     # it will be named after the jobid
-    os.mkdir(str(jobid), mode=0o777)
+    newDir = str(jobName)+"-"+str(jobid)
+    os.mkdir(str(newDir), mode=0o777)
     # move the bash script, actual script, and slurm.out to new folder jobid
     # if jobid=13, the folder is named 13
     #shutil .move(BashScriptName, str(jobid))
     #shutil.move(filename, str(jobid))
     slurmname= "slurm-"+str(jobid)+".out"
-    print(slurmname)
-    print(os.getcwd())
+
 
     if os.path.isfile(slurmname):
         print("slurm file exists")
@@ -265,15 +264,13 @@ def SubmitJob(bashpath, script, filename,user):
 
     #shutil.move(filename, str(jobid))
     # go back to original directory not to fuck with anything
-    os.chdir("..")
-
-
-
-
-
-    os.chdir("/home/"+user)
-    os.mkdir("testing", mode=0o777)
     os.chdir(currDir)
+
+
+
+
+
+
 
     return True
 
