@@ -124,7 +124,8 @@ def get_name(request):
             bashpath =os.path.join(os.getcwd()+"/ScriptGen", "Bash.sb")
             script = fs.path(name)
             # submit a job
-            Success = SubmitJob(bashpath, script, filename)
+            user = request.user
+            Success = SubmitJob(bashpath, script, filename,user)
             if Success==True:
 
                 return render(request, 'ScriptGen/success.html',{'message':"Job Successfully Scheduled!"})
@@ -213,7 +214,7 @@ def get_name(request):
     return render(request, 'ScriptGen/name.html', {'form': form})
 
 
-def SubmitJob(bashpath, script, filename):
+def SubmitJob(bashpath, script, filename,user):
     print("bash = "+bashpath)
     print("script = "+script)
     print("filename = "+filename)
@@ -270,7 +271,7 @@ def SubmitJob(bashpath, script, filename):
 
 
 
-    os.chdir("/home/roushzac")
+    os.chdir("/home/"+user)
     os.mkdir("testing", mode=0o777)
     os.chdir(currDir)
 
