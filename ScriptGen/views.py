@@ -113,7 +113,7 @@ def get_name(request):
         form = NameForm(request.POST)
         # file upload
         if request.FILES:
-            #script_path = form.cleaned_data['CodeDirectory']
+            script_path = form.cleaned_data['CPUs']
             uploaded_file = request.FILES['document']
 
             fs = FileSystemStorage()
@@ -125,6 +125,7 @@ def get_name(request):
             script = fs.path(name)
             # submit a job
             user = request.user.username
+
             job_name = form.cleaned_data['job_name']
             Success = SubmitJob(bashpath, script, filename,user, job_name)
             if Success==True:
@@ -243,7 +244,7 @@ def SubmitJob(bashpath, script, filename,user,job_name):
         jobid = a.submit_batch_job({'script': BashScriptName})
         time.sleep(0.3)
 
-        print("Job Name is "+str(jobName))
+        #print("Job Name is "+str(jobName))
 
 
     except Exception:
