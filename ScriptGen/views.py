@@ -218,7 +218,7 @@ def SubmitJob(bashpath, script, filename,user):
 
     currDir = os.getcwd()
     #go into jobsub folder to execute batch script
-    os.chdir("/home"+user)
+    os.chdir("/home/"+user)
     # copy bashfile and script into JobSub directory
     shutil.copy(script, os.getcwd())
     shutil.copy(bashpath, os.getcwd())
