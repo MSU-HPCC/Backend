@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import os
 import io
 import subprocess as sub
-from . import hpcccreds
+
 
 import paramiko
 
