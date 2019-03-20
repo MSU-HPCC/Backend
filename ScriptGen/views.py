@@ -241,7 +241,11 @@ def SubmitJob(bashpath, script, filename,user):
 
 
     try:
-        jobid = a.submit_batch_job({'script': BashScriptName})
+        #jobid = a.submit_batch_job({'script': BashScriptName})
+        command = "sbatch Bash.sb"
+        console_output= os.system(command)
+        console_output= console_output.split()
+        jobid= int(console_output[-1])
         time.sleep(0.3)
 
         #print("Job Name is "+str(jobName))
