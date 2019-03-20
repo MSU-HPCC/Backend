@@ -229,14 +229,15 @@ def SubmitJob(bashpath, script, filename,user):
     os.rename(ScriptName,filename)
     # submit a job
     a=pyslurm.job()
-    print("files = "+str(os.listdir(os.getcwd())))
+
     # get the jobid so we know what folder to put the files in
 
 
     try:
         jobid = a.submit_batch_job({'script': BashScriptName})
         jobName = pyslurm.slurmdb_jobs().get()[jobid]['jobname']
-        print("we are trying")
+        print("Job Name is "+str(jobName))
+
 
     except Exception:
         os.chdir(currDir)
@@ -247,6 +248,7 @@ def SubmitJob(bashpath, script, filename,user):
     # make the directory with full permisions
     # it will be named after the jobid
     newDir = str(jobName)+"-"+str(jobid)
+    print("Dir created: "+newDir)
     os.mkdir(str(newDir), mode=0o777)
     # move the bash script, actual script, and slurm.out to new folder jobid
     # if jobid=13, the folder is named 13
