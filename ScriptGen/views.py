@@ -26,7 +26,7 @@ import ntpath
 from pathlib import Path
 from datetime import datetime
 
-
+import subprocess
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -240,7 +240,11 @@ def SubmitJob(bashpath, script, filename,user):
 
 
     try:
-        jobid = a.submit_batch_job({'script': BashScriptName})
+        result = subprocess.check_output(["sbatch", BashScriptName])
+        result = result.split()[-1]
+        jobid = int(result)
+
+        #jobid = a.submit_batch_job({'script': BashScriptName})
 
         #print(jobid)
         time.sleep(0.3)
