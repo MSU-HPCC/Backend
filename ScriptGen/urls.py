@@ -12,7 +12,8 @@ urlpatterns = [
     path('Update/', views.Update, name="Update"),
     path('CleanUp/',views.CleanUp,name="CleanUp"),
     path('Results/',views.Results, name="Results"),
-    path('SlurmFile/', views.SlurmFile,name="Results")
+    path('SlurmFile/', views.SlurmFile,name="Results"),
+    path('Test/',views.Test, name="Test")
 
 ]
 

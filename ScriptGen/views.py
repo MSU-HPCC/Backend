@@ -28,6 +28,8 @@ import shutil
 import ntpath
 from pathlib import Path
 from datetime import datetime
+
+
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -113,7 +115,7 @@ def get_name(request):
         form = NameForm(request.POST)
         # file upload
         if request.FILES:
-            #script_path = form.cleaned_data['CPUs']
+            script_path = form.cleaned_data['CPUs']
             uploaded_file = request.FILES['document']
 
             fs = FileSystemStorage()
@@ -369,3 +371,18 @@ def ListOnlyDirs(path):
         if os.path.isdir(os.path.join(path, filename)):
             dirlist.append(filename)
     return dirlist
+
+
+
+def Test(request):
+    filename = '/home/roushzac//wNdCiHi3-5530/slurm-5530.out'
+    file = open(filename, "rb")
+    response = HttpResponse(file.read())
+    response['Content-Disposition'] = 'attachment; filename= ' + 'slurm.out'
+
+    response['Content-Length'] = os.path.getsize(filename)
+
+    # return response
+
+    return response
+
