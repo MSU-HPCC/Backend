@@ -4,11 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import os
 import io
-
-from . import hpcccreds
-
+import subprocess as sub
 import paramiko
-
 import os
 import time
 from django.views.decorators.csrf import csrf_exempt
@@ -231,9 +228,9 @@ def SubmitJob(bashpath, script, filename,user):
     # grab the Bash Scriptname and Script name form the full paths
     BashScriptName = ntpath.basename(bashpath)
     ScriptName = ntpath.basename(script)
-    print("Bash Script Name = "+BashScriptName)
-    print("Scriptname = "+ScriptName)
-    print("renaming SCriptname to : "+filename)
+    #print("Bash Script Name = "+BashScriptName)
+    #print("Scriptname = "+ScriptName)
+    #print("renaming SCriptname to : "+filename)
     # rename the script to what is listed in the bash file
     os.rename(ScriptName,filename)
     # submit a job
@@ -245,9 +242,9 @@ def SubmitJob(bashpath, script, filename,user):
     try:
         jobid = a.submit_batch_job({'script': BashScriptName})
 
-        print(jobid)
+        #print(jobid)
         time.sleep(0.3)
-        print("done")
+        #print("done")
         #print("Job Name is "+str(jobName))
 
 
@@ -256,12 +253,12 @@ def SubmitJob(bashpath, script, filename,user):
 
         return False
 
-    print("jobid = "+str(jobid))
+    #print("jobid = "+str(jobid))
     # make the directory with full permisions
     # it will be named after the jobid
     job_name = pyslurm.job().get()[jobid]['name']
     newDir = str(job_name)+"-"+str(jobid)
-    print("Dir created: "+newDir)
+    #print("Dir created: "+newDir)
     os.mkdir(str(newDir), mode=0o777)
     # move the bash script, actual script, and slurm.out to new folder jobid
     # if jobid=13, the folder is named 13
@@ -271,7 +268,7 @@ def SubmitJob(bashpath, script, filename,user):
 
 
     if os.path.isfile(slurmname):
-        print("slurm file exists")
+        #print("slurm file exists")
         shutil.move(slurmname, str(newDir))
     shutil.move(BashScriptName, str(newDir))
     time.sleep(0.3)
@@ -292,7 +289,7 @@ def SubmitJob(bashpath, script, filename,user):
 
 @csrf_exempt
 def Update(request):
-    print("we are updating")
+    #print("we are updating")
     text = request.GET.get('text',1)
     FilePreview = text.split("\n")
     #FilePreview=[]
@@ -329,7 +326,7 @@ def CleanUp(request):
         JobInQ= []
         for field in fields:
             if field in times:
-                print(field)
+
                 JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
             else:
                 JobInQ.append(value[field])
