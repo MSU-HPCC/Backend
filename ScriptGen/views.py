@@ -112,7 +112,7 @@ def get_name(request):
         form = NameForm(request.POST)
         # file upload
         if request.FILES:
-            script_path = form.cleaned_data['CPUs']
+            #script_path = form.cleaned_data['CPUs']
             uploaded_file = request.FILES['document']
 
             fs = FileSystemStorage()
