@@ -1,0 +1,31 @@
+{% extends "../base_templates/base-page.html" %}
+{% block title %} Your Jobs {% endblock %}
+{% load static %}
+{% block content %}
+  <h1>Job Playground</h1>
+  <div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <span>Bash Script</span>
+      <input type="file" name="bash" style="width: 50%;display: inline-block;margin: 0"><br/>
+      <span>Source Code</span>
+      <input type="file" name="source" style="width: 50%;display: inline-block;margin: 0">
+      <input id="run-playground" class="button" type="submit" name="action" value="Run Playground">
+    </form>
+  </div>
+  {% if bash %}
+    {% if source %}
+      <p>Source is: {{source}}</p>
+      <p>Bash is: {{bash}}</p>
+    {% endif %}
+  {% endif %}
+
+{% endblock %}
+
+{% block inline-js %}
+<script>
+$("#run-playground").click(function(){
+    window.location.href = '/playground/confirmation';
+});
+</script>
+{% endblock %}
