@@ -292,11 +292,11 @@ def AvgWait(request):
     JobsThisMonth=0
     for date in SubDays:
         month = int(date.split('-')[1])
-        print(month)
+
         if month==currentMonth:
             JobsThisMonth+= SubDays[date]
-    print("jobs this month = "+str(JobsThisMonth))
-    print(SubDays)
+    #print("jobs this month = "+str(JobsThisMonth))
+    #print(SubDays)
     weeks = int(now.isocalendar()[1])
     avgJobsPerWeek= len(AllJobs)/weeks
 
