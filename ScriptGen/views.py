@@ -58,7 +58,7 @@ def ScriptGen_create_view(request):
 def SlurmFile(request):
     dir = request.GET.get('dir','')
     user = request.user.username
-    jobid = dir.split()[1]
+    jobid = dir.split("-")[1]
     slurmName= "slurm-"+str(jobid)+".out"
     filename = "/home/"+user+"/"+dir+"/"+slurmName
     file = open(filename, "rb")
