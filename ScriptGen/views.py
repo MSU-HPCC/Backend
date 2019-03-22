@@ -76,7 +76,7 @@ def downloadFile(request):
     context = {}
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
-        print(uploaded_file.name)
+
         fs = FileSystemStorage()
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
