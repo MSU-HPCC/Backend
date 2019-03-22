@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from static.src import Admin_Stats_PySLURM as api
+#from static.src import Admin_Stats_PySLURM as api
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required
