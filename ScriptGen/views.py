@@ -56,8 +56,11 @@ def ScriptGen_create_view(request):
     return response'''
 
 def SlurmFile(request):
-    jobid = request.GET.get('dir','')
-    filename = os.getcwd() + "/JobSub/"+str(jobid)+"/slurm-"+str(jobid)+".out"
+    dir = request.GET.get('dir','')
+    user = request.user.username
+    jobid = dir.split()[1]
+    slurmName= "slurm-"+str(jobid)+".out"
+    filename = "/home/"+user+"/"+dir+"/"+slurmName
     file = open(filename, "rb")
     response = HttpResponse(file.read())
     response['Content-Disposition'] = 'attachment; filename= ' +"slurm-"+str(jobid)+".out"
@@ -311,14 +314,7 @@ def Update(request):
 
 
 def CleanUp(request):
-    for file in os.listdir("JobSub"):
-        if file.endswith(".out"):
-            jobID= file.split(".")[0]
-            jobID= jobID.split("-")[1]
 
-            path= "JobSub/"+str(jobID)
-            file= "JobSub/"+file
-            shutil.move(file,path)
 
     JobQueue=[]
     jobs= pyslurm.job().get()
@@ -344,6 +340,7 @@ def CleanUp(request):
 
 def Results(request):
     # put slurm files where they belong
+    '''
     for file in os.listdir("JobSub"):
         if file.endswith(".out"):
             jobID= file.split(".")[0]
@@ -353,10 +350,48 @@ def Results(request):
             file= "JobSub/"+file
             shutil.move(file,path)
             print(file)
-    DirList=ListOnlyDirs("JobSub")
-    JobFolder=os.getcwd()+"/JobSub/"
-    print(DirList)
-    return render(request, 'ScriptGen/results.html', {'dirs': DirList,'MainDir':JobFolder})
+    '''
+    # clean up the directories
+    dirs= []
+    files=[]
+    JobTable= pyslurm.slurmdb_jobs().get()
+    user = request.user.username
+    mypath = '/home/'+user
+    #grab all the dirs and filenames aka slurm.outfiles and directories
+    for (dirpath, dirnames, filenames) in os.walk(mypath):
+        files.extend(filenames)
+        dirs.extend(dirnames)
+        break
+    # for all the files in the users directory
+    for f in files:
+        # if its a slurm.out file
+        if "slurm-" in f:
+            jobid = f.split("-")[1].split(".")[0]
+            jobid = int(jobid)
+            jobname = JobTable[jobid]['jobname']
+            # get its proper directory name
+            DirName = jobname + "-" + str(jobid)
+            # if its there
+            if os.path.isdir(DirName):
+                f = mypath+"/"+f
+                DirName= mypath+"/"+DirName
+                # move it into its directory
+                shutil.move(f, DirName)
+    #done putting files back where they need to be
+    ##########################################
+
+
+    DirList=[]
+    for d in dirs:
+        jobid = d.split("-")[1]
+        slurmname = "slurm-" + jobid + ".out"
+        slurmfile = mypath + "/" + d + "/" + slurmname
+        if os.path.exists(slurmfile):
+            DirList.append(d)
+
+    #JobFolder=os.getcwd()+"/JobSub/"
+
+    return render(request, 'ScriptGen/results.html', {'dirs': DirList})
 
 
 
