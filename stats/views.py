@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 from django.shortcuts import render
 import os
 # using this solution to avoid windows vs unix slashes
@@ -11,7 +13,7 @@ import matplotlib.dates as mdates
 
 from datetime import datetime
 
-
+import pyslurm
 import numpy as np
 
 from django.views.generic import TemplateView
@@ -88,10 +90,50 @@ def JobSubStats(request):
     plt.gcf().autofmt_xdate()
     g = mpld3.fig_to_html(fig)
     '''
+
+
+    AllJobs= pyslurm.slurmdb_jobs().get()
+    DateDict={}
+    for jobid in AllJobs:
+        startTime = AllJobs[jobid]['start']
+        date = datetime.fromtimestamp(startTime).date()
+
+        if int(startTime) > 0:
+            if date in DateDict:
+                DateDict[date]+=1
+            else:
+                DateDict[date]=1
+
+    dates = [(date,DateDict[date]) for date in DateDict]
+    x= sorted(dates)
+
+    xDates= [pair[0] for pair in x ]
+    y = [pair[1] for pair in x ]
+    fig, ax = plt.subplots()
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
+
+
+    ax.xaxis_date()
+
+
+    ax.plot(xDates, y)
+
+
+
+    #plt.xlabel("Dates")
+    plt.ylabel("Jobs Submitted")
+    plt.title("Jobs Submitted In 2019")
+    plt.gcf().autofmt_xdate()
+    g = mpld3.fig_to_html(fig)
+
+
+
+
     data_folder = Path("/static/images/")
     path = data_folder / "submission-stats.png"
     path = "/static/images/submission-stats.png"
-    return render(request, 'stats/graphic.html', {'graph': path})
+    return render(request, 'stats/graphic.html', {'graph': g})
     #return render(request, 'stats/SubmissionGraphic.html')
 
 
@@ -128,18 +170,141 @@ def JobFailure(request):
     cursor.close()
     g = mpld3.fig_to_html(fig)
     '''
+
+    AllJobs= pyslurm.slurmdb_jobs().get()
+    ErrorDict= {}
+    for jobid in AllJobs:
+        user = AllJobs[jobid]['user']
+        errorCode= AllJobs[jobid]['exit_code']
+        if int(errorCode) != 0:
+            if user in ErrorDict:
+                ErrorDict[user]+=1
+            else:
+                ErrorDict[user]=1
+
+    TotalErrors= sum(ErrorDict.values())
+    NewErrorDict={'other':0}
+    for user in ErrorDict:
+        jobs = ErrorDict[user]
+        twoPercent = TotalErrors/ 100
+        twoPercent*=2
+        if jobs > twoPercent:
+            NewErrorDict[user]= jobs
+        else:
+            NewErrorDict['other']+=jobs
+
+
+
+    labels= [ user for user in NewErrorDict]
+    sizes=[NewErrorDict[user] for user in NewErrorDict]
+    fig, ax = plt.subplots()
+    ax.pie(sizes, autopct='%1.0f%%', startangle=90)
+    ax.axis('equal')
+    plt.title("Failed Jobs by user")
+    plt.legend(labels)
+
+    g = mpld3.fig_to_html(fig)
+
+
     data_folder = Path("/static/images/")
     path = data_folder / "failed-jobs.png"
-    return render(request, 'stats/graphic.html', {'graph': path})
+    return render(request, 'stats/graphic.html', {'graph': g})
     #return render(request, 'stats/FailedJobs.html')
 
 def MajorUsers(request):
     #path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
     #pngPath = image_data = open(path, "rb").read()
+
+    AllJobs = pyslurm.slurmdb_jobs().get()
+    userSubDict={}
+    for jobid in AllJobs:
+        user= AllJobs[jobid]['user']
+        if user in userSubDict:
+            userSubDict[user]+=1
+        else:
+            userSubDict[user]=1
+
+    totalSub = sum(userSubDict.values())
+    newUserDict={'other':0}
+    for user in userSubDict:
+        jobs= userSubDict[user]
+        twoPercent = totalSub/100
+        twoPercent*=2
+        if user == None:
+            newUserDict['Cameron'] = userSubDict[None]
+        elif jobs > twoPercent:
+            newUserDict[user]=jobs
+
+
+        else:
+            newUserDict['other']+=jobs
+
+    labels = [user for user in newUserDict]
+
+    sizes = [newUserDict[user] for user in newUserDict]
+    fig, ax = plt.subplots()
+    ax.pie(sizes, autopct='%1.0f%%', startangle=90)
+    ax.axis('equal')
+    plt.title("Major Job Submitters by percentage")
+    plt.legend(labels)
+
+    g = mpld3.fig_to_html(fig)
     data_folder = Path("/static/images/")
     path = data_folder / "user-jobs-submitted.png"
 
-    return render(request, 'stats/MajorUserJobs.html',{'graph': path})
+    return render(request, 'stats/graphic.html',{'graph': g})
+
+def AvgWait(request):
+
+    AllJobs= pyslurm.slurmdb_jobs().get()
+    WaitTimes=[]
+    startTimes=[]
+    for jobid in AllJobs:
+        submitTime = AllJobs[jobid]['submit']
+        startTime= AllJobs[jobid]['start']
+        waitTime = startTime-submitTime
+        startTimes.append(startTime)
+
+        if waitTime < 0:
+            pass
+        else:
+            WaitTimes.append(waitTime)
+    if len(WaitTimes)!=0:
+        avgWait= sum(WaitTimes)/len(WaitTimes)
+    else:
+        avgWait=0
+    totalJobs = len(AllJobs)
+    ### get dict of all jobs submitted by date
+
+    SubDays={}
+
+
+    for start in startTimes:
+        startDate = datetime.utcfromtimestamp(start).strftime('%Y-%m-%d')
+        if startDate in SubDays:
+            SubDays[startDate]+=1
+        else:
+            SubDays[startDate]=1
+
+    now = datetime.now()
+    currentMonth=int(now.month)
+    print(currentMonth)
+    JobsThisMonth=0
+    for date in SubDays:
+        month = int(date.split('-')[1])
+
+        if month==currentMonth:
+            JobsThisMonth+= SubDays[date]
+    #print("jobs this month = "+str(JobsThisMonth))
+    #print(SubDays)
+    weeks = int(now.isocalendar()[1])
+    avgJobsPerWeek= len(AllJobs)/weeks
+
+    info =[avgWait,totalJobs,JobsThisMonth,avgJobsPerWeek]
+    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Month','Average Jobs Submitted Per Week']
+    Table= zip(categories,info)
+    return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
+
 
 
 

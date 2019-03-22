@@ -2,48 +2,45 @@
 {% block title %} Script Generator {% endblock %}
 {% load static %}
 {% block content %}
-<div style="position: absolute;">
-    <div style="display: flex">
+<div style="position: absolute;width: 100%;margin-bottom: 100px;background: #fff">
+    <div style="display: flex;margin-left: 10%">
         <div>
             <form method="POST">
             {% csrf_token %}
             <div class="fieldWrapper" style="border: none;">
             {% for field in form %}
-
                 {{ field.errors }}
                 {{ field.label_tag }}
                 {{ field }}
-                <br/>
-
             {% endfor %}
             </div>
-            <br>
-            <input class="button" type="submit" value="Generate Bash Script">
+            <div>
+                <input class="button" type="submit" value="Generate Bash Script">
+
+            </div>
         </form>
         </div>
         <div style="margin-top:0;">
-
-           <div  class="fieldWrapper" style="margin-bottom: 150px; background-color: white;">
-                <textarea id="textarea" style="height: 250px;">{%for line in preview%}{{line}}{%endfor%}</textarea>
-
+            <div style="margin-top: 40px;">
+                <input id ="update" class="button" type="submit" name="action" value="Update Bash Script" style="margin-right: 20px">
+                <input id="download" class="button" type="submit" value="Download Bash File">
 
             </div>
-            <div style="width:60%;">
-                <div>
-                    <input id="download" class="button" type="submit" value="Download Bash File">
-                </div>
+           <div  class="fieldWrapper" style="background-color: white;">
+                <textarea id="textarea" style="height: 250px;">{%for line in preview%}{{line}}{%endfor%}</textarea>
+
+            </div>
+            <div >
                 <div style="padding-top: 22px;">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div>
-                            <input class="button" type="file" name="document">
+                            <input type="file" name="document" style="width: 50%;display: inline-block;margin: 0">
                         </div>
-                        <div>
+                        <div style="margin-top: 20px;">
                             <input class="button" type="submit" value="Submit Job">
                         </div>
-                        <div>
-                            <input id ="update" class="button" type="submit" name="action" value="Update Bash Script">
-                        </div>
+
                     </form>
                 </div>
             </div>

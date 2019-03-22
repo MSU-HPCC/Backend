@@ -35,3 +35,6 @@ venv.bak/
 
 # ignore uploads directory
 uploads/*
+JobSub/*
+
+ScriptGen/Bash.sb

@@ -4,13 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import os
 import io
-
-from . import hpcccreds
-
+import subprocess as sub
 import paramiko
-
 import os
-
+import time
 from django.views.decorators.csrf import csrf_exempt
 
 from django.core.files.storage import FileSystemStorage
@@ -23,6 +20,13 @@ from django.shortcuts import render
 from .forms import NameForm
 from .models import ScriptGenInfo
 from django.http import JsonResponse
+import pyslurm
+import shutil
+import ntpath
+from pathlib import Path
+from datetime import datetime
+
+import subprocess
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -32,7 +36,7 @@ def ScriptGen_create_view(request):
         'form':form
     }
     return render(request,'ScriptGen/form_create.html',context)'''
-    filename = os.getcwd()+ "\ScriptGen\Bash.sb"
+    filename = os.getcwd()+ "/ScriptGen/Bash.sb"
     file = open(filename, "rb")
     response = HttpResponse(file.read())
     response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.sb'
@@ -51,12 +55,28 @@ def ScriptGen_create_view(request):
     response['Content-Length'] = os.path.getsize(filename)
     return response'''
 
+def SlurmFile(request):
+    dir = request.GET.get('dir','')
+    user = request.user.username
+    jobid = dir.split("-")[1]
+    slurmName= "slurm-"+str(jobid)+".out"
+    filename = "/home/"+user+"/"+dir+"/"+slurmName
+    file = open(filename, "rb")
+    response = HttpResponse(file.read())
+    response['Content-Disposition'] = 'attachment; filename= ' +"slurm-"+str(jobid)+".out"
+
+    response['Content-Length'] = os.path.getsize(filename)
+
+    # return response
+
+    return response
+    return HttpResponse("ok")
 
 def downloadFile(request):
     context = {}
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
-        print(uploaded_file.name)
+
         fs = FileSystemStorage()
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
@@ -95,7 +115,7 @@ def get_name(request):
         form = NameForm(request.POST)
         # file upload
         if request.FILES:
-            #script_path = form.cleaned_data['CodeDirectory']
+            #script_path = form.cleaned_data['CPUs']
             uploaded_file = request.FILES['document']
 
             fs = FileSystemStorage()
@@ -103,10 +123,13 @@ def get_name(request):
             filename = uploaded_file.name
             bashFile = uploaded_file.name.split(".")[0] + '.sb'
             #bashpath = os.getcwd() + r'\ScriptGen" + bashFile
-            bashpath =os.path.join(os.getcwd()+"\ScriptGen", "Bash.sb")
+            bashpath =os.path.join(os.getcwd()+"/ScriptGen", "Bash.sb")
             script = fs.path(name)
             # submit a job
-            Success = SubmitJob(bashpath, script, filename)
+            user = request.user.username
+
+            #job_name = form.cleaned_data['job_name']
+            Success = SubmitJob(bashpath, script, filename,user)
             if Success==True:
 
                 return render(request, 'ScriptGen/success.html',{'message':"Job Successfully Scheduled!"})
@@ -133,8 +156,10 @@ def get_name(request):
             Tasks = form.cleaned_data['Tasks']
             Executable = form.cleaned_data['ExecutableName']
             #filename = os.getcwd() + r"\ScriptGen\\"+ Executable.split(".")[0]+".qsub"
-            filename = os.getcwd() + r"\ScriptGen\Bash.sb"
+            filename = os.getcwd() + r"/ScriptGen/Bash.sb"
             file = io.open(filename, "w", newline='\n')
+            os.chmod(filename,0o664)
+
 
 
 
@@ -146,7 +171,7 @@ def get_name(request):
             file.write("#SBATCH --nodes=" + str(nodes) + "\n")
             file.write("#SBATCH --tasks=" + str(Tasks) + "\n")
             file.write("#SBATCH --mem-per-cpu=" + str(MemoryPerCPu) + "\n")
-            file.write("#SBATCH --job-name " + str(job_name) + "\n")
+            file.write("#SBATCH -J " + str(job_name) + "\n")
             file.write("##Command Lines to Run ## \n\n")
             #file.write("cd "+str(script_path)+"\n")
             #file.write("srun -n "+str(Tasks)+" "+str(Executable)+"\n")
@@ -187,73 +212,98 @@ def get_name(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = NameForm()
+        data = {'Wall_time':'HH:MM:SS','job_name':'job name','nodes':'1','CPUs':'1','MemoryPerCPU':'1M or 1G','Tasks':'1','ExecutableName':'example.py'}
+        form = NameForm(initial=data)
 
     return render(request, 'ScriptGen/name.html', {'form': form})
 
 
+def SubmitJob(bashpath, script, filename,user):
+    print("script = "+script)
+    print("bashpath = "+bashpath)
+    print("filename = "+str(filename))
+    currDir = os.getcwd()
+    #go into jobsub folder to execute batch script
+    os.chdir("/home/"+user)
+    # copy bashfile and script into JobSub directory
+    shutil.copy(script, os.getcwd())
+    shutil.copy(bashpath, os.getcwd())
+    # grab the Bash Scriptname and Script name form the full paths
+    BashScriptName = ntpath.basename(bashpath)
+    ScriptName = ntpath.basename(script)
+    #print("Bash Script Name = "+BashScriptName)
+    #print("Scriptname = "+ScriptName)
+    #print("renaming SCriptname to : "+filename)
+    # rename the script to what is listed in the bash file
+    os.rename(ScriptName,filename)
+    # submit a job
+    a=pyslurm.job()
+
+    # get the jobid so we know what folder to put the files in
 
 
-#code to actually submit a job to hpcc
-def SubmitJob(bashpath, script, filename):
+    try:
+        result = subprocess.check_output(["sbatch", BashScriptName])
+        result = result.split()[-1]
+        jobid = int(result)
 
-    nbytes = 4096
-    hostname = hpcccreds.hostname
-    port = hpcccreds.port
-    username = hpcccreds.username
-    password = hpcccreds.password
+        #jobid = a.submit_batch_job({'script': BashScriptName})
 
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname, port, username, password)
-    client = paramiko.Transport((hostname, port))
-    client.connect(username=username, password=password)
-    sftp = paramiko.SFTPClient.from_transport(client)
-    ######## getting working script
-    stdin, stdout, stderr = ssh.exec_command("mkdir -p Submissions")
-    qsubName = filename.split('.')[0]+'.sb'
-
-    #################################
-    #localpath = os.getcwd() + '\ScriptGen\Bash.qsub'
-    localpath= bashpath
-    filepath = 'Submissions/'+qsubName
-
-    sftp.put(bashpath, filepath)
-    localpath= r'C:\Users\zach\Documents\hpcc practice\Classifier.py'
-    localpath = script
-    filepath = 'Submissions/'+ filename
-    sftp.put(script, filepath)
-    stdin, stdout, stderr = ssh.exec_command('module load powertools; dev ; mkdir -p Submissions; cd Submissions; pwd; sbatch '+qsubName +'; sq ')
-    outlines = stdout.readlines()
-
-    result = ''.join(outlines)
-    print(result)
-    resultLen= len(result.split())
-    if resultLen > 1:
-
-        SuccessStr =result.split()[1]
-    else:
-        SuccessStr="False"
+        #print(jobid)
+        time.sleep(0.3)
+        #print("done")
+        #print("Job Name is "+str(jobName))
 
 
+    except Exception:
+        os.chdir(currDir)
 
-
-    sftp.close()
-    client.close()
-    ssh.close()
-    if SuccessStr== "Submitted":
-        return True
-    else:
         return False
+
+    #print("jobid = "+str(jobid))
+    # make the directory with full permisions
+    # it will be named after the jobid
+    job_name = pyslurm.job().get()[jobid]['name']
+    newDir = str(job_name)+"-"+str(jobid)
+    #print("Dir created: "+newDir)
+    os.mkdir(str(newDir), mode=0o777)
+    # move the bash script, actual script, and slurm.out to new folder jobid
+    # if jobid=13, the folder is named 13
+    #shutil .move(BashScriptName, str(jobid))
+    #shutil.move(filename, str(jobid))
+    slurmname= "slurm-"+str(jobid)+".out"
+
+
+    if os.path.isfile(slurmname):
+        #print("slurm file exists")
+        shutil.move(slurmname, str(newDir))
+    shutil.move(BashScriptName, str(newDir))
+    time.sleep(0.3)
+    shutil.copy(filename, str(newDir))
+
+    #shutil.move(filename, str(jobid))
+    # go back to original directory not to fuck with anything
+    os.chdir(currDir)
+
+
+
+
+
+
+
+    return True
+
+
 @csrf_exempt
 def Update(request):
+    #print("we are updating")
     text = request.GET.get('text',1)
     FilePreview = text.split("\n")
     #FilePreview=[]
     dictionary = request.GET
     dict2 = request.POST
     #user = request.GET.get('username',1)
-    filename = os.getcwd() + "\ScriptGen\Bash.sb"
+    filename = os.getcwd() + "/ScriptGen/Bash.sb"
     #file = open(filename, "w")
     file = io.open(filename, "w", newline='\n')
     file.write(text)
@@ -261,3 +311,114 @@ def Update(request):
     form = NameForm()
     #return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form, 'filePath': filename})
     return render(request,'ScriptGen/download.html')
+
+
+def CleanUp(request):
+
+
+    JobQueue=[]
+    jobs= pyslurm.job().get()
+
+    fields =["job_id","name","job_state","run_time_str","num_nodes","nodes","start_time","submit_time"]
+    JobQueue.append(fields)
+    times=["start_time","submit_time"]
+    for key, value in jobs.items():
+        JobInQ= []
+        for field in fields:
+            if field in times:
+
+                JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+            else:
+                JobInQ.append(value[field])
+        JobQueue.append(JobInQ)
+
+
+
+    #return HttpResponse("Cleanup time")
+    return render(request,'ScriptGen/queue.html',{'queue': JobQueue})
+
+
+def Results(request):
+    # put slurm files where they belong
+    '''
+    for file in os.listdir("JobSub"):
+        if file.endswith(".out"):
+            jobID= file.split(".")[0]
+            jobID= jobID.split("-")[1]
+            print("slurm file "+str(jobID))
+            path= "JobSub/"+str(jobID)
+            file= "JobSub/"+file
+            shutil.move(file,path)
+            print(file)
+    '''
+    # clean up the directories
+    dirs= []
+    files=[]
+    JobTable= pyslurm.slurmdb_jobs().get()
+    user = request.user.username
+    mypath = '/home/'+user
+    #grab all the dirs and filenames aka slurm.outfiles and directories
+    for (dirpath, dirnames, filenames) in os.walk(mypath):
+        files.extend(filenames)
+        dirs.extend(dirnames)
+        break
+    # for all the files in the users directory
+    for f in files:
+        # if its a slurm.out file
+        if "slurm-" in f:
+            jobid = f.split("-")[1].split(".")[0]
+            jobid = int(jobid)
+            jobname = JobTable[jobid]['jobname']
+            # get its proper directory name
+            DirName = jobname + "-" + str(jobid)
+            # if its there
+            if os.path.isdir(DirName):
+                f = mypath+"/"+f
+                DirName= mypath+"/"+DirName
+                # move it into its directory
+                shutil.move(f, DirName)
+    #done putting files back where they need to be
+    ##########################################
+
+
+    DirList=[]
+    for d in dirs:
+        jobid = d.split("-")[1]
+        slurmname = "slurm-" + jobid + ".out"
+        slurmfile = mypath + "/" + d + "/" + slurmname
+        if os.path.exists(slurmfile):
+            DirList.append(d)
+
+    #JobFolder=os.getcwd()+"/JobSub/"
+
+    return render(request, 'ScriptGen/results.html', {'dirs': DirList})
+
+
+
+
+
+
+
+    return HttpResponse("these are the slurm.out files")
+# list the subdirectories
+def ListOnlyDirs(path):
+    dirlist=[]
+    for filename in os.listdir(path):
+        if os.path.isdir(os.path.join(path, filename)):
+            dirlist.append(filename)
+    return dirlist
+
+
+
+def Test(request):
+    filename = '/home/roushzac//wNdCiHi3-5530/slurm-5530.out'
+    file = open(filename, "rb")
+    response = HttpResponse(file.read())
+    response['Content-Disposition'] = 'attachment; filename= ' + 'slurm.out'
+
+    response['Content-Length'] = os.path.getsize(filename)
+
+    # return response
+
+    return response
+

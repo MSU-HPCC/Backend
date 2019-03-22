@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 @login_required
 def index(request):
-    '''
     cnx = mysql.connector.connect(user=user, password=pwd, host=host,
                                   database=db)
 
@@ -28,5 +27,4 @@ def index(request):
     result += "</body></html>"
     cnx.close()
     return render_to_response('index.html', {'jobs': jobs, 'urlUser': request.user})
-    '''
     return render_to_response('index.html')

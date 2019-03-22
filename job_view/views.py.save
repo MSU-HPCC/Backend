@@ -1,4 +1,12 @@
-from django.shortcuts import render
+fromls
+
+
+
+
+
+
+
+ django.shortcuts import render
 from django.http import HttpResponse
 from static.src import Admin_Stats_PySLURM as api
 from django.contrib.auth.decorators import login_required
@@ -6,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def jobs(request):
     #query = "SELECT id_user, job_name, nodelist, nodes_alloc, time_submit, time_start, time_end, exit_code, cpus_req FROM hpcc_job_table WHERE id_user='"+ str(request.user) + "';"
+    
     cols = ['id_user', 'job_name', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code', 'cpus_req']
     itr = 0
     for col in cols:
@@ -39,3 +48,5 @@ def groupJobs(request):
         cols[itr] = (col,itr)
         itr += 1
     return render(request, 'job_view/groupJobs.html', {'jobs': y, 'urlUser': u, 'cols': cols, })
+:q
+
