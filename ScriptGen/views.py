@@ -368,15 +368,17 @@ def Results(request):
         if "slurm-" in f:
             jobid = f.split("-")[1].split(".")[0]
             jobid = int(jobid)
-            jobname = JobTable[jobid]['jobname']
-            # get its proper directory name
-            DirName = jobname + "-" + str(jobid)
-            # if its there
-            if os.path.isdir(DirName):
-                f = mypath+"/"+f
-                DirName= mypath+"/"+DirName
-                # move it into its directory
-                shutil.move(f, DirName)
+            # fixes weird error
+            if jobid in JobTable:
+                jobname = JobTable[jobid]['jobname']
+                # get its proper directory name
+                DirName = jobname + "-" + str(jobid)
+                # if its there
+                if os.path.isdir(DirName):
+                    f = mypath+"/"+f
+                    DirName= mypath+"/"+DirName
+                    # move it into its directory
+                    shutil.move(f, DirName)
     #done putting files back where they need to be
     ##########################################
 
