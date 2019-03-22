@@ -21,16 +21,16 @@
         </form>
         </div>
         <div style="margin-top:0;">
+            <div style="margin-top: 40px;">
+                <input id ="update" class="button" type="submit" name="action" value="Update Bash Script" style="margin-right: 20px">
+                <input id="download" class="button" type="submit" value="Download Bash File">
 
+            </div>
            <div  class="fieldWrapper" style="background-color: white;">
                 <textarea id="textarea" style="height: 250px;">{%for line in preview%}{{line}}{%endfor%}</textarea>
 
-
             </div>
             <div >
-                <div>
-                    <input id="download" class="button" type="submit" value="Download Bash File">
-                </div>
                 <div style="padding-top: 22px;">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -40,9 +40,7 @@
                         <div style="margin-top: 20px;">
                             <input class="button" type="submit" value="Submit Job">
                         </div>
-                        <div style="margin-top: 10px;">
-                            <input id ="update" class="button" type="submit" name="action" value="Update Bash Script">
-                        </div>
+
                     </form>
                 </div>
             </div>
