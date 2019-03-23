@@ -1,13 +1,13 @@
 {% extends "../base_templates/base-page.html" %}
-{% block title %} Job Queue {% endblock %}
+{% block title %} Results{% endblock %}
 {% load static %}
 {% block content %}
 <table>
-    <th> Job Ids</th><th>slurm file</th>
+    <th> Job Name + Job ID</th><th>Output Files</th>
     {% for dir in dirs %}
     <tr>
         <td>{{dir}}</td>
-        <td><a href='/ScriptGen/SlurmFile/?dir={{dir}}'}} download >slurm file</a></td>
+        <td><a href='/ScriptGen/SlurmFile/?dir={{dir}}'}} download >output file file</a></td>
     </tr>
     {% endfor %}
 </table>
