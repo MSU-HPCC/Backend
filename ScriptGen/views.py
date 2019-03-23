@@ -354,7 +354,7 @@ def Results(request):
     # clean up the directories
     dirs= []
     files=[]
-    JobTable= pyslurm.slurmdb_jobs().get()
+    #JobTable= pyslurm.slurmdb_jobs().get()
     user = request.user.username
     mypath = '/home/'+user
     #grab all the dirs and filenames aka slurm.outfiles and directories
@@ -367,16 +367,14 @@ def Results(request):
         # if its a slurm.out file
         if "slurm-" in f:
             jobid = f.split("-")[1].split(".")[0]
-            jobid = int(jobid)
-            jobname = JobTable[jobid]['jobname']
-            # get its proper directory name
-            DirName = jobname + "-" + str(jobid)
-            # if its there
-            if os.path.isdir(DirName):
-                f = mypath+"/"+f
-                DirName= mypath+"/"+DirName
-                # move it into its directory
-                shutil.move(f, DirName)
+            for d in dirs:
+                dirJobID = d.split("-")[1]
+                if jobid==dirJobID:
+                    DirName = mypath+"/"+d
+                    f = mypath+"/"+f
+                    shutil.move(f,DirName)
+           # jobid = int(jobid)
+            # fixes weird error
     #done putting files back where they need to be
     ##########################################
 
