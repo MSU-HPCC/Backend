@@ -2,7 +2,7 @@
 {% block title %} Results{% endblock %}
 {% load static %}
 {% block content %}
-<table>
+<table style="overflow-y:scroll; height:100px;">
     <th> Job Name + Job ID</th><th>Output Files</th>
     {% for dir in dirs %}
     <tr>

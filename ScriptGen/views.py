@@ -243,10 +243,10 @@ def SubmitJob(bashpath, script, filename,user):
 
 
     try:
-        command ="runuser -l "+user+" -c 'sbatch "+BashScriptName+ "' "
+        command ="sbatch " + BashScriptName
         #result = subprocess.check_output(["sbatch", BashScriptName])
         print(command)
-        result = subprocess.check_output([command])
+        result = subprocess.check_output(["runuser","-l",user,"-c",command])
         print(result)
         result = result.split()[-1]
         jobid = int(result)
