@@ -15,7 +15,8 @@ from datetime import datetime
 
 import pyslurm
 import numpy as np
-from contrib import Admin_Stats_PySLURM as SLURM
+from static.src import Admin_Stats_PySLURM as SLURM
+
 from django.views.generic import TemplateView
 def index(request):
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
