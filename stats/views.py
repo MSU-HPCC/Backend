@@ -282,7 +282,7 @@ def AvgWait(request):
     UserInfo = SLURM.user_access(user,time=120)
     AllUserJobs = UserInfo.my_jobs(time=120)
     totalJobs = len(AllUserJobs)
-    JobsThisWeek = UserInfo.my_jobs(time =7)
+    JobsThisWeek =len(UserInfo.my_jobs(time =7))
 
     '''
 
