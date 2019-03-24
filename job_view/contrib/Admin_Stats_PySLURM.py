@@ -443,8 +443,8 @@ class admin_access(group_access):
 # print("Admin group_stats: ",y3)
 # print("")
 #
-y2 = x2.group_jobs([],120)
-y3 = x3.admin_group_jobs(None,[],120)
+#y2 = x2.group_jobs([],120)
+#y3 = x3.admin_group_jobs(None,[],120)
 #
 # print("y2 = #x2.group_jobs([],120)")
 # print("Group group_jobs: ",y2.keys())
