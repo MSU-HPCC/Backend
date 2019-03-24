@@ -19,19 +19,19 @@ def jobs(request):
             if i == 'exit_code':
                 meaning = ""
                 val = value[i]
-                if val = 1:
+                if val == 1:
                     meaning = "General Error"
-                elif val = 2:
+                elif val == 2:
                     meaning = "Misuse of Shell Builtins"
-                elif val = 126:
+                elif val == 126:
                     meaning = "Cannot invoke Command"
-                elif val = 127:
+                elif val == 127:
                     meaning = "Command not found"
-                elif val = 128:
+                elif val == 128:
                     meaning = "Invalid Exit Code"
-                elif val = 130:
+                elif val == 130:
                     meaning = "Program Terminated"
-                elif val = 255:
+                elif val == 255:
                     meaning = "Exit Status Out of Range"
                 elif val >= 129 and val <= 165 and val != 130:
                     val_str = str(val-128)
@@ -69,19 +69,19 @@ def adminJobs(request, user):
                     if i == 'exit_code':
                         meaning = ""
                         val = value3[i]
-                        if val = 1:
+                        if val == 1:
                             meaning = "General Error"
-                        elif val = 2:
+                        elif val == 2:
                             meaning = "Misuse of Shell Builtins"
-                        elif val = 126:
+                        elif val == 126:
                             meaning = "Cannot invoke Command"
-                        elif val = 127:
+                        elif val == 127:
                             meaning = "Command not found"
-                        elif val = 128:
+                        elif val == 128:
                             meaning = "Invalid Exit Code"
-                        elif val = 130:
+                        elif val == 130:
                             meaning = "Program Terminated"
-                        elif val = 255:
+                        elif val == 255:
                             meaning = "Exit Status Out of Range"
                         elif val >= 129 and val <= 165 and val != 130:
                             val_str = str(val - 128)
@@ -117,19 +117,19 @@ def groupJobs(request):
                 if i == 'exit_code':
                     meaning = ""
                     val = value2[i]
-                    if val = 1:
+                    if val == 1:
                         meaning = "General Error"
-                    elif val = 2:
+                    elif val == 2:
                         meaning = "Misuse of Shell Builtins"
-                    elif val = 126:
+                    elif val == 126:
                         meaning = "Cannot invoke Command"
-                    elif val = 127:
+                    elif val == 127:
                         meaning = "Command not found"
-                    elif val = 128:
+                    elif val == 128:
                         meaning = "Invalid Exit Code"
-                    elif val = 130:
+                    elif val == 130:
                         meaning = "Program Terminated"
-                    elif val = 255:
+                    elif val == 255:
                         meaning = "Exit Status Out of Range"
                     elif val >= 129 and val <= 165 and val != 130:
                         val_str = str(val - 128)
