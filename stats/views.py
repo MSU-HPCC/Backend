@@ -15,7 +15,7 @@ from datetime import datetime
 
 import pyslurm
 import numpy as np
-
+from contrib import Admin_Stats_PySLURM as SLURM
 from django.views.generic import TemplateView
 def index(request):
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
@@ -273,11 +273,17 @@ def AvgWait(request):
         avgWait= sum(WaitTimes)/len(WaitTimes)
     else:
         avgWait=0
-    totalJobs = len(AllJobs)
+    #totalJobs = len(AllJobs)
     ### get dict of all jobs submitted by date
 
     SubDays={}
+    user = request.user.username
+    UserInfo = SLURM.user_access(user,time=120)
+    AllUserJobs = UserInfo.my_jobs(time=120)[user]
+    totalJobs = len(AllUserJobs)
+    JobsThisWeek = UserInfo.my_jobs(time =7)[user]
 
+    '''
 
     for start in startTimes:
         startDate = datetime.utcfromtimestamp(start).strftime('%Y-%m-%d')
@@ -299,9 +305,9 @@ def AvgWait(request):
     #print(SubDays)
     weeks = int(now.isocalendar()[1])
     avgJobsPerWeek= len(AllJobs)/weeks
-
-    info =[avgWait,totalJobs,JobsThisMonth,avgJobsPerWeek]
-    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Month','Average Jobs Submitted Per Week']
+    '''''
+    info =[avgWait,totalJobs,JobsThisWeek]
+    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week']
     Table= zip(categories,info)
     return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
 
