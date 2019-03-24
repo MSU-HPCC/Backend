@@ -2,12 +2,12 @@
 {% block title %} Results{% endblock %}
 {% load static %}
 {% block content %}
-<table>
-    <th> Job Name + Job ID</th><th>Output Files</th>
+<table style="overflow-y:scroll; height:100px;">
+    <td> Job Name + Job ID</td><td>Output Files</td>
     {% for dir in dirs %}
     <tr>
         <td>{{dir}}</td>
-        <td><a href='/ScriptGen/SlurmFile/?dir={{dir}}' download >output file file</a></td>
+        <td><a href='/ScriptGen/SlurmFile/?dir={{dir}}'style="color:#cfe7fe" download > Output File </a></td>
     </tr>
     {% endfor %}
 </table>
