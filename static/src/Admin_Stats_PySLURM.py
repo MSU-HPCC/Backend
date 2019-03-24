@@ -328,7 +328,7 @@ class admin_access(group_access):
                 return holder
 
 #________________TESTS_____________________________
-
+'''
 x1 = user_access("matt")
 x2 = group_access("christian")
 x3 = admin_access("luedtke2")
@@ -395,3 +395,4 @@ print("Admin view_stats: ",y3)
 print(x1.user)
 print(x1.user_id)
 print(x1.group_id)
+'''
