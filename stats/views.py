@@ -280,9 +280,9 @@ def AvgWait(request):
     SubDays={}
     user = request.user.username
     UserInfo = SLURM.user_access(user,time=120)
-    AllUserJobs = UserInfo.my_jobs(time=120)[user]
+    AllUserJobs = UserInfo.my_jobs(time=120)
     totalJobs = len(AllUserJobs)
-    JobsThisWeek = UserInfo.my_jobs(time =7)[user]
+    JobsThisWeek = UserInfo.my_jobs(time =7)
 
     '''
 
