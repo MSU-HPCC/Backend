@@ -256,13 +256,16 @@ def MajorUsers(request):
     return render(request, 'stats/graphic.html',{'graph': g})
 
 def AvgWait(request):
+    user = request.user.username
+    UserInfo = SLURM.user_access(user,time=120)
+    AllUserJobs = UserInfo.my_jobs(time=120)
 
-    AllJobs= pyslurm.slurmdb_jobs().get()
+    #AllJobs= pyslurm.slurmdb_jobs().get()
     WaitTimes=[]
     startTimes=[]
-    for jobid in AllJobs:
-        submitTime = AllJobs[jobid]['submit']
-        startTime= AllJobs[jobid]['start']
+    for jobid in AllUserJobs:
+        submitTime = AllUserJobs[jobid]['submit']
+        startTime= AllUserJobs[jobid]['start']
         waitTime = startTime-submitTime
         startTimes.append(startTime)
 
@@ -278,8 +281,8 @@ def AvgWait(request):
     ### get dict of all jobs submitted by date
 
     SubDays={}
-    user = request.user.username
-    UserInfo = SLURM.user_access(user,time=120)
+    # user = request.user.username
+    #UserInfo = SLURM.user_access(user,time=120)
     AllUserJobs = UserInfo.my_jobs(time=120)
     totalJobs = len(AllUserJobs)
     JobsThisWeek =len(UserInfo.my_jobs(time =7))
