@@ -283,6 +283,7 @@ def AvgWait(request):
     AllUserJobs = UserInfo.my_jobs(time=120)
     totalJobs = len(AllUserJobs)
     JobsThisWeek =len(UserInfo.my_jobs(time =7))
+    
 
     '''
 
