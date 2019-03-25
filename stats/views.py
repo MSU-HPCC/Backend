@@ -338,12 +338,13 @@ def AvgWait(request):
     '''''
     info =[avgWait,totalJobs,JobsThisWeek,PercentComp,PercentError,PercentRunningJobs,PendingJobs,TotComplete, \
            TotErrorJobs,TotRunningNow,TotPending,GroupJobsTot,PercentGroupComp,PercentGroupError,PercentGroupRunning, \
-           PercentGroupPending]
+           PercentGroupPending,CompletedGroupJobs,TotGroupErrorJobs, TotGroupRunJobs , TotGroupPending ]
     categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week','Percent of Jobs Completed', \
                 'Percent of Errored Jobs','Percent of Jobs Running','Percent of Jobs Pending','Total Complete Jobs', \
-                'Total Errored Jobs','Total Running Jobs','TotalPending','Total Jobs Submitted in Group',\
+                'Total Errored Jobs','Total Running Jobs','Total Jobs Pending','Total Jobs Submitted in Group',\
                 'Percent of Group Jobs Completed','Percent of Errored Group Jobs','Percent of Running Group Jobs', \
-                'Percent of Pending Group Jobs']
+                'Percent of Pending Group Jobs','Total Completed Group Jobs',' Total Group Errored Jobs', \
+                'Total Running Group Jobs', 'Total Group Jobs Pending']
     Table= zip(categories,info)
     return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
 
