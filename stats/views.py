@@ -15,6 +15,7 @@ from datetime import datetime
 
 import pyslurm
 import numpy as np
+from static.src import Admin_Stats_PySLURM as SLURM
 
 from django.views.generic import TemplateView
 def index(request):
@@ -255,13 +256,16 @@ def MajorUsers(request):
     return render(request, 'stats/graphic.html',{'graph': g})
 
 def AvgWait(request):
+    user = request.user.username
+    UserInfo = SLURM.user_access(user,time=120)
+    AllUserJobs = UserInfo.my_jobs(time=120)
 
-    AllJobs= pyslurm.slurmdb_jobs().get()
+    #AllJobs= pyslurm.slurmdb_jobs().get()
     WaitTimes=[]
     startTimes=[]
-    for jobid in AllJobs:
-        submitTime = AllJobs[jobid]['submit']
-        startTime= AllJobs[jobid]['start']
+    for jobid in AllUserJobs:
+        submitTime = AllUserJobs[jobid]['submit']
+        startTime= AllUserJobs[jobid]['start']
         waitTime = startTime-submitTime
         startTimes.append(startTime)
 
@@ -273,11 +277,17 @@ def AvgWait(request):
         avgWait= sum(WaitTimes)/len(WaitTimes)
     else:
         avgWait=0
-    totalJobs = len(AllJobs)
+    #totalJobs = len(AllJobs)
     ### get dict of all jobs submitted by date
 
     SubDays={}
+    # user = request.user.username
+    #UserInfo = SLURM.user_access(user,time=120)
+    AllUserJobs = UserInfo.my_jobs(time=120)
+    totalJobs = len(AllUserJobs)
+    JobsThisWeek =len(UserInfo.my_jobs(time =7))
 
+    '''
 
     for start in startTimes:
         startDate = datetime.utcfromtimestamp(start).strftime('%Y-%m-%d')
@@ -299,9 +309,9 @@ def AvgWait(request):
     #print(SubDays)
     weeks = int(now.isocalendar()[1])
     avgJobsPerWeek= len(AllJobs)/weeks
-
-    info =[avgWait,totalJobs,JobsThisMonth,avgJobsPerWeek]
-    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Month','Average Jobs Submitted Per Week']
+    '''''
+    info =[avgWait,totalJobs,JobsThisWeek]
+    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week']
     Table= zip(categories,info)
     return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
 
