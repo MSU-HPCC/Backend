@@ -303,6 +303,7 @@ def AvgWait(request):
     gstat= GroupInfo.group_stats()
     groupID = GroupInfo.group_id
     gstat = gstat[groupID]['summary']
+    GroupJobsTot = gstat['total']
     CompletedGroupJobs = gstat['complete_raw']
     PercentGroupComp = gstat['complete']*100
     PercentGroupError = gstat['error']*100
@@ -336,10 +337,13 @@ def AvgWait(request):
     avgJobsPerWeek= len(AllJobs)/weeks
     '''''
     info =[avgWait,totalJobs,JobsThisWeek,PercentComp,PercentError,PercentRunningJobs,PendingJobs,TotComplete, \
-           TotErrorJobs,TotRunningNow,TotPending,CompletedGroupJobs]
+           TotErrorJobs,TotRunningNow,TotPending,GroupJobsTot,PercentGroupComp,PercentGroupError,PercentGroupRunning, \
+           PercentGroupPending]
     categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week','Percent of Jobs Completed', \
                 'Percent of Errored Jobs','Percent of Jobs Running','Percent of Jobs Pending','Total Complete Jobs', \
-                'Total Errored Jobs','Total Running Jobs','TotalPending','Completed Jobs In Your Group']
+                'Total Errored Jobs','Total Running Jobs','TotalPending','Total Jobs Submitted in Group',\
+                'Percent of Group Jobs Completed','Percent of Errored Group Jobs','Percent of Running Group Jobs', \
+                'Percent of Pending Group Jobs']
     Table= zip(categories,info)
     return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
 
