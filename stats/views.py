@@ -286,6 +286,15 @@ def AvgWait(request):
     
     totalJobs = len(AllUserJobs)
     JobsThisWeek =len(UserInfo.my_jobs(time =7)[user])
+    stats= UserInfo.user_stats(user)
+    PercentComp= stats[user]['complete']
+    PercentError = stats[user]['error']
+    PercentRunningJobs = stats[user]['running']
+    PendingJobs= stats[user]['pending']
+    TotComplete = stats[user]['complete_raw']
+    TotErrorJobs = stats[user]['error_raw']
+    TotRunningNow = stats[user]['run_raw']
+    TotPending = stats[user]['pending_raw']
 
     '''
 
@@ -310,8 +319,8 @@ def AvgWait(request):
     weeks = int(now.isocalendar()[1])
     avgJobsPerWeek= len(AllJobs)/weeks
     '''''
-    info =[avgWait,totalJobs,JobsThisWeek]
-    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week']
+    info =[avgWait,totalJobs,JobsThisWeek,PercentComp,PercentError,PercentRunningJobs,PendingJobs,TotComplete,TotErrorJobs,TotRunningNow,TotPending]
+    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week','Percent of Jobs Completed','Percent of Errored Jobs','Percent of Jobs Running','Percent of Jobs Pending','Total Complete Jobs','Total Errored Jobs','Total Running Jobs','TotalPending']
     Table= zip(categories,info)
     return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
 
