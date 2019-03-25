@@ -257,8 +257,10 @@ def MajorUsers(request):
 
 def AvgWait(request):
     user = request.user.username
-    UserInfo = SLURM.user_access(user,time=120)
-    AllUserJobs = UserInfo.my_jobs(time=120)
+    #UserInfo = SLURM.user_access(user,time=120)
+    GroupInfo = SLURM.group_access(user,time=120)
+    AllUserJobs = GroupInfo.my_jobs(time=120)[user]
+    #AllUserJobs = UserInfo.my_jobs(time=120)[user]
 
     #AllJobs= pyslurm.slurmdb_jobs().get()
     WaitTimes=[]
@@ -283,10 +285,32 @@ def AvgWait(request):
     SubDays={}
     # user = request.user.username
     #UserInfo = SLURM.user_access(user,time=120)
-    AllUserJobs = UserInfo.my_jobs(time=120)
-    totalJobs = len(AllUserJobs)
-    JobsThisWeek =len(UserInfo.my_jobs(time =7))
     
+    totalJobs = len(AllUserJobs)
+
+    JobsThisWeek =len(GroupInfo.my_jobs(time =7)[user])
+    stats= GroupInfo.user_stats(user)
+    PercentComp= stats[user]['complete']*100
+    PercentError = stats[user]['error']*100
+    PercentRunningJobs = stats[user]['running']*100
+    PendingJobs= stats[user]['pending']*100
+    TotComplete = stats[user]['complete_raw']
+    TotErrorJobs = stats[user]['error_raw']
+    TotRunningNow = stats[user]['run_raw']
+    TotPending = stats[user]['pending_raw']
+    
+    #group = SLURM.group_access(user)
+    gstat= GroupInfo.group_stats()
+    groupID = GroupInfo.group_id
+    gstat = gstat[groupID]['summary']
+    CompletedGroupJobs = gstat['complete_raw']
+    PercentGroupComp = gstat['complete']*100
+    PercentGroupError = gstat['error']*100
+    PercentGroupRunning = gstat['running']*100
+    PercentGroupPending = gstat['pending']*100
+    TotGroupErrorJobs = gstat['error_raw']
+    TotGroupRunJobs = gstat['run_raw']
+    TotGroupPending = gstat['pending_raw']
 
     '''
 
@@ -311,8 +335,11 @@ def AvgWait(request):
     weeks = int(now.isocalendar()[1])
     avgJobsPerWeek= len(AllJobs)/weeks
     '''''
-    info =[avgWait,totalJobs,JobsThisWeek]
-    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week']
+    info =[avgWait,totalJobs,JobsThisWeek,PercentComp,PercentError,PercentRunningJobs,PendingJobs,TotComplete, \
+           TotErrorJobs,TotRunningNow,TotPending,CompletedGroupJobs]
+    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week','Percent of Jobs Completed', \
+                'Percent of Errored Jobs','Percent of Jobs Running','Percent of Jobs Pending','Total Complete Jobs', \
+                'Total Errored Jobs','Total Running Jobs','TotalPending','Completed Jobs In Your Group']
     Table= zip(categories,info)
     return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
 
