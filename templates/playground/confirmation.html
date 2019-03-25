@@ -3,16 +3,7 @@
 {% load static %}
 {% block content %}
   <h1>Confirmation Page</h1>
-  {% if teststr %}
-  {% elif bash %}
-  {% elif source %}
-        <p>Source is: {{source}}</p>
-        <p>Bash is: {{bash}}</p>
-  {% else %}
-    <h1>Confirmation Page</h1>
-    <p>Source is: {{source}}</p>
-    <p>Bash is: {{bash}}</p>
-  {% endif %}
+  {{confMessage}}
 {% endblock %}
 
 {% block inline-js %}
