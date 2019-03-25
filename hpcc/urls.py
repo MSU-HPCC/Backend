@@ -22,6 +22,7 @@ from login.views import *
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from . import views
+from login import views as loginview
 
 urlpatterns = [
     path('', home, name='name'),
@@ -33,8 +34,10 @@ urlpatterns = [
     url(r'^register/$', register, name='register'),
     url(r'^register/success/$', register_success, name='register_success'),
     url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
+    url(r'^auth/msunet/callback', loginview.msunet_callback, name='msunet_callback'),
     url(r'^logout/$', logout_page, name='logout'),
     path('stats/', include('stats.urls')),
 
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
