@@ -33,10 +33,12 @@ def confirmation(request):
             print("bash: {}, source: {}".format(bash_name, source_name))
 
             # is at /web/Backend or /var/www/html
-            bash_name_components = bash_name.split('_')
+            bash_name_components = bash_name.split('_')  ## TODO Bash.sb turned to Bash.sb.sb -- idk why
             clean_bash_str = bash_name_components[0] + '.sb'
-            source_name_components = source_name.split('_')
+            source_name_components = source_name.split('_') ## TODO CANNOT USE THIS FOR FILES WITH _ in them...............
             clean_source_str = source_name_components[0] + '.py' ## TODO adding proper file extension handling for .cpp ect.
+            os.system("docker container stop slurm-container")
+            os.system("docker container rm slurm-container")
             os.system("mkdir -p /playground_uploads")
             os.system("mv uploads/{} /playground_uploads/{}".format(bash_name, clean_bash_str))
             os.system("mv uploads/{} /playground_uploads/{}".format(source_name, clean_source_str))
