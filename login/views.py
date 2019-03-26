@@ -57,6 +57,7 @@ def msunet_callback(request):
     state = request.GET.get('state', '')
     print("code : " + code)
     request_url = "https://oauth.itservices.msu.edu/oauth/token?client_id=OAuth-HPCC-HPCC&client_secret=QH7GqwK6bac4AR5gFTQEy6UCBarE6KrKM78GVDMN&grant_type=authorization_code&redirect_uri=http://35.9.22.112/auth/msunet/callback&code=" + code
+
     print("request_url : " + request_url)
     header = {"Content-type": "application/x-www-form-urlencoded"}
     r = requests.post(request_url, headers=header)
