@@ -134,8 +134,15 @@ class group_access(user_access):
                 for j in self.group_job_table[i]:
                     if self.group_job_table[i][j]['submit'] >= unix_time:
                         temp[i].update({j:self.group_job_table[i][j]})
-
-            return temp
+            flag = False
+            for i in temp:
+                if temp[i] != {}:
+                    flag = True
+                    break
+            if flag:
+                return temp
+            else:
+                return None
 
     def group_stats(self, user_list=[],time = 31):
 
@@ -269,7 +276,7 @@ class admin_access(group_access):
 
             return holder
 
-    def admin_group_jobs(self, group_name=None, user_list = [],time = 31):
+    def admin_group_jobs(self, group_name=None, user_list = [],time = 31):#ADD NONE
         if group_name == None:
             if self.group_id == None:
                 return None
@@ -291,13 +298,17 @@ class admin_access(group_access):
 
             for i in user_list:
                 temp = self.user_jobs(i,time)
-                group_job_table[group_name].update(temp)
+                if temp is not None:
+                    group_job_table[group_name].update(temp)
 
             # for k in self.all_jobs:
             #     if self.all_jobs[k]['user'] in user_list:
             #         group_job_table[self.all_jobs[k]['user']].update({k: self.all_jobs[k]})
 
-            return group_job_table
+            if group_job_table == {group_name:{}}:
+                return None
+            else:
+                return group_job_table
 
 
     def admin_group_stats(self, group_name=None, user_list=[],time = 31):
@@ -489,6 +500,3 @@ class admin_access(group_access):
 # print(x1.user)
 # print(x1.user_id)
 # print(x1.group_id)
-
-
-
