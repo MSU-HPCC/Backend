@@ -500,6 +500,3 @@ class admin_access(group_access):
 # print(x1.user)
 # print(x1.user_id)
 # print(x1.group_id)
-
-
-

@@ -15,7 +15,8 @@ from datetime import datetime
 
 import pyslurm
 import numpy as np
-from contrib import Admin_Stats_PySLURM as SLURM
+from static.src import Admin_Stats_PySLURM as SLURM
+
 from django.views.generic import TemplateView
 def index(request):
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
@@ -255,13 +256,18 @@ def MajorUsers(request):
     return render(request, 'stats/graphic.html',{'graph': g})
 
 def AvgWait(request):
+    user = request.user.username
+    #UserInfo = SLURM.user_access(user,time=120)
+    GroupInfo = SLURM.group_access(user,time=120)
+    AllUserJobs = GroupInfo.my_jobs(time=120)[user]
+    #AllUserJobs = UserInfo.my_jobs(time=120)[user]
 
-    AllJobs= pyslurm.slurmdb_jobs().get()
+    #AllJobs= pyslurm.slurmdb_jobs().get()
     WaitTimes=[]
     startTimes=[]
-    for jobid in AllJobs:
-        submitTime = AllJobs[jobid]['submit']
-        startTime= AllJobs[jobid]['start']
+    for jobid in AllUserJobs:
+        submitTime = AllUserJobs[jobid]['submit']
+        startTime= AllUserJobs[jobid]['start']
         waitTime = startTime-submitTime
         startTimes.append(startTime)
 
@@ -277,11 +283,35 @@ def AvgWait(request):
     ### get dict of all jobs submitted by date
 
     SubDays={}
-    user = request.user.username
-    UserInfo = SLURM.user_access(user,time=120)
-    AllUserJobs = UserInfo.my_jobs(time=120)[user]
+    # user = request.user.username
+    #UserInfo = SLURM.user_access(user,time=120)
+    
     totalJobs = len(AllUserJobs)
-    JobsThisWeek = UserInfo.my_jobs(time =7)[user]
+
+    JobsThisWeek =len(GroupInfo.my_jobs(time =7)[user])
+    stats= GroupInfo.user_stats(user)
+    PercentComp= stats[user]['complete']*100
+    PercentError = stats[user]['error']*100
+    PercentRunningJobs = stats[user]['running']*100
+    PendingJobs= stats[user]['pending']*100
+    TotComplete = stats[user]['complete_raw']
+    TotErrorJobs = stats[user]['error_raw']
+    TotRunningNow = stats[user]['run_raw']
+    TotPending = stats[user]['pending_raw']
+    
+    #group = SLURM.group_access(user)
+    gstat= GroupInfo.group_stats()
+    groupID = GroupInfo.group_id
+    gstat = gstat[groupID]['summary']
+    GroupJobsTot = gstat['total']
+    CompletedGroupJobs = gstat['complete_raw']
+    PercentGroupComp = gstat['complete']*100
+    PercentGroupError = gstat['error']*100
+    PercentGroupRunning = gstat['running']*100
+    PercentGroupPending = gstat['pending']*100
+    TotGroupErrorJobs = gstat['error_raw']
+    TotGroupRunJobs = gstat['run_raw']
+    TotGroupPending = gstat['pending_raw']
 
     '''
 
@@ -306,8 +336,15 @@ def AvgWait(request):
     weeks = int(now.isocalendar()[1])
     avgJobsPerWeek= len(AllJobs)/weeks
     '''''
-    info =[avgWait,totalJobs,JobsThisWeek]
-    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week']
+    info =[avgWait,totalJobs,JobsThisWeek,PercentComp,PercentError,PercentRunningJobs,PendingJobs,TotComplete, \
+           TotErrorJobs,TotRunningNow,TotPending,GroupJobsTot,PercentGroupComp,PercentGroupError,PercentGroupRunning, \
+           PercentGroupPending,CompletedGroupJobs,TotGroupErrorJobs, TotGroupRunJobs , TotGroupPending ]
+    categories=['Average Wait Time','Total Jobs Submitted','Jobs Submitted this Week','Percent of Jobs Completed', \
+                'Percent of Errored Jobs','Percent of Jobs Running','Percent of Jobs Pending','Total Complete Jobs', \
+                'Total Errored Jobs','Total Running Jobs','Total Jobs Pending','Total Jobs Submitted in Group',\
+                'Percent of Group Jobs Completed','Percent of Errored Group Jobs','Percent of Running Group Jobs', \
+                'Percent of Pending Group Jobs','Total Completed Group Jobs',' Total Group Errored Jobs', \
+                'Total Running Group Jobs', 'Total Group Jobs Pending']
     Table= zip(categories,info)
     return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
 
