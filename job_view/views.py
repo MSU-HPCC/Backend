@@ -16,7 +16,7 @@ def jobs(request):
         jobs = [""]*len(keys)
     else:
         temp = temp[user]
-        for key, value in temp.iteritems():
+        for key, value in temp.items():
             temp = []
             for i in keys:
                 if i == 'exit_code':
@@ -64,9 +64,9 @@ def adminJobs(request, user):
             jobs = [""] * len(keys)
         else:
             temp=temp['Admin']
-            for key, value in temp.iteritems():
-                for key2, value2 in value.iteritems():
-                    for key3, value3 in value2.iteritems():
+            for key, value in temp.items():
+                for key2, value2 in value.items():
+                    for key3, value3 in value2.items():
                         temp = []
                         for i in keys:
                             if i == 'exit_code':
@@ -117,8 +117,8 @@ def groupJobs(request):
     if temp is None:
         jobs = [""]*len(keys)
     else:
-        for key,value in temp.iteritems():
-            for key2, value2 in value.iteritems():
+        for key,value in temp.items():
+            for key2, value2 in value.items():
                 temp = []
                 for i in keys:
                     if i == 'exit_code':
