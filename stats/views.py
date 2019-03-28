@@ -50,7 +50,19 @@ def index(request):
     return HttpResponse("This is the index page")
 
 
-
+def IsAdmin(user):
+    AdminFile = open("admins.txt","r")
+    AdminList =[]
+    for line in AdminFile:
+        line = line.strip()
+        AdminList.append(line)
+    AdminFile.close()
+    print("admin list: "+str(AdminList))
+    if user in AdminList:
+        return True
+    else:
+        return False
+    
 def JobSubStats(request):
     '''
     cnx = mysql.connector.connect(user=dbcreds.user, password=dbcreds.pwd, host=dbcreds.host, database=dbcreds.db)
@@ -92,7 +104,12 @@ def JobSubStats(request):
     g = mpld3.fig_to_html(fig)
     '''
 
-
+    user = request.user.username
+    AdminAccess = IsAdmin(user)
+    print("about to do admin access function")
+    if AdminAccess== False:
+       return render(request,'error_pages/403.html')
+    print("finished ")
     AllJobs= pyslurm.slurmdb_jobs().get()
     DateDict={}
     for jobid in AllJobs:
@@ -171,6 +188,11 @@ def JobFailure(request):
     cursor.close()
     g = mpld3.fig_to_html(fig)
     '''
+    user = request.user.username
+    AdminAccess = IsAdmin(user)
+    print("about to do admin access function")
+    if AdminAccess== False:
+       return render(request,'error_pages/403.html')
 
     AllJobs= pyslurm.slurmdb_jobs().get()
     ErrorDict= {}
@@ -215,6 +237,11 @@ def JobFailure(request):
 def MajorUsers(request):
     #path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
     #pngPath = image_data = open(path, "rb").read()
+    user = request.user.username
+    AdminAccess = IsAdmin(user)
+    print("about to do admin access function")
+    if AdminAccess== False:
+       return render(request,'error_pages/403.html')
 
     AllJobs = pyslurm.slurmdb_jobs().get()
     userSubDict={}
@@ -346,7 +373,10 @@ def AvgWait(request):
                 'Percent of Pending Group Jobs','Total Completed Group Jobs',' Total Group Errored Jobs', \
                 'Total Running Group Jobs', 'Total Group Jobs Pending']
     Table= zip(categories,info)
-    return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info))})
+    print("user = "+str(user))
+    admin = IsAdmin(user)
+    #admin = False
+    return render(request, 'stats/table.html',{'info':Table, 'range': range(len(info)),'admin':admin})
 
 
 
