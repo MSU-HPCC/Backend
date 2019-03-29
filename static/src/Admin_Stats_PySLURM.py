@@ -55,25 +55,16 @@ class user_access():
         unix_time = datetime.now() - timedelta(days=time)
         unix_time = int(unix_time.strftime("%s"))
 
-        if user == self.user:
-            #return {user:self.job_table}
-            temp = {user: {}}
-            for i in self.job_table:
-                if self.job_table[i]['user'] == user and self.job_table[i]['submit'] >= unix_time:
-                    temp[user].update({i: self.all_jobs[i]})
-            if temp == {user: {}}:
-                return None
-            else:
-                return temp
+        #return {user:self.job_table}
+        temp = {user: {}}
+        for i in self.all_jobs:
+            if self.all_jobs[i]['user'] == user and self.all_jobs[i]['submit'] >= unix_time:
+                self.all_jobs[i].update({'submit_time': datetime.fromtimestamp(self.all_jobs[i]['submit']).strftime('%Y-%m-%d %H:%M:%S'),'end_time': datetime.fromtimestamp(self.all_jobs[i]['end']).strftime('%Y-%m-%d %H:%M:%S'), 'start_time': datetime.fromtimestamp(self.all_jobs[i]['start']).strftime('%Y-%m-%d %H:%M:%S')})
+                temp[user].update({i: self.all_jobs[i]})
+        if temp == {user: {}}:
+            return None
         else:
-            temp = {user:{}}
-            for i in self.all_jobs:
-                if self.all_jobs[i]['user'] == user and self.all_jobs[i]['submit'] >= unix_time:
-                    temp[user].update({i:self.all_jobs[i]})
-            if temp =={user:{}}:
-                return None
-            else:
-                return temp
+            return temp
 
     def my_jobs(self,time=31): #Publically callable method
         return self.user_jobs(self.user,time)
@@ -133,6 +124,9 @@ class group_access(user_access):
                 temp.update({i:{}})
                 for j in self.group_job_table[i]:
                     if self.group_job_table[i][j]['submit'] >= unix_time:
+                        self.group_job_table[i][j].update({'submit_time': datetime.fromtimestamp(self.group_job_table[i][j]['submit']).strftime('%Y-%m-%d %H:%M:%S'),
+                            'end_time': datetime.fromtimestamp(self.group_job_table[i][j]['end']).strftime('%Y-%m-%d %H:%M:%S'),
+                            'start_time': datetime.fromtimestamp(self.group_job_table[i][j]['start']).strftime('%Y-%m-%d %H:%M:%S')})
                         temp[i].update({j:self.group_job_table[i][j]})
             flag = False
             for i in temp:
@@ -211,7 +205,9 @@ class admin_access(group_access):
                 #user_list = list(set(user_list))
 
         for i in group_list:
-            holder['Admin'].update(self.admin_group_jobs(i,user_list,time))
+            temp = self.admin_group_jobs(i,user_list,time)
+            if temp is not None:
+                holder['Admin'].update(temp)
             # for j in user_list:
             #     if j in self.full_table[i].keys():
             #         holder.append(self.full_table[i][j])
@@ -295,7 +291,6 @@ class admin_access(group_access):
                 user_list = group_table
             else:
                 user_list = list(set(user_list) & set(group_table))
-
             for i in user_list:
                 temp = self.user_jobs(i,time)
                 if temp is not None:
@@ -371,7 +366,7 @@ class admin_access(group_access):
 
 #________________TESTS_____________________________
 
-# x1 = user_access("christian")
+# x1 = user_access("winnerc2")
 # x2 = group_access("matt")
 # x3 = admin_access("luedtke2")
 # x4 = admin_access("luedtke2",1)
@@ -435,12 +430,12 @@ class admin_access(group_access):
 # print("")
 #
 # y2 = x2.group_jobs(["matt","user07","christian"],120)
-# y3 = x3.admin_group_jobs(None,["matt","user07","christian"],120)
+# y3 = x3.admin_group_jobs('main',["winnerc2","user07","christian"])
 #
 # print("y2 = x2.group_jobs(['matt','user07','christian'],120)")
 # print("Group group_jobs: ",y2)
 # print("")
-# print("y3 = x3.admin_group_jobs(None,['matt','user07','christian'],120)")
+# print("y3 = x3.admin_group_jobs('main',[winnerc2,user07,christian])")
 # print("Admin group_jobs: ",y3)
 # print("")
 #
@@ -464,11 +459,11 @@ class admin_access(group_access):
 # print("Admin group_jobs: ",y3.keys())
 # print("")
 #
-# y2 = x3.view_jobs([],['matt'],120)
+#y2 = x3.view_jobs([],['luedtke2'],120)
 # y3 = x3.view_stats([],['matt'],120)
 #
-# print("y2 = x3.view_jobs([],['matt'],120)")
-# print("Admin view_jobs: ",y2['Admin'].keys())
+#print("y2 = x3.view_jobs([],['luedtke2'],120)")
+#print("Admin view_jobs: ",y2)
 # for i in y2:
 #     print("Admin: ",i)
 #     for j in y2[i]:
