@@ -54,14 +54,14 @@ def home(request):
 def msunet_callback(request):
     code = request.GET.get('code', '')
     state = request.GET.get('state', '')
-    print("code : " + code)
+    #print("code : " + code)
     request_url = "https://oauth.itservices.msu.edu/oauth/token?client_id=OAuth-HPCC-HPCC&client_secret=QH7GqwK6bac4AR5gFTQEy6UCBarE6KrKM78GVDMN&grant_type=authorization_code&redirect_uri=https://35.9.22.112/auth/msunet/callback&code=" + code
-    print("request_url : " + request_url)
+    #print("request_url : " + request_url)
     header = {"Content-type": "application/x-www-form-urlencoded"}
     r = requests.post(request_url, headers=header)
     rjson = r.json()
     access_token = rjson.get('access_token')
-    print("access_token : " + access_token)
+    #print("access_token : " + access_token)
     if not access_token:
         return redirect('/')
 
