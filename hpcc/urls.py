@@ -25,7 +25,7 @@ from . import views
 from login import views as loginview
 
 urlpatterns = [
-    path('', home, name='name'),
+    path('', views.index, name='name'),
     path('ScriptGen/', include('ScriptGen.urls')),
     path('jobs/', include('job_view.urls')),
     url(r'^admin/', admin.site.urls, name='admin'),

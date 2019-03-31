@@ -13,3 +13,4 @@ dash-core-components==0.43.1
 dash-table==3.5.0
 dash-daq==0.1.0
 requests==2.20.1
+

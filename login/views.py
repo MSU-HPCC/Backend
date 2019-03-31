@@ -10,7 +10,6 @@ from login.forms import *
 from login.models import OAuth_ex
 import requests
 
-
 @csrf_protect
 def register(request):
     if request.method == 'POST':

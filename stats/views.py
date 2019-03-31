@@ -57,7 +57,7 @@ def IsAdmin(user):
         line = line.strip()
         AdminList.append(line)
     AdminFile.close()
-    print("admin list: "+str(AdminList))
+    #print("admin list: "+str(AdminList))
     if user in AdminList:
         return True
     else:

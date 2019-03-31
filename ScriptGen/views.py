@@ -219,9 +219,9 @@ def get_name(request):
 
 
 def SubmitJob(bashpath, script, filename,user):
-    print("script = "+script)
-    print("bashpath = "+bashpath)
-    print("filename = "+str(filename))
+    #print("script = "+script)
+    #print("bashpath = "+bashpath)
+    #print("filename = "+str(filename))
     currDir = os.getcwd()
     #go into jobsub folder to execute batch script
     os.chdir("/home/"+user)
@@ -245,10 +245,10 @@ def SubmitJob(bashpath, script, filename,user):
     try:
         command ="sbatch " + BashScriptName
         #result = subprocess.check_output(["sbatch", BashScriptName])
-        print(command)
+        #print(command)
         result = subprocess.check_output(["runuser","-l",user,"-c",command])
 
-        print(result)
+        #print(result)
         result = result.split()[-1]
         jobid = int(result)
 
@@ -319,23 +319,38 @@ def Update(request):
 
 
 def CleanUp(request):
-
+    username = request.user.username
 
     JobQueue=[]
     jobs= pyslurm.job().get()
-
-    fields =["job_id","name","job_state","run_time_str","num_nodes","nodes","start_time","submit_time"]
+    AllJobs = pyslurm.slurmdb_jobs().get()
+    fields =["job_id","user","name","job_state","run_time_str","num_nodes","nodes","start_time","submit_time"]
     JobQueue.append(fields)
     times=["start_time","submit_time"]
     for key, value in jobs.items():
         JobInQ= []
+        jobid = value["job_id"]
+       
         for field in fields:
             if field in times:
 
                 JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+            elif field=="user":
+                if jobid in AllJobs:
+                    jobid = value["job_id"]
+                    user = AllJobs[jobid]['user']
+                    JobInQ.append(user)
+                else: 
+                    for jobid2 in AllJobs:
+                        if value['user_id'] == AllJobs[jobid2]['gid']:
+                            user = AllJobs[jobid2]['user']
+                            JobInQ.append(user)
+                            break
             else:
                 JobInQ.append(value[field])
-        JobQueue.append(JobInQ)
+        EntryUser= JobInQ[1]
+        if EntryUser == username:
+            JobQueue.append(JobInQ)
 
 
 
