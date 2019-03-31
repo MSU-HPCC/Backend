@@ -11,7 +11,7 @@ def jobs(request):
     jobs = []
     cols = ['id_user', 'job_name', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code',
             'cpus_req']
-    keys = ['user', 'jobname', 'nodes', 'allocated_nodes', 'submit', 'start', 'end', 'exit_code', 'req_cpus']
+    keys = ['user', 'jobname', 'nodes', 'allocated_nodes', 'submit_time', 'start_time', 'end_time', 'exit_code', 'req_cpus']
     if temp is None:
         jobs = [""]*len(keys)
     else:
@@ -22,7 +22,9 @@ def jobs(request):
                 if i == 'exit_code':
                     meaning = ""
                     val = value[i]
-                    if val == 1:
+                    if val == 0:
+                        meaning = "Run Successful"
+                    elif val == 1:
                         meaning = "General Error"
                     elif val == 2:
                         meaning = "Misuse of Shell Builtins"
@@ -59,7 +61,7 @@ def adminJobs(request, user):
         temp = access.view_jobs()
         jobs = []
         cols = ['id_user', 'job_name', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code', 'cpus_req']
-        keys = ['user', 'jobname', 'nodes', 'allocated_nodes', 'submit', 'start', 'end', 'exit_code', 'req_cpus']
+        keys = ['user', 'jobname', 'nodes', 'allocated_nodes', 'submit_time', 'start_time', 'end_time', 'exit_code', 'req_cpus']
         if temp is None:
             jobs = [""] * len(keys)
         else:
@@ -72,7 +74,9 @@ def adminJobs(request, user):
                             if i == 'exit_code':
                                 meaning = ""
                                 val = value3[i]
-                                if val == 1:
+                                if val == 0:
+                                    meaning = "Run Successful"
+                                elif val == 1:
                                     meaning = "General Error"
                                 elif val == 2:
                                     meaning = "Misuse of Shell Builtins"
@@ -113,7 +117,7 @@ def groupJobs(request):
     jobs = []
     cols = ['job_db_inx', 'group_name', 'job_name', 'id_job', 'id_user', 'id_group', 'nodelist', 'nodes_alloc',
             'time_submit', 'time_start', 'time_end', 'exit_code']
-    keys = ['jobid','account','jobname','jobid','user','gid','nodes', 'allocated_nodes', 'submit', 'start', 'end', 'exit_code', 'req_cpus']
+    keys = ['jobid','account','jobname','jobid','user','gid','nodes', 'allocated_nodes', 'submit_time', 'start_time', 'end_time', 'exit_code', 'req_cpus']
     if temp is None:
         jobs = [""]*len(keys)
     else:
@@ -124,7 +128,9 @@ def groupJobs(request):
                     if i == 'exit_code':
                         meaning = ""
                         val = value2[i]
-                        if val == 1:
+                        if val == 0:
+                            meaning = "Run Successful"
+                        elif val == 1:
                             meaning = "General Error"
                         elif val == 2:
                             meaning = "Misuse of Shell Builtins"
