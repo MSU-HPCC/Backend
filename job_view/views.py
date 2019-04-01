@@ -55,8 +55,12 @@ def jobs(request):
     return render(request, 'job_view/jobs.html', {'jobs': jobs, 'user': user, 'cols': cols, })
 
 def adminJobs(request, user):
-    if (request.user.id == 1):
-        user = request.user.username
+    admin_list_file = open("admins.txt")
+    allowed_users = []
+    for line in admin_list_file:
+        allowed_users.append(line.strip())
+    if (request.user.username in allowed_users):
+        # user is a parameter.
         access = api.admin_access(user,2)
         temp = access.view_jobs()
         jobs = []
