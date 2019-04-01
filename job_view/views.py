@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def jobs(request):
     user = request.user.username
-    access = api.user_access(user)
+    access = api.user_access(user,2)
     temp = access.my_jobs()
     jobs = []
     cols = ['id_user', 'job_name', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code',
@@ -55,9 +55,13 @@ def jobs(request):
     return render(request, 'job_view/jobs.html', {'jobs': jobs, 'user': user, 'cols': cols, })
 
 def adminJobs(request, user):
-    if (request.user.id == 1):
-        user = request.user.username
-        access = api.admin_access(user)
+    admin_list_file = open("admins.txt")
+    allowed_users = []
+    for line in admin_list_file:
+        allowed_users.append(line.strip())
+    if (request.user.username in allowed_users):
+        # user is a parameter.
+        access = api.admin_access(user,2)
         temp = access.view_jobs()
         jobs = []
         cols = ['id_user', 'job_name', 'nodelist', 'nodes_alloc', 'time_submit', 'time_start', 'time_end', 'exit_code', 'cpus_req']
@@ -112,7 +116,7 @@ def adminJobs(request, user):
 @login_required
 def groupJobs(request):
     user = request.user.username
-    access = api.group_access(user)
+    access = api.group_access(user,2)
     temp = access.group_jobs()
     jobs = []
     cols = ['job_db_inx', 'group_name', 'job_name', 'id_job', 'id_user', 'id_group', 'nodelist', 'nodes_alloc',
