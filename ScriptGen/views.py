@@ -349,6 +349,7 @@ def CleanUp(request):
             else:
                 JobInQ.append(value[field])
         EntryUser= JobInQ[1]
+        #print(EntryUser)
         if EntryUser == username:
             JobQueue.append(JobInQ)
 
