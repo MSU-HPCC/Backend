@@ -1,4 +1,4 @@
-def admin_access(user):
+def isAdmin(user):
     admin_list_file = open("admins.txt")
     allowed_users = []
     for line in admin_list_file:

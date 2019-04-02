@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from static.src import Admin_Stats_PySLURM as api
 from django.contrib.auth.decorators import login_required
-from static.src import access
+from static.src import web_access_control
 # Create your views here.
 @login_required
 def jobs(request):
@@ -168,7 +168,7 @@ def groupJobs(request):
 
 @login_required
 def adminSearch(request, user):
-    admin_access = access.admin_access(request.user.username)
+    admin_access = web_access_control.isAdmin(request.user.username)
     if (admin_access):
         # user is a parameter.
         access = api.user_access(user,2)
