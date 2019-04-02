@@ -1,6 +1,13 @@
 {% extends "../base_templates/base-page.html" %}
 {% block title %} Your Jobs {% endblock %}
 {% load static %}
+{% if admin_access %}
+  {% block admin-sidebar %}
+  <li>
+    <a href="/jobs/admin">Admin Jobs Table</a>
+  </li>
+  {% endblock %}
+{% endif %}
 {% block content %}
 <div class="grid-x" style="margin: 20px 0 0 0;padding: 0 10px">
 
