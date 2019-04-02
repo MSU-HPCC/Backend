@@ -5,4 +5,4 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 @login_required
 def index(request):
-    return HttpResponseRedirect('/ScriptGen/jobqueue')
+    return HttpResponseRedirect('/jobs')
