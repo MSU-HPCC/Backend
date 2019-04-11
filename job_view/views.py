@@ -1,9 +1,15 @@
+'''
+jobs: view uses pyslurm to get job data specific to the currently logged in user.
+adminJobs: View used pyslurm to get **all** users job data -- Restricted to users specified in admins.txt
+groupJobs: View uses pyslurm to get job data for all users in the same group as the logged in user.
+adminSearch: View verifys that logged in user is an admin. Returns job data specific to the netID obtained from the url slug
+    Param: user = the url slug str representing a netID to search
+'''
 from django.shortcuts import render
 from django.http import HttpResponse
 from static.src import Admin_Stats_PySLURM as api
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
 @login_required
 def jobs(request):
     user = request.user.username
@@ -49,6 +55,7 @@ def jobs(request):
                 else:
                     temp.append(value[i])
             jobs.append(temp)
+    # make cols variable into list of tuples with index so the template can render the data properly
     itr = 0
     for col in cols:
         cols[itr] = (col, itr)
@@ -106,6 +113,7 @@ def adminJobs(request):
                             else:
                                 temp.append(value3[i])
                         jobs.append(temp)
+        # make cols variable into list of tuples with index so the template can render the data properly
         itr = 0
         for col in cols:
             cols[itr] = (col, itr)
@@ -113,7 +121,6 @@ def adminJobs(request):
         return render(request, 'job_view/adminJobs.html', {'jobs': jobs, 'urlUser': user, 'cols': cols, })
     else:
         return render(request, '../templates/error_pages/403.html')
-    # return HttpResponse("this is the admin jobs")
 
 @login_required
 def groupJobs(request):
@@ -160,6 +167,7 @@ def groupJobs(request):
                     else:
                         temp.append(value2[i])
                 jobs.append(temp)
+    # make cols variable into list of tuples with index so the template can render the data properly
     itr = 0
     for col in cols:
         cols[itr] = (col,itr)
@@ -216,6 +224,7 @@ def adminSearch(request, user):
                     else:
                         temp.append(value[i])
                 jobs.append(temp)
+        # make cols variable into list of tuples with index so the template can render the data properly
         itr = 0
         for col in cols:
             cols[itr] = (col, itr)
