@@ -2,22 +2,18 @@ import matplotlib
 matplotlib.use('Agg')
 from django.shortcuts import render
 import os
-# using this solution to avoid windows vs unix slashes
-from pathlib import Path
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+from pathlib import Path # using this solution to avoid windows vs unix slashes
 from django.http import HttpResponse
 import matplotlib.pyplot as plt, mpld3
-
-
 import matplotlib.dates as mdates
-
 from datetime import datetime
-
 import pyslurm
 import numpy as np
 from static.src import Admin_Stats_PySLURM as SLURM
-
 from django.views.generic import TemplateView
+
+@login_required
 def index(request):
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
     '''
@@ -49,7 +45,7 @@ def index(request):
     '''
     return HttpResponse("This is the index page")
 
-
+@login_required
 def IsAdmin(user):
     AdminFile = open("admins.txt","r")
     AdminList =[]
@@ -62,7 +58,8 @@ def IsAdmin(user):
         return True
     else:
         return False
-    
+
+@login_required
 def JobSubStats(request):
     '''
     cnx = mysql.connector.connect(user=dbcreds.user, password=dbcreds.pwd, host=dbcreds.host, database=dbcreds.db)
@@ -154,7 +151,7 @@ def JobSubStats(request):
     return render(request, 'stats/graphic.html', {'graph': g})
     #return render(request, 'stats/SubmissionGraphic.html')
 
-
+@login_required
 def JobFailure(request):
     '''
     cnx = mysql.connector.connect(user=dbcreds.user, password=dbcreds.pwd, host=dbcreds.host, database=dbcreds.db)
@@ -234,6 +231,7 @@ def JobFailure(request):
     return render(request, 'stats/graphic.html', {'graph': g})
     #return render(request, 'stats/FailedJobs.html')
 
+@login_required
 def MajorUsers(request):
     #path = STATIC_ROOT = os.path.join(os.getcwd(), '\\static\\images\\user-jobs-submitted.png')
     #pngPath = image_data = open(path, "rb").read()
@@ -282,6 +280,7 @@ def MajorUsers(request):
 
     return render(request, 'stats/graphic.html',{'graph': g})
 
+@login_required
 def AvgWait(request):
     user = request.user.username
     #UserInfo = SLURM.user_access(user,time=120)
@@ -312,7 +311,7 @@ def AvgWait(request):
     SubDays={}
     # user = request.user.username
     #UserInfo = SLURM.user_access(user,time=120)
-    
+
     totalJobs = len(AllUserJobs)
 
     JobsThisWeek =len(GroupInfo.my_jobs(time =7)[user])
@@ -325,7 +324,7 @@ def AvgWait(request):
     TotErrorJobs = stats[user]['error_raw']
     TotRunningNow = stats[user]['run_raw']
     TotPending = stats[user]['pending_raw']
-    
+
     #group = SLURM.group_access(user)
     gstat= GroupInfo.group_stats()
     groupID = GroupInfo.group_id

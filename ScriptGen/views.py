@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-# Create your views here.
 from django.http import HttpResponse
 import os
 import io
@@ -9,14 +8,13 @@ import paramiko
 import os
 import time
 from django.views.decorators.csrf import csrf_exempt
-
 from django.core.files.storage import FileSystemStorage
+
+@login_required
 def index(request):
     return HttpResponse("We are at the script generation page")
-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
 from .forms import NameForm
 from .models import ScriptGenInfo
 from django.http import JsonResponse
@@ -25,8 +23,9 @@ import shutil
 import ntpath
 from pathlib import Path
 from datetime import datetime
-
 import subprocess
+
+@login_required
 def ScriptGen_create_view(request):
     '''
     form = NameForm(request.POST or None)
@@ -55,6 +54,7 @@ def ScriptGen_create_view(request):
     response['Content-Length'] = os.path.getsize(filename)
     return response'''
 
+@login_required
 def SlurmFile(request):
     dir = request.GET.get('dir','')
     user = request.user.username
@@ -72,6 +72,7 @@ def SlurmFile(request):
     return response
     return HttpResponse("ok")
 
+@login_required
 def downloadFile(request):
     context = {}
     if request.method == 'POST':
@@ -81,12 +82,10 @@ def downloadFile(request):
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
     return render(request, 'ScriptGen/download.html', context)
+
+@login_required
 @csrf_exempt
 def get_name(request):
-
-
-
-
     SubmittedJob = False
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -217,7 +216,7 @@ def get_name(request):
 
     return render(request, 'ScriptGen/name.html', {'form': form})
 
-
+@login_required
 def SubmitJob(bashpath, script, filename,user):
     #print("script = "+script)
     #print("bashpath = "+bashpath)
@@ -298,7 +297,7 @@ def SubmitJob(bashpath, script, filename,user):
 
     return True
 
-
+@login_required
 @csrf_exempt
 def Update(request):
     #print("we are updating")
@@ -317,7 +316,7 @@ def Update(request):
     #return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form, 'filePath': filename})
     return render(request,'ScriptGen/download.html')
 
-
+@login_required
 def CleanUp(request):
     username = request.user.username
 
@@ -330,7 +329,7 @@ def CleanUp(request):
     for key, value in jobs.items():
         JobInQ= []
         jobid = value["job_id"]
-       
+
         for field in fields:
             if field in times:
 
@@ -340,7 +339,7 @@ def CleanUp(request):
                     jobid = value["job_id"]
                     user = AllJobs[jobid]['user']
                     JobInQ.append(user)
-                else: 
+                else:
                     for jobid2 in AllJobs:
                         if value['user_id'] == AllJobs[jobid2]['gid']:
                             user = AllJobs[jobid2]['user']
@@ -358,7 +357,7 @@ def CleanUp(request):
     #return HttpResponse("Cleanup time")
     return render(request,'ScriptGen/queue.html',{'queue': JobQueue})
 
-
+@login_required
 def Results(request):
     # put slurm files where they belong
     '''
@@ -419,7 +418,9 @@ def Results(request):
 
 
     return HttpResponse("these are the slurm.out files")
+
 # list the subdirectories
+@login_required
 def ListOnlyDirs(path):
     dirlist=[]
     for filename in os.listdir(path):
@@ -428,7 +429,7 @@ def ListOnlyDirs(path):
     return dirlist
 
 
-
+@login_required
 def Test(request):
     filename = '/home/roushzac//wNdCiHi3-5530/slurm-5530.out'
     file = open(filename, "rb")
@@ -440,4 +441,3 @@ def Test(request):
     # return response
 
     return response
-

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from static.src import Admin_Stats_PySLURM as api
 from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 @login_required
 def jobs(request):
@@ -54,6 +55,7 @@ def jobs(request):
         itr += 1
     return render(request, 'job_view/jobs.html', {'jobs': jobs, 'user': user, 'cols': cols, })
 
+@login_required
 def adminJobs(request):
     admin_list_file = open("admins.txt")
     allowed_users = []
@@ -164,6 +166,7 @@ def groupJobs(request):
         itr += 1
     return render(request, 'job_view/groupJobs.html', {'jobs': jobs, 'urlUser': user, 'cols': cols, })
 
+@login_required
 def adminSearch(request, user):
     admin_list_file = open("admins.txt")
     allowed_users = []
