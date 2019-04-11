@@ -15,27 +15,34 @@ class user_access():
         end = end.strftime("%m%d%y")
         t_delta = timedelta(days=time)
         start = datetime.now() - t_delta
+
+        start_int = int(start.strftime("%s"))
+        print("START INT: ",start_int)
+
         start = start.strftime("%m%d%y")
 
         self.all_jobs = pyslurm.slurmdb_jobs().get(starttime=start.encode('utf-8'),endtime=end.encode('utf-8'))
 
         for i in self.all_jobs:
-            if self.all_jobs[i]['user'] == self.user:
+            if self.all_jobs[i]['user'] == self.user and self.all_jobs[i]["submit"] >= start_int:
                 self.user_id = self.all_jobs[i]['gid']
                 self.group_id = self.all_jobs[i]['account']
                 break
 
         for j in self.all_jobs:
-            if self.all_jobs[j]['account'] == self.group_id:
-                self.group_table.add(self.all_jobs[j]['user'])
-            if self.all_jobs[j]['user'] == self.user:
-                self.job_table.update({j: self.all_jobs[j]})
-            if self.all_jobs[j]['account'] not in self.full_table.keys():
-              self.full_table.update({self.all_jobs[j]['account']: {self.all_jobs[j]['user']: {j: self.all_jobs[j]}}})
-            elif self.all_jobs[j]['user'] not in self.full_table[self.all_jobs[j]['account']].keys():
-              self.full_table[self.all_jobs[j]['account']].update({self.all_jobs[j]['user']: {j: self.all_jobs[j]}})
-            else:
-              self.full_table[self.all_jobs[j]['account']][self.all_jobs[j]['user']].update({j: self.all_jobs[j]})
+            if j == 20358:
+                print("TEST: ", self.all_jobs[j]["submit"] >= start_int)
+            if self.all_jobs[j]["submit"] >= start_int:
+                if self.all_jobs[j]['account'] == self.group_id:
+                    self.group_table.add(self.all_jobs[j]['user'])
+                if self.all_jobs[j]['user'] == self.user:
+                    self.job_table.update({j: self.all_jobs[j]})
+                if self.all_jobs[j]['account'] not in self.full_table.keys():
+                  self.full_table.update({self.all_jobs[j]['account']: {self.all_jobs[j]['user']: {j: self.all_jobs[j]}}})
+                elif self.all_jobs[j]['user'] not in self.full_table[self.all_jobs[j]['account']].keys():
+                  self.full_table[self.all_jobs[j]['account']].update({self.all_jobs[j]['user']: {j: self.all_jobs[j]}})
+                else:
+                  self.full_table[self.all_jobs[j]['account']][self.all_jobs[j]['user']].update({j: self.all_jobs[j]})
 
         self.group_table = list(self.group_table)
 
@@ -45,16 +52,18 @@ class user_access():
         self.group_job_table.update({self.user: self.job_table})
 
         for k in self.all_jobs:
-            if self.all_jobs[k]['user'] in self.group_table:
-                if self.all_jobs[k]['user'] != self.user:
-                    self.group_job_table[self.all_jobs[k]['user']].update({k: self.all_jobs[k]})
+            if self.all_jobs[k]["submit"] >= start_int:
+                if self.all_jobs[k]['user'] in self.group_table:
+                    if self.all_jobs[k]['user'] != self.user:
+                        self.group_job_table[self.all_jobs[k]['user']].update({k: self.all_jobs[k]})
 
     def user_jobs(self, user = None,time = 31): #General purpose information gatherer
         if user == None:
             user = self.user
         unix_time = datetime.now() - timedelta(days=time)
+        print("UNIX RAW: ", unix_time)
         unix_time = int(unix_time.strftime("%s"))
-
+        print("UNIX INT: ", unix_time)
         #return {user:self.job_table}
         temp = {user: {}}
         for i in self.all_jobs:
@@ -368,8 +377,8 @@ class admin_access(group_access):
 
 # x1 = user_access("winnerc2")
 # x2 = group_access("matt")
-# x3 = admin_access("luedtke2")
-# x4 = admin_access("luedtke2",1)
+x3 = admin_access("luedtke2")
+x4 = admin_access("luedtke2",1)
 
 # for i in x2.full_table.keys():
 #     print("Group: ",i)
@@ -385,26 +394,26 @@ class admin_access(group_access):
 #
 # z1 = x1.my_stats()
 # z2 = x2.my_stats()
-# z3 = x3.my_stats()
-# z4 = x4.my_stats(7)
+z3 = x3.my_stats(1)
+z4 = x4.my_stats()
 # print("z1 = x1.my_stats()")
 # print("User mystats: ",z1)
 # print("")
 # print("z2 = x2.my_stats()")
 # print("Group mystats: ",z2)
 # print("")
-# print("z3 = x3.my_stats()")
-# print("Admin mystats: ",z3)
-# print("")
-# print("z4 = x3.my_stats(7)")
-# print("Admin Week mystats: ",z4)
-# print("")
+print("z3 = x3.my_stats(1)")
+print("Admin mystats: ",z3)
+print("")
+print("z4 = x4.my_stats()")
+print("Admin Week mystats: ",z4)
+print("")
 # #
 #
 # z1 = x1.my_jobs()
 # z2 = x2.my_jobs()
-# z3 = x3.my_jobs()
-# z4 = x4.my_jobs(7)
+z3 = x3.my_jobs(1)
+z4 = x4.my_jobs()
 # #
 # print("z1 = x1.my_jobs()")
 # print("User my_jobs: ",z1)
@@ -412,11 +421,13 @@ class admin_access(group_access):
 # print("z2 = x2.my_jobs()")
 # print("Group my_jobs: ",z2)
 # print("")
-# print("z3 = x3.my_jobs()")
-# print("Admin my_jobs: ",len(z3["luedtke2"].keys()))
-# print("")
-# print("z4 = x3.my_jobs(7)")
-# print("Admin my_jobs: ",len(z4["luedtke2"].keys()))
+print("z3 = x3.my_jobs(1)")
+for i in z3["luedtke2"]:
+    print("Admin my_jobs: ",i," , ",z3["luedtke2"][i]["submit"], " , ",z3["luedtke2"][i]["start"], " , ",z3["luedtke2"][i]["end"])
+print("_____________________________________")
+print("z4 = x3.my_jobs()")
+for i in z4["luedtke2"]:
+    print("Admin my_jobs: ",i," , ",z4["luedtke2"][i]["submit"], " , ",z4["luedtke2"][i]["start"], " , ",z4["luedtke2"][i]["end"])
 # print("")
 #
 # y2 = x2.group_stats(["matt","user07","christian"],120)
