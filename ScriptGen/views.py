@@ -329,11 +329,14 @@ def CleanUp(request):
     for key, value in jobs.items():
         JobInQ= []
         jobid = value["job_id"]
-
         for field in fields:
             if field in times:
-
-                JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+                temp_time = float(value[field])
+                if temp_time < 10000:  # Check for uninitialized time Added 4-20-19
+                    JobInQ.append("0000-00-00 00:00:00")
+                else:
+                    JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+                # JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
             elif field=="user":
                 if jobid in AllJobs:
                     jobid = value["job_id"]
