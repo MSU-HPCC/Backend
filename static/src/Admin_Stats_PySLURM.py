@@ -61,17 +61,17 @@ class user_access():
         temp = {user: {}}
         for i in self.all_jobs:
             if self.all_jobs[i]['user'] == user and self.all_jobs[i]['submit'] >= unix_time:
-                if self.all_jobs[i]['submit'] < 100:
+                if self.all_jobs[i]['submit'] < 10000:
                   temp_submit = "0000-00-00 00:00:00"
                 else:
                   temp_submit = datetime.fromtimestamp(self.all_jobs[i]['submit']).strftime('%Y-%m-%d %H:%M:%S')
 
-                if self.all_jobs[i]['end'] < 100:
+                if self.all_jobs[i]['end'] < 10000:
                   temp_end = "0000-00-00 00:00:00"
                 else:
                   temp_end = datetime.fromtimestamp(self.all_jobs[i]['end']).strftime('%Y-%m-%d %H:%M:%S')
 
-                if self.all_jobs[i]['start'] < 100:
+                if self.all_jobs[i]['start'] < 10000:
                   temp_start = "0000-00-00 00:00:00"
                 else:
                   temp_start = datetime.fromtimestamp(self.all_jobs[i]['start']).strftime('%Y-%m-%d %H:%M:%S')
@@ -148,17 +148,17 @@ class group_access(user_access):
                 for j in self.group_job_table[i]:
                     if self.group_job_table[i][j]['submit'] >= unix_time:
 
-                        if self.group_job_table[i][j]['submit'] < 100:
+                        if self.group_job_table[i][j]['submit'] < 10000:
                           temp_submit = "0000-00-00 00:00:00"
                         else:
                           temp_submit = datetime.fromtimestamp(self.group_job_table[i][j]['submit']).strftime('%Y-%m-%d %H:%M:%S')
 
-                        if self.group_job_table[i][j]['end'] < 100:
+                        if self.group_job_table[i][j]['end'] < 10000:
                           temp_end = "0000-00-00 00:00:00"
                         else:
                           temp_end = datetime.fromtimestamp(self.group_job_table[i][j]['end']).strftime('%Y-%m-%d %H:%M:%S')
 
-                        if self.group_job_table[i][j]['start'] < 100:
+                        if self.group_job_table[i][j]['start'] < 10000:
                           temp_start = "0000-00-00 00:00:00"
                         else:
                           temp_start = datetime.fromtimestamp(self.group_job_table[i][j]['start']).strftime('%Y-%m-%d %H:%M:%S')
