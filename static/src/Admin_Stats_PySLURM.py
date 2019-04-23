@@ -1,5 +1,7 @@
 import pyslurm
 from datetime import datetime, timedelta
+
+
 class user_access():
     def __init__(self, user, time=31):
         self.user = user
@@ -10,14 +12,14 @@ class user_access():
         self.group_job_table = {}
         self.all_jobs = None
         self.full_table = {}
-        
+
         end = datetime.now() + timedelta(days=31)
         end = end.strftime("%m%d%y")
         t_delta = timedelta(days=time)
         start = datetime.now() - t_delta
         start = start.strftime("%m%d%y")
 
-        self.all_jobs = pyslurm.slurmdb_jobs().get(starttime=start.encode('utf-8'),endtime=end.encode('utf-8'))
+        self.all_jobs = pyslurm.slurmdb_jobs().get(starttime=start.encode('utf-8'), endtime=end.encode('utf-8'))
 
         for i in self.all_jobs:
             if self.all_jobs[i]['user'] == self.user:
@@ -31,11 +33,11 @@ class user_access():
             if self.all_jobs[j]['user'] == self.user:
                 self.job_table.update({j: self.all_jobs[j]})
             if self.all_jobs[j]['account'] not in self.full_table.keys():
-              self.full_table.update({self.all_jobs[j]['account']: {self.all_jobs[j]['user']: {j: self.all_jobs[j]}}})
+                self.full_table.update({self.all_jobs[j]['account']: {self.all_jobs[j]['user']: {j: self.all_jobs[j]}}})
             elif self.all_jobs[j]['user'] not in self.full_table[self.all_jobs[j]['account']].keys():
-              self.full_table[self.all_jobs[j]['account']].update({self.all_jobs[j]['user']: {j: self.all_jobs[j]}})
+                self.full_table[self.all_jobs[j]['account']].update({self.all_jobs[j]['user']: {j: self.all_jobs[j]}})
             else:
-              self.full_table[self.all_jobs[j]['account']][self.all_jobs[j]['user']].update({j: self.all_jobs[j]})
+                self.full_table[self.all_jobs[j]['account']][self.all_jobs[j]['user']].update({j: self.all_jobs[j]})
 
         self.group_table = list(self.group_table)
 
@@ -49,31 +51,50 @@ class user_access():
                 if self.all_jobs[k]['user'] != self.user:
                     self.group_job_table[self.all_jobs[k]['user']].update({k: self.all_jobs[k]})
 
-    def user_jobs(self, user = None,time = 31): #General purpose information gatherer
+    def user_jobs(self, user=None, time=31):  # General purpose information gatherer
         if user == None:
             user = self.user
         unix_time = datetime.now() - timedelta(days=time)
         unix_time = int(unix_time.strftime("%s"))
 
-        #return {user:self.job_table}
+        # return {user:self.job_table}
         temp = {user: {}}
         for i in self.all_jobs:
             if self.all_jobs[i]['user'] == user and self.all_jobs[i]['submit'] >= unix_time:
-                self.all_jobs[i].update({'submit_time': datetime.fromtimestamp(self.all_jobs[i]['submit']).strftime('%Y-%m-%d %H:%M:%S'),'end_time': datetime.fromtimestamp(self.all_jobs[i]['end']).strftime('%Y-%m-%d %H:%M:%S'), 'start_time': datetime.fromtimestamp(self.all_jobs[i]['start']).strftime('%Y-%m-%d %H:%M:%S')})
+                if self.all_jobs[i]['submit'] < 10000:
+                  temp_submit = "0000-00-00 00:00:00"
+                else:
+                  temp_submit = datetime.fromtimestamp(self.all_jobs[i]['submit']).strftime('%Y-%m-%d %H:%M:%S')
+
+                if self.all_jobs[i]['end'] < 10000:
+                  temp_end = "0000-00-00 00:00:00"
+                else:
+                  temp_end = datetime.fromtimestamp(self.all_jobs[i]['end']).strftime('%Y-%m-%d %H:%M:%S')
+
+                if self.all_jobs[i]['start'] < 10000:
+                  temp_start = "0000-00-00 00:00:00"
+                else:
+                  temp_start = datetime.fromtimestamp(self.all_jobs[i]['start']).strftime('%Y-%m-%d %H:%M:%S')
+
+                self.all_jobs[i].update(
+                       {'submit_time': temp_submit,
+                     'end_time': temp_end,
+                     'start_time': temp_start})
+
                 temp[user].update({i: self.all_jobs[i]})
         if temp == {user: {}}:
             return None
         else:
             return temp
 
-    def my_jobs(self,time=31): #Publically callable method
-        return self.user_jobs(self.user,time)
+    def my_jobs(self, time=31):  # Publically callable method
+        return self.user_jobs(self.user, time)
 
-    def user_stats(self, user = None,time = 31):
+    def user_stats(self, user=None, time=31):
         if user == None:
             user = self.user
 
-        holder = self.user_jobs(user,time)
+        holder = self.user_jobs(user, time)
 
         if holder[user] == {}:
             stats_list = None
@@ -84,9 +105,9 @@ class user_access():
             tot_run = 0
             tot_pending = 0
             for i in holder[user]:
-                #(user, " : ", holder[user][i])
+                # (user, " : ", holder[user][i])
                 if holder[user][i]['end'] == 0:
-                    if holder[user][i]['start']==0:
+                    if holder[user][i]['start'] == 0:
                         tot_pending += 1
                     else:
                         tot_run += 1
@@ -94,18 +115,20 @@ class user_access():
                     tot_comp += 1
                 else:
                     tot_error += 1
-            stats_list = {user: {'complete': (tot_comp / total), 'error': (tot_error / total), 'running': (tot_run / total),
-                'pending': (tot_pending / total),'total': total, 'complete_raw': tot_comp, 'error_raw': tot_error, 'run_raw': tot_run,
-                                 'pending_raw': tot_pending}}
+            stats_list = {
+                user: {'complete': (tot_comp / total), 'error': (tot_error / total), 'running': (tot_run / total),
+                       'pending': (tot_pending / total), 'total': total, 'complete_raw': tot_comp,
+                       'error_raw': tot_error, 'run_raw': tot_run,
+                       'pending_raw': tot_pending}}
 
         return stats_list
 
-    def my_stats(self,time=31):
-        return self.user_stats(self.user,time)
+    def my_stats(self, time=31):
+        return self.user_stats(self.user, time)
 
 
 class group_access(user_access):
-    def group_jobs(self, user_list=[],time = 31):
+    def group_jobs(self, user_list=[], time=31):
         group_name = self.group_id
         unix_time = datetime.now() - timedelta(days=time)
         unix_time = int(unix_time.strftime("%s"))
@@ -121,13 +144,31 @@ class group_access(user_access):
             temp = {}
 
             for i in user_list:
-                temp.update({i:{}})
+                temp.update({i: {}})
                 for j in self.group_job_table[i]:
                     if self.group_job_table[i][j]['submit'] >= unix_time:
-                        self.group_job_table[i][j].update({'submit_time': datetime.fromtimestamp(self.group_job_table[i][j]['submit']).strftime('%Y-%m-%d %H:%M:%S'),
-                            'end_time': datetime.fromtimestamp(self.group_job_table[i][j]['end']).strftime('%Y-%m-%d %H:%M:%S'),
-                            'start_time': datetime.fromtimestamp(self.group_job_table[i][j]['start']).strftime('%Y-%m-%d %H:%M:%S')})
-                        temp[i].update({j:self.group_job_table[i][j]})
+
+                        if self.group_job_table[i][j]['submit'] < 10000:
+                          temp_submit = "0000-00-00 00:00:00"
+                        else:
+                          temp_submit = datetime.fromtimestamp(self.group_job_table[i][j]['submit']).strftime('%Y-%m-%d %H:%M:%S')
+
+                        if self.group_job_table[i][j]['end'] < 10000:
+                          temp_end = "0000-00-00 00:00:00"
+                        else:
+                          temp_end = datetime.fromtimestamp(self.group_job_table[i][j]['end']).strftime('%Y-%m-%d %H:%M:%S')
+
+                        if self.group_job_table[i][j]['start'] < 10000:
+                          temp_start = "0000-00-00 00:00:00"
+                        else:
+                          temp_start = datetime.fromtimestamp(self.group_job_table[i][j]['start']).strftime('%Y-%m-%d %H:%M:%S')
+
+
+
+
+                        self.group_job_table[i][j].update({'submit_time': temp_submit,'end_time': temp_end,'start_time': temp_start})
+                        temp[i].update({j: self.group_job_table[i][j]})
+
             flag = False
             for i in temp:
                 if temp[i] != {}:
@@ -138,7 +179,7 @@ class group_access(user_access):
             else:
                 return None
 
-    def group_stats(self, user_list=[],time = 31):
+    def group_stats(self, user_list=[], time=31):
 
         group_name = self.group_id
 
@@ -153,7 +194,7 @@ class group_access(user_access):
                 user_list = list(set(user_list) & set(self.group_table))
 
             for i in user_list:
-                temp = self.user_stats(i,time)
+                temp = self.user_stats(i, time)
                 if temp != None:
                     temp_stats.update(temp)
 
@@ -179,21 +220,21 @@ class group_access(user_access):
                 #     tot_error = 1
                 # if total_run == 0:
                 #     total_run = 1
-                holder = {group_name:{'summary':{'complete': (total_comp / total), 'error': (tot_error / total),
-                                'running': (total_run / total), 'pending': (tot_pending / total),
-                                'total': total, 'complete_raw': total_comp, 'error_raw': tot_error,
-                                'run_raw': total_run, 'pending_raw': tot_pending}}}
+                holder = {group_name: {'summary': {'complete': (total_comp / total), 'error': (tot_error / total),
+                                                   'running': (total_run / total), 'pending': (tot_pending / total),
+                                                   'total': total, 'complete_raw': total_comp, 'error_raw': tot_error,
+                                                   'run_raw': total_run, 'pending_raw': tot_pending}}}
 
                 for i in temp_stats.keys():
-                    holder[group_name].update({i:temp_stats[i]})
+                    holder[group_name].update({i: temp_stats[i]})
                 return holder
 
 
 class admin_access(group_access):
-    def view_jobs(self, group_list = [],user_list = [],time = 31):
-        holder = {'Admin':{}}
+    def view_jobs(self, group_list=[], user_list=[], time=31):
+        holder = {'Admin': {}}
 
-        if group_list == []: #Default to all groups
+        if group_list == []:  # Default to all groups
             group_list = self.full_table.keys()
         if user_list == []:  # Default to all users
             for i in group_list:
@@ -201,25 +242,25 @@ class admin_access(group_access):
                 for j in temp:
                     if j not in user_list:
                         user_list.append(j)
-                #user_list.append(self.full_table[i].keys())
-                #user_list = list(set(user_list))
+                # user_list.append(self.full_table[i].keys())
+                # user_list = list(set(user_list))
 
         for i in group_list:
-            temp = self.admin_group_jobs(i,user_list,time)
+            temp = self.admin_group_jobs(i, user_list, time)
             if temp is not None:
                 holder['Admin'].update(temp)
             # for j in user_list:
             #     if j in self.full_table[i].keys():
             #         holder.append(self.full_table[i][j])
 
-        if holder == {'Admin':{}}:
+        if holder == {'Admin': {}}:
             return None
         else:
             return holder
 
-    def view_stats(self,group_list = [],user_list = [],time = 31):
+    def view_stats(self, group_list=[], user_list=[], time=31):
         temp_stats = {}
-        if group_list == []: #Default to all groups
+        if group_list == []:  # Default to all groups
             group_list = self.full_table.keys()
         if user_list == []:  # Default to all users
             for i in group_list:
@@ -227,11 +268,11 @@ class admin_access(group_access):
                 for j in temp:
                     if j not in user_list:
                         user_list.append(j)
-                #user_list.append(self.full_table[i].keys())
-                #user_list = list(set(user_list))
+                # user_list.append(self.full_table[i].keys())
+                # user_list = list(set(user_list))
         list_temp = []
         for i in group_list:
-            temp = self.admin_group_stats(i,user_list,time)
+            temp = self.admin_group_stats(i, user_list, time)
             if temp is not None:
                 temp_stats.update(temp)
                 list_temp.append(i)
@@ -263,24 +304,26 @@ class admin_access(group_access):
 
             holder = {}
 
-            holder.update({'Admin':{
-                "summary":{'complete':(total_comp / total), 'error':(tot_error / total), 'running':(total_run / total), 'pending':(tot_pending / total),
-                           'total':total, 'complete_raw':total_comp, 'error_raw':tot_error, 'run_raw':total_run, 'pending_raw':tot_pending }}})
+            holder.update({'Admin': {
+                "summary": {'complete': (total_comp / total), 'error': (tot_error / total),
+                            'running': (total_run / total), 'pending': (tot_pending / total),
+                            'total': total, 'complete_raw': total_comp, 'error_raw': tot_error, 'run_raw': total_run,
+                            'pending_raw': tot_pending}}})
 
             for i in group_list:
-                holder['Admin'].update({i:temp_stats[i]})
+                holder['Admin'].update({i: temp_stats[i]})
 
             return holder
 
-    def admin_group_jobs(self, group_name=None, user_list = [],time = 31):#ADD NONE
+    def admin_group_jobs(self, group_name=None, user_list=[], time=31):  # ADD NONE
         if group_name == None:
             if self.group_id == None:
                 return None
             else:
-                return self.group_jobs(user_list,time)
+                return self.group_jobs(user_list, time)
         else:
             group_table = self.full_table[group_name].keys()
-            group_job_table = {group_name:{}}
+            group_job_table = {group_name: {}}
             # for j in self.all_jobs:
             #     if self.all_jobs[j]['account'] == group_name:
             #         group_table.add(self.all_jobs[j]['user'])
@@ -292,7 +335,7 @@ class admin_access(group_access):
             else:
                 user_list = list(set(user_list) & set(group_table))
             for i in user_list:
-                temp = self.user_jobs(i,time)
+                temp = self.user_jobs(i, time)
                 if temp is not None:
                     group_job_table[group_name].update(temp)
 
@@ -300,18 +343,17 @@ class admin_access(group_access):
             #     if self.all_jobs[k]['user'] in user_list:
             #         group_job_table[self.all_jobs[k]['user']].update({k: self.all_jobs[k]})
 
-            if group_job_table == {group_name:{}}:
+            if group_job_table == {group_name: {}}:
                 return None
             else:
                 return group_job_table
 
-
-    def admin_group_stats(self, group_name=None, user_list=[],time = 31):
+    def admin_group_stats(self, group_name=None, user_list=[], time=31):
         if group_name == None:
             if self.group_id == None:
                 return None
             else:
-                return self.group_stats(user_list,time)
+                return self.group_stats(user_list, time)
         else:
             group_table = self.full_table[group_name].keys()
 
@@ -329,7 +371,7 @@ class admin_access(group_access):
             temp_stats = {}
 
             for i in user_list:
-                temp = self.user_stats(i,time)
+                temp = self.user_stats(i, time)
                 if temp[i] != None:
                     temp_stats[i] = temp[i]
 
@@ -356,15 +398,17 @@ class admin_access(group_access):
                 # if total_run == 0:
                 #     total_run = 1
                 holder = {group_name:
-                    {'summary':{'complete':(total_comp / total), 'error':(tot_error / total), 'running':(total_run / total), 'pending': (tot_pending / total),
-                                'total':total, 'complete_raw':total_comp, 'error_raw':tot_error, 'run_raw':total_run, 'pending_raw': tot_pending}}}
+                              {'summary': {'complete': (total_comp / total), 'error': (tot_error / total),
+                                           'running': (total_run / total), 'pending': (tot_pending / total),
+                                           'total': total, 'complete_raw': total_comp, 'error_raw': tot_error,
+                                           'run_raw': total_run, 'pending_raw': tot_pending}}}
 
                 for i in temp_stats.keys():
-                    holder[group_name].update({i:temp_stats[i]})
+                    holder[group_name].update({i: temp_stats[i]})
 
                 return holder
 
-#________________TESTS_____________________________
+# ________________TESTS_____________________________
 
 # x1 = user_access("winnerc2")
 # x2 = group_access("matt")
@@ -449,8 +493,8 @@ class admin_access(group_access):
 # print("Admin group_stats: ",y3)
 # print("")
 #
-#y2 = x2.group_jobs([],120)
-#y3 = x3.admin_group_jobs(None,[],120)
+# y2 = x2.group_jobs([],120)
+# y3 = x3.admin_group_jobs(None,[],120)
 #
 # print("y2 = #x2.group_jobs([],120)")
 # print("Group group_jobs: ",y2.keys())
@@ -459,11 +503,11 @@ class admin_access(group_access):
 # print("Admin group_jobs: ",y3.keys())
 # print("")
 #
-#y2 = x3.view_jobs([],['luedtke2'],120)
+# y2 = x3.view_jobs([],['luedtke2'],120)
 # y3 = x3.view_stats([],['matt'],120)
 #
-#print("y2 = x3.view_jobs([],['luedtke2'],120)")
-#print("Admin view_jobs: ",y2)
+# print("y2 = x3.view_jobs([],['luedtke2'],120)")
+# print("Admin view_jobs: ",y2)
 # for i in y2:
 #     print("Admin: ",i)
 #     for j in y2[i]:

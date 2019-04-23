@@ -28,15 +28,9 @@ from datetime import datetime
 
 import subprocess
 def ScriptGen_create_view(request):
-    '''
-    form = NameForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-    context={
-        'form':form
-    }
-    return render(request,'ScriptGen/form_create.html',context)'''
+    ''' This function isn't used, it was made to test file download'''
     filename = os.getcwd()+ "/ScriptGen/Bash.sb"
+
     file = open(filename, "rb")
     response = HttpResponse(file.read())
     response['Content-Disposition'] = 'attachment; filename= ' + 'Bash.sb'
@@ -48,14 +42,10 @@ def ScriptGen_create_view(request):
 
     return response
 
-    '''
-    wrapper = FileWrapper(open((filename),"r"))
-    response = HttpResponse(wrapper, content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
-    response['Content-Length'] = os.path.getsize(filename)
-    return response'''
-
+    
 def SlurmFile(request):
+    '''this function travels to the home/user directory where jobs are submitted
+     and locates a specific directory named JobId+JobName . it downloads that slurm.out file. thats the output file for a job. this function is actually called from a template'''
     dir = request.GET.get('dir','')
     user = request.user.username
     jobid = dir.split("-")[1]
@@ -73,6 +63,7 @@ def SlurmFile(request):
     return HttpResponse("ok")
 
 def downloadFile(request):
+ ''' this function isn't used, it was just to test file downlad'''
     context = {}
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
@@ -83,7 +74,8 @@ def downloadFile(request):
     return render(request, 'ScriptGen/download.html', context)
 @csrf_exempt
 def get_name(request):
-
+    '''This view function handles the script gen page. it takes the
+ options inputted by the user and writes the bash script from that. The Bash script is always the same file, its just rewritten copied and moved. '''
 
 
 
@@ -92,26 +84,7 @@ def get_name(request):
     if request.method == 'POST':
         form = NameForm(request.POST)
         #if request.POST.get('action') == "Update Bash Script":
-        '''
-        if request.is_ajax():
-            print("here")
-            text = request.POST.get('text', 1)
-            print(text)
-            FilePreview = text.split("\n")
-            dictionary = request.GET
-            dict2 = request.POST
-            user = request.GET.get('username', 1)
-            filename = os.getcwd() + "\ScriptGen\Bash.qsub"
-            file = open(filename, "w")
-            file.write(text)
-            file.close()
-            print("end")
-            response = Update(request,text)
-            return response
-            return render(request, 'ScriptGen/download.html')
-
-        '''
-
+        
         form = NameForm(request.POST)
         # file upload
         if request.FILES:
@@ -219,10 +192,10 @@ def get_name(request):
 
 
 def SubmitJob(bashpath, script, filename,user):
-    #print("script = "+script)
-    #print("bashpath = "+bashpath)
-    #print("filename = "+str(filename))
-    currDir = os.getcwd()
+ '''This function submites a job. it needs the filepath of the bashfile, the script you want to run, and the username. it travels to home/user and submits
+ the job through the command line by doing 'sbatch Bash.sh'. it aslso makes
+the directories where slurm.out fies are stored  '''
+        currDir = os.getcwd()
     #go into jobsub folder to execute batch script
     os.chdir("/home/"+user)
     # copy bashfile and script into JobSub directory
@@ -231,10 +204,7 @@ def SubmitJob(bashpath, script, filename,user):
     # grab the Bash Scriptname and Script name form the full paths
     BashScriptName = ntpath.basename(bashpath)
     ScriptName = ntpath.basename(script)
-    #print("Bash Script Name = "+BashScriptName)
-    #print("Scriptname = "+ScriptName)
-    #print("renaming SCriptname to : "+filename)
-    # rename the script to what is listed in the bash file
+        # rename the script to what is listed in the bash file
     os.rename(ScriptName,filename)
     # submit a job
     a=pyslurm.job()
@@ -301,6 +271,7 @@ def SubmitJob(bashpath, script, filename,user):
 
 @csrf_exempt
 def Update(request):
+''' this function isnt used'''
     #print("we are updating")
     text = request.GET.get('text',1)
     FilePreview = text.split("\n")
@@ -319,6 +290,8 @@ def Update(request):
 
 
 def CleanUp(request):
+''' this function actually collects the personal job queue.it finds all the recent jobs that are yours and creates a 2d matrix for the job queue
+ this is then passed to the template to be rendered. '''
     username = request.user.username
 
     JobQueue=[]
@@ -333,8 +306,12 @@ def CleanUp(request):
        
         for field in fields:
             if field in times:
-
-                JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+                temp_time = float(value[field])
+                if  temp_time < 10000:#Check for uninitialized time Added 4-20-19
+                    JobInQ.append("0000-00-00 00:00:00")
+                else:
+                    JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+                #JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
             elif field=="user":
                 if jobid in AllJobs:
                     jobid = value["job_id"]
@@ -360,19 +337,12 @@ def CleanUp(request):
 
 
 def Results(request):
+''' This helps render the results page. everytime its called it moves slurm.out files to their respective 
+ folders if they havent already. it then collects the names of all the finished directories and passes it to the template. the template then calls a 
+SlurmFile function to download the output file.'''
     # put slurm files where they belong
-    '''
-    for file in os.listdir("JobSub"):
-        if file.endswith(".out"):
-            jobID= file.split(".")[0]
-            jobID= jobID.split("-")[1]
-            print("slurm file "+str(jobID))
-            path= "JobSub/"+str(jobID)
-            file= "JobSub/"+file
-            shutil.move(file,path)
-            print(file)
-    '''
-    # clean up the directories
+       # clean up the directories
+
     dirs= []
     files=[]
     #JobTable= pyslurm.slurmdb_jobs().get()
@@ -421,6 +391,7 @@ def Results(request):
     return HttpResponse("these are the slurm.out files")
 # list the subdirectories
 def ListOnlyDirs(path):
+''' never used'''
     dirlist=[]
     for filename in os.listdir(path):
         if os.path.isdir(os.path.join(path, filename)):
@@ -430,6 +401,7 @@ def ListOnlyDirs(path):
 
 
 def Test(request):
+   ''' never used'''
     filename = '/home/roushzac//wNdCiHi3-5530/slurm-5530.out'
     file = open(filename, "rb")
     response = HttpResponse(file.read())
