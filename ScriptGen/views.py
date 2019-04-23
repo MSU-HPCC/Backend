@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-# Create your views here.
 from django.http import HttpResponse
 import os
 import io
@@ -9,14 +8,13 @@ import paramiko
 import os
 import time
 from django.views.decorators.csrf import csrf_exempt
-
 from django.core.files.storage import FileSystemStorage
+
+@login_required
 def index(request):
     return HttpResponse("We are at the script generation page")
-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
 from .forms import NameForm
 from .models import ScriptGenInfo
 from django.http import JsonResponse
@@ -25,8 +23,9 @@ import shutil
 import ntpath
 from pathlib import Path
 from datetime import datetime
-
 import subprocess
+
+@login_required
 def ScriptGen_create_view(request):
     ''' This function isn't used, it was made to test file download'''
     filename = os.getcwd()+ "/ScriptGen/Bash.sb"
@@ -42,7 +41,18 @@ def ScriptGen_create_view(request):
 
     return response
 
+<<<<<<< HEAD
     
+=======
+    '''
+    wrapper = FileWrapper(open((filename),"r"))
+    response = HttpResponse(wrapper, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
+    response['Content-Length'] = os.path.getsize(filename)
+    return response'''
+
+@login_required
+>>>>>>> 2a326ee41ef8e1326fc8b7791591a8efbd689d86
 def SlurmFile(request):
     '''this function travels to the home/user directory where jobs are submitted
      and locates a specific directory named JobId+JobName . it downloads that slurm.out file. thats the output file for a job. this function is actually called from a template'''
@@ -62,6 +72,7 @@ def SlurmFile(request):
     return response
     return HttpResponse("ok")
 
+@login_required
 def downloadFile(request):
  ''' this function isn't used, it was just to test file downlad'''
     context = {}
@@ -72,13 +83,18 @@ def downloadFile(request):
         name = fs.save(uploaded_file.name, uploaded_file)
         context['url'] = fs.url(name)
     return render(request, 'ScriptGen/download.html', context)
+
+@login_required
 @csrf_exempt
 def get_name(request):
+<<<<<<< HEAD
     '''This view function handles the script gen page. it takes the
  options inputted by the user and writes the bash script from that. The Bash script is always the same file, its just rewritten copied and moved. '''
 
 
 
+=======
+>>>>>>> 2a326ee41ef8e1326fc8b7791591a8efbd689d86
     SubmittedJob = False
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -190,7 +206,7 @@ def get_name(request):
 
     return render(request, 'ScriptGen/name.html', {'form': form})
 
-
+@login_required
 def SubmitJob(bashpath, script, filename,user):
  '''This function submites a job. it needs the filepath of the bashfile, the script you want to run, and the username. it travels to home/user and submits
  the job through the command line by doing 'sbatch Bash.sh'. it aslso makes
@@ -268,7 +284,7 @@ the directories where slurm.out fies are stored  '''
 
     return True
 
-
+@login_required
 @csrf_exempt
 def Update(request):
 ''' this function isnt used'''
@@ -288,7 +304,7 @@ def Update(request):
     #return render(request, 'ScriptGen/preview.html', {'preview': FilePreview, 'form': form, 'filePath': filename})
     return render(request,'ScriptGen/download.html')
 
-
+@login_required
 def CleanUp(request):
 ''' this function actually collects the personal job queue.it finds all the recent jobs that are yours and creates a 2d matrix for the job queue
  this is then passed to the template to be rendered. '''
@@ -303,21 +319,28 @@ def CleanUp(request):
     for key, value in jobs.items():
         JobInQ= []
         jobid = value["job_id"]
-       
         for field in fields:
             if field in times:
                 temp_time = float(value[field])
+<<<<<<< HEAD
                 if  temp_time < 10000:#Check for uninitialized time Added 4-20-19
                     JobInQ.append("0000-00-00 00:00:00")
                 else:
                     JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
                 #JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+=======
+                if temp_time < 10000:  # Check for uninitialized time Added 4-20-19
+                    JobInQ.append("0000-00-00 00:00:00")
+                else:
+                    JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+                # JobInQ.append(datetime.utcfromtimestamp(float(value[field])).strftime('%Y-%m-%d %H:%M:%S'))
+>>>>>>> 2a326ee41ef8e1326fc8b7791591a8efbd689d86
             elif field=="user":
                 if jobid in AllJobs:
                     jobid = value["job_id"]
                     user = AllJobs[jobid]['user']
                     JobInQ.append(user)
-                else: 
+                else:
                     for jobid2 in AllJobs:
                         if value['user_id'] == AllJobs[jobid2]['gid']:
                             user = AllJobs[jobid2]['user']
@@ -335,7 +358,7 @@ def CleanUp(request):
     #return HttpResponse("Cleanup time")
     return render(request,'ScriptGen/queue.html',{'queue': JobQueue})
 
-
+@login_required
 def Results(request):
 ''' This helps render the results page. everytime its called it moves slurm.out files to their respective 
  folders if they havent already. it then collects the names of all the finished directories and passes it to the template. the template then calls a 
@@ -389,7 +412,9 @@ SlurmFile function to download the output file.'''
 
 
     return HttpResponse("these are the slurm.out files")
+
 # list the subdirectories
+@login_required
 def ListOnlyDirs(path):
 ''' never used'''
     dirlist=[]
@@ -399,7 +424,7 @@ def ListOnlyDirs(path):
     return dirlist
 
 
-
+@login_required
 def Test(request):
    ''' never used'''
     filename = '/home/roushzac//wNdCiHi3-5530/slurm-5530.out'
@@ -412,4 +437,3 @@ def Test(request):
     # return response
 
     return response
-
